@@ -8,6 +8,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/sys/windows/registry"
 )
 
 // CreateChineseShortcut 创建一个运行动态汉化的“原名字 中文”桌面快捷方式
@@ -24,9 +26,8 @@ func CreateChineseShortcut(cfg AppConfig) error {
 	selfDir := filepath.Dir(selfExeAbs)
 
 	// 计算桌面路径
-	userProfile := os.Getenv("USERPROFILE")
-	desktopDir := filepath.Join(userProfile, "Desktop")
-	publicDesktop := `C:\Users\Public\Desktop`
+	desktopDir := getDesktopPath()
+	publicDesktop := getPublicDesktopPath()
 
 	// 查找原快捷方式的可能名字
 	lnkName := cfg.Name + ".lnk"
@@ -121,4 +122,34 @@ $newLnk.Save()
 
 	fmt.Printf("[成功] 已在桌面创建快捷方式: %s\n", targetLnkPath)
 	return nil
+}
+
+func getDesktopPath() string {
+	k, err := registry.OpenKey(registry.CURRENT_USER, `Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders`, registry.QUERY_VALUE)
+	if err == nil {
+		defer k.Close()
+		val, _, err := k.GetStringValue("Desktop")
+		if err == nil && val != "" {
+			if expanded, err := registry.ExpandString(val); err == nil {
+				return expanded
+			}
+			return os.ExpandEnv(val)
+		}
+	}
+	return filepath.Join(os.Getenv("USERPROFILE"), "Desktop")
+}
+
+func getPublicDesktopPath() string {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders`, registry.QUERY_VALUE)
+	if err == nil {
+		defer k.Close()
+		val, _, err := k.GetStringValue("Common Desktop")
+		if err == nil && val != "" {
+			if expanded, err := registry.ExpandString(val); err == nil {
+				return expanded
+			}
+			return os.ExpandEnv(val)
+		}
+	}
+	return `C:\Users\Public\Desktop`
 }
