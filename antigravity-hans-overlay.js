@@ -974,6 +974,12 @@
       '.quick-input-widget',
       '.notification-toast',
       '.notifications-toasts',
+      // VS Code/Antigravity IDE 设置页是异步渲染的，页面本身不一定带有
+      // antigravity/jetski 类名；显式纳入设置容器，避免 Settings 页面被白名单过滤。
+      '.settings-editor',
+      '.settings-body',
+      '[class*="settings"]',
+      '[id*="settings"]',
       '#workbench\\.parts\\.titlebar .titlebar-right',
       '#workbench\\.parts\\.titlebar .action-label',
       '#workbench\\.parts\\.titlebar .action-nudge-button',
@@ -1011,8 +1017,12 @@
     if (root.nodeType !== Node.ELEMENT_NODE && root.nodeType !== Node.DOCUMENT_NODE) return;
     if (root.nodeType === Node.ELEMENT_NODE) {
       if (!root.__zh_patched) {
-        translateElement(root);
-        root.__zh_patched = true;
+        // 节点可能先被插入、后被 React/Vue 补上容器 class。未处于目标容器时
+        // 不能标记为已处理，否则后续容器就绪后不会再翻译它的子树。
+        if (isInAntigravityContainer(root)) {
+          translateElement(root);
+          root.__zh_patched = true;
+        }
       }
     }
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
@@ -1027,6 +1037,7 @@
         node.__zh_patched = true;
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (node.__zh_patched) continue;
+        if (!isInAntigravityContainer(node)) continue;
         translateElement(node);
         node.__zh_patched = true;
       }
@@ -1049,7 +1060,14 @@
         } else if (mutation.type === 'attributes') {
           const target = mutation.target;
           target.__zh_patched = false;
-          elementsToTranslate.push(target);
+          // 容器身份变化时要重新扫描整个子树；仅翻译属性本身会漏掉此前
+          // 因未命中白名单而尚未处理的 Settings 子节点。
+          if (mutation.attributeName === 'class' || mutation.attributeName === 'id' ||
+              mutation.attributeName === 'role' || mutation.attributeName === 'data-testid') {
+            nodesToTranslate.push(target);
+          } else {
+            elementsToTranslate.push(target);
+          }
         } else {
           for (const node of mutation.addedNodes) {
             nodesToTranslate.push(node);
@@ -1072,7 +1090,8 @@
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt'],
+      // 监听容器身份变化。Settings 页面经常先挂载空节点，再异步补 class/id。
+      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid'],
     });
   }
 

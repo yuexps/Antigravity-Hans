@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -54,12 +55,52 @@ func cdpCall(conn *websocket.Conn, method string, params map[string]interface{})
 			continue
 		}
 		if respID, ok := resp["id"]; ok {
-			if int64(respID.(float64)) == id {
+			matched := false
+			switch v := respID.(type) {
+			case float64:
+				matched = int64(v) == id
+			case string:
+				matched = v == strconv.FormatInt(id, 10)
+			}
+			if matched {
+				if err := cdpResponseError(resp, method); err != nil {
+					return nil, err
+				}
 				return resp, nil
 			}
 		}
 	}
 	return nil, fmt.Errorf("等待 %s 响应超时", method)
+}
+
+// cdpResponseError 将 CDP 协议错误和 Runtime.evaluate 的 JS 异常统一转换为 Go 错误。
+// CDP 即使执行脚本抛异常，WebSocket 命令本身通常仍会返回成功，因此不能只检查 cdpCall 的网络错误。
+func cdpResponseError(resp map[string]interface{}, method string) error {
+	if protocolErr, ok := resp["error"].(map[string]interface{}); ok {
+		message, _ := protocolErr["message"].(string)
+		if message == "" {
+			message = fmt.Sprint(protocolErr)
+		}
+		return fmt.Errorf("CDP %s 失败: %s", method, message)
+	}
+
+	result, ok := resp["result"].(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	if exception, ok := result["exceptionDetails"].(map[string]interface{}); ok {
+		description, _ := exception["text"].(string)
+		if description == "" {
+			if value, ok := exception["exception"].(map[string]interface{}); ok {
+				description, _ = value["description"].(string)
+			}
+		}
+		if description == "" {
+			description = fmt.Sprint(exception)
+		}
+		return fmt.Errorf("Runtime.evaluate 执行异常: %s", description)
+	}
+	return nil
 }
 
 // isTargetPage 判断目标是否为需汉化页面
@@ -179,17 +220,22 @@ func InjectTarget(target CDPTarget, overlaySource string, injectedSet map[string
 	conn.SetReadDeadline(time.Now().Add(5 * time.Second))
 
 	// 监听页面后续跳转刷新
-	_, _ = cdpCall(conn, "Page.addScriptToEvaluateOnNewDocument", map[string]interface{}{
+	if _, err := cdpCall(conn, "Page.addScriptToEvaluateOnNewDocument", map[string]interface{}{
 		"source": overlaySource,
-	})
+	}); err != nil {
+		return fmt.Errorf("监听页面刷新失败: %w", err)
+	}
 
 	// 当前页面立即执行
-	_, err = cdpCall(conn, "Runtime.evaluate", map[string]interface{}{
+	resp, err := cdpCall(conn, "Runtime.evaluate", map[string]interface{}{
 		"expression":   overlaySource,
 		"awaitPromise": false,
 	})
 	if err != nil {
 		return fmt.Errorf("Runtime.evaluate 失败: %w", err)
+	}
+	if err := cdpResponseError(resp, "Runtime.evaluate"); err != nil {
+		return err
 	}
 
 	if target.ID != "" && mu != nil {
@@ -350,25 +396,61 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 
 	fmt.Println("[成功] 汉化监视连接已建立，进入事件驱动注入状态。")
 	fmt.Println("[提示] 请保持本控制台窗口运行以维持汉化注入；按 Ctrl+C 可随时退出。")
- 
+
 	// 目标注入逻辑
+	injectionPending := make(map[string]bool)
 	injectIfMatch := func(target CDPTarget, rawURL, triggerType string) {
 		if target.ID == "" || !isTargetPage(rawURL, cfg.Name) {
 			return
 		}
 
-		// 检查目标页面当前文档是否已注入
-		if IsTargetInjected(target) {
-			mu.Lock()
-			injectedSet[target.ID] = true
+		// 同一页面可能同时收到 targetCreated、targetInfoChanged 和主动初检，
+		// 只允许一个注入任务运行，避免多个 CDP 连接在页面导航期间互相竞争。
+		mu.Lock()
+		if injectionPending[target.ID] {
 			mu.Unlock()
 			return
 		}
+		injectionPending[target.ID] = true
+		mu.Unlock()
 
 		go func() {
-			if err := InjectTarget(target, overlaySource, injectedSet, mu); err == nil {
-				title := getTargetTitle(target.Title, rawURL)
-				fmt.Printf("[%s] 捕获到目标页面，成功注入汉化: %s (ID: %s)\n", triggerType, title, target.ID)
+			defer func() {
+				mu.Lock()
+				delete(injectionPending, target.ID)
+				mu.Unlock()
+			}()
+
+			const maxAttempts = 5
+			var lastErr error
+			for attempt := 1; attempt <= maxAttempts; attempt++ {
+				// 页面可能在上一次事件后已经完成注入，尤其是导航过程中。
+				if IsTargetInjected(target) {
+					mu.Lock()
+					injectedSet[target.ID] = true
+					mu.Unlock()
+					return
+				}
+
+				if err := InjectTarget(target, overlaySource, injectedSet, mu); err == nil {
+					// Runtime.evaluate 返回成功不代表脚本没有抛 JS 异常；复核标记，
+					// 只有页面真实安装后才报告成功。
+					if IsTargetInjected(target) {
+						title := getTargetTitle(target.Title, rawURL)
+						fmt.Printf("[%s] 捕获到目标页面，成功注入汉化: %s (ID: %s)\n", triggerType, title, target.ID)
+						return
+					}
+					lastErr = fmt.Errorf("注入后页面未确认汉化脚本已安装")
+				} else {
+					lastErr = err
+				}
+
+				if attempt < maxAttempts {
+					time.Sleep(time.Duration(attempt) * 250 * time.Millisecond)
+				}
+			}
+			if lastErr != nil {
+				fmt.Printf("[警告] 页面注入失败（已重试 %d 次，后续页面事件将再次尝试）: %v (ID: %s)\n", maxAttempts, lastErr, target.ID)
 			}
 		}()
 	}
