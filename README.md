@@ -2,7 +2,7 @@
 
 专为 **Google Antigravity** 及 **Antigravity IDE** 开发的中文汉化工具。
 
-> **适配版本**：**Antigravity `2.29.0`**（已在 macOS 验证主要页面，其他平台和部分场景待验证）与 **Antigravity IDE `2.5.5`**。
+> **适配版本**：**Antigravity `2.29.0`** 与 **Antigravity IDE `2.5.5`**。
 
 ---
 
@@ -15,7 +15,9 @@
 
 ## 快速使用
 
-前往 [Releases](../../releases) 下载对应平台的单文件即可运行：
+前往 [Releases](../../releases) 下载对应平台的单文件即可运行；
+
+未测试的最新构建可从 [GitHub Actions Artifacts](https://github.com/yuexps/Antigravity-Hans/actions/workflows/test.yml) 下载。
 
 - **Windows**：双击 `antigravity-hans-windows-amd64.exe`，在交互菜单中选择对应模式。
 - **macOS**：
