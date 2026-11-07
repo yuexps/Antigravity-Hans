@@ -414,3 +414,68 @@ test('2.26.0 normal app notification and project deletion toasts are localized',
   assert.equal(translate('关闭通知'), '关闭通知');
   assert.equal(translate('项目已删除'), '项目已删除');
 });
+
+test('2.29.0 observed controls and marketplace text are localized', () => {
+  for (const [input, expected] of [
+    ['This Computer', '此电脑'], ['Remote', '远程'],
+    ['Configure what the agent can do in local and remote conversations.', '配置智能体在本地和远程对话中可以执行的操作。'],
+    ['Built-in Browser', '内置浏览器'], ['Voice mode', '语音模式'], ['Microphone', '麦克风'],
+    ['Conversation Steps', '对话步骤'], ['Choose how much detail is shown during a conversation.', '选择对话过程中显示的详细程度。'],
+    ['Search shortcuts...', '搜索快捷键...'], ['Reopen Closed Tab', '重新打开已关闭的标签页'],
+    ['Uses your local files and tools. Schedules only.', '使用本地文件和工具，仅支持定时运行。'],
+    ['Trigger', '触发条件'], ['Every weekday', '每个工作日'], ['Instructions', '指令'],
+    ['Design, Creative & Media', '设计、创意与媒体'], ['More Plugins', '更多插件'],
+    ['Search customizations...', '搜索自定义项...'],
+    ["Run a prompt on a schedule, like a morning summary of yesterday's changes. Runs show up here.", '按计划运行提示词，例如每天早晨汇总昨天的更改。运行记录会显示在这里。'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+});
+
+test('2.29.0 greeting and shortcut labels preserve dynamic values', () => {
+  for (const name of ['A $& $$', 'Last 7 days', 'No Automations', '用户']) {
+    const result = `你好，${name}，今天想完成什么？`;
+    assert.equal(translate(`Hi ${name}, what can we get done today?`), result);
+    assert.equal(translate(result), result);
+  }
+  for (const [input, expected] of [
+    ['Shortcut ⌘[ for Go Back', '快捷键 ⌘[：后退'],
+    ['Remove shortcut ⇧⌘T for Reopen Closed Tab', '移除快捷键 ⇧⌘T：重新打开已关闭的标签页'],
+    ['Add shortcut for Move Conversation Up', '添加快捷键：上移对话'],
+    ['Shortcut $& for unknown action', '快捷键 $&：unknown action'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+});
+
+test('split automation empty state retains child identity and ignores unknown layouts', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  for (const start of ['No ', '否 ']) {
+    const first = {nodeType: 3, nodeValue: start};
+    const middle = {nodeType: 1, textContent: '自动化'};
+    const last = {nodeType: 3, nodeValue: ' yet'};
+    const children = [first, middle, last];
+    const el = {nodeType: 1, childNodes: children,
+      get textContent() { return children.map(n => n.nodeType === 3 ? n.nodeValue : n.textContent).join(''); },
+      closest() { return null; }, getAttribute() { return null; }, setAttribute() {} };
+    context.translateElementForTest(el);
+    assert.equal(el.textContent, '暂无自动化');
+    assert.equal(el.childNodes[1], middle);
+    context.translateElementForTest(el);
+    assert.equal(el.textContent, '暂无自动化');
+  }
+});
+
+test('2.29.0 marketplace actions preserve plugin and category names', () => {
+  for (const [input, expected] of [
+    ['See more in Developer Tools', '查看更多：开发工具'],
+    ['See more in 效率与项目管理', '查看更多：效率与项目管理'],
+    ['Details for Context7', '查看详情：Context7'],
+    ['Details for $& 10 files', '查看详情：$& 10 files'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+});
