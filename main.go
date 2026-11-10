@@ -44,8 +44,6 @@ func main() {
 
 	// 加载汉化 JS（可执行文件同目录的外部脚本需先通过完整性校验）
 	overlaySource := LoadOverlaySource(containsArg(args, "--trust-external-overlay"))
-	// 在汉化脚本前注入同目录 custom-translations.txt 中的自定义翻译名单
-	overlaySource = customTranslationsPrelude(LoadCustomTranslations()) + overlaySource
 
 	// 命令行参数模式（非交互）
 	if len(args) > 0 {
