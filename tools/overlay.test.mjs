@@ -479,3 +479,62 @@ test('2.29.0 marketplace actions preserve plugin and category names', () => {
     assert.equal(translate(expected), expected);
   }
 });
+
+test('language toggle restores English originals and re-applies Chinese', () => {
+  const store = new Map();
+  const parent = { nodeType: 1, closest() { return null; }, getAttribute() { return null; }, setAttribute() {} };
+  const text = { nodeType: 3, nodeValue: 'Give Feedback', parentElement: parent };
+  const attrs = new Map([['title', 'Settings']]);
+  const button = {
+    nodeType: 1, parentElement: parent, closest() { return null; },
+    getAttribute: (name) => attrs.get(name) ?? null, setAttribute: (name, value) => attrs.set(name, value),
+  };
+  const nodes = [parent, text, button];
+  const doc = {
+    nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' },
+    createTreeWalker() { let i = 0; return { nextNode: () => nodes[i++] ?? null }; },
+  };
+  const win = {
+    addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+    localStorage: { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)) },
+  };
+  const ctx = { window: win, document: doc, Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 } };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.setLangForTest = setLang; globalThis.applyChineseForTest = applyChinese;\n  function run() {'), ctx);
+
+  ctx.applyChineseForTest(false);
+  assert.equal(text.nodeValue, '提供反馈');
+  assert.equal(attrs.get('title'), '设置');
+  assert.equal(doc.documentElement.lang, 'zh-CN');
+
+  ctx.setLangForTest('en');
+  assert.equal(text.nodeValue, 'Give Feedback', '切回英文应还原文本原文');
+  assert.equal(attrs.get('title'), 'Settings', '切回英文应还原属性原文');
+  assert.equal(doc.documentElement.lang, 'en');
+  assert.equal(store.get('antigravityHansLang'), 'en', '语言偏好应持久化');
+
+  // 英文模式下应用自行更新文案，切回中文时以新文案为原文
+  text.nodeValue = 'Open Editor Settings';
+  ctx.setLangForTest('zh');
+  assert.equal(text.nodeValue, '打开编辑器设置');
+  assert.equal(attrs.get('title'), '设置');
+  assert.equal(store.get('antigravityHansLang'), 'zh');
+
+  // 中文模式下应用改写了文本：还原时不得用旧原文覆盖应用的新内容
+  text.nodeValue = 'Delete plugin';
+  ctx.setLangForTest('en');
+  assert.equal(text.nodeValue, 'Delete plugin');
+});
+
+test('toggle button itself is never translated', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  let altered = false;
+  const element = {
+    nodeType: 1,
+    closest(selector) { return selector.includes('[data-agy-hans-ui]') ? this : null; },
+    getAttribute() { return 'Switch to English (Antigravity-Hans)'; },
+    setAttribute() { altered = true; },
+  };
+  context.translateElementForTest(element);
+  assert.equal(altered, false);
+});
