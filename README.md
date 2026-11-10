@@ -2,7 +2,8 @@
 
 专为 **Google Antigravity** 及 **Antigravity IDE** 开发的中文汉化工具。
 
-> **适配版本**：**Antigravity `2.29.0`** 与 **Antigravity IDE `2.5.5`**。
+> **适配版本**：**Antigravity `2.30.0`** 与 **Antigravity IDE `2.6.0`**。
+> IDE 的智能体和独立设置页面需要动态监视器；本次适配的验证范围和限制见[更新记录](docs/LOCAL-UPDATE-2026-11-10.md)。
 
 ---
 
@@ -49,6 +50,8 @@ Antigravity-Hans 启动器
 antigravity-hans --app         # 动态汉化 Antigravity
 antigravity-hans --ide         # 动态汉化 Antigravity IDE
 antigravity-hans --patch       # 静态补丁管理 (仅支持 IDE)
+antigravity-hans --app --attach-only  # 仅连接已有调试端口，不启动或重启应用
+antigravity-hans --ide --attach-only  # 仅连接 IDE 已有调试端口
 
 # 生成一键汉化快捷方式
 antigravity-hans --shortcut        # 为两者生成快捷方式
@@ -67,6 +70,7 @@ antigravity-hans --trust-external-overlay  # 显式信任同目录外部汉化�
 1. **动态汉化（推荐）**：
    - 支持 Antigravity 及 Antigravity IDE。
    - 通过 CDP 动态翻译界面，保留应用安装资源；注入状态随应用页面关闭而消失。
+   - IDE 2.6.0 的智能体及独立设置页面需要动态监视器；静态补丁不会覆盖这些内嵌页面。
    - 可通过 `--shortcut` 参数一键生成桌面快捷方式，日常双击即可自动启动汉化。
 2. **静态补丁（仅支持 Antigravity IDE）**：
    - 直接修改本地 IDE 安装包资源并修复校验和，一劳永逸，支持随时一键还原。
@@ -97,6 +101,20 @@ antigravity-hans --trust-external-overlay  # 显式信任同目录外部汉化�
 
 ```bash
 ./build.sh    # 交叉编译 macOS / Windows 2个平台到 dist/
+```
+
+在 Windows 上也可使用 PowerShell 7 构建单个本地测试版：
+
+```powershell
+pwsh -File .\tools\build-windows.ps1
+```
+
+产物为 `dist/antigravity-hans-windows-amd64-local.exe`，内嵌构建时的本地词库。启动时显示的词库指纹可与构建脚本输出的 SHA-256 前 16 位核对；同目录存在通过校验的外部词库时，启动器会优先使用外部词库。
+
+若原程序正在运行，可用 `-OutputPath` 指定另一个输出文件，避免覆盖正在使用的程序：
+
+```powershell
+pwsh -File .\tools\build-windows.ps1 -OutputPath .\dist\antigravity-hans-windows-amd64-custom.exe
 ```
 
 ---

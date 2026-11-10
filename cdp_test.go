@@ -16,6 +16,10 @@ func TestIsTargetPageIDEWorkbenches(t *testing.T) {
 		{name: "main workbench with query", url: "vscode-file://vscode-app/Contents/Resources/app/out/vs/code/electron-browser/workbench/workbench.html?folder=/tmp/project", want: true},
 		{name: "jetski workbench", url: "file:///tmp/workbench-jetski-agent.html", want: true},
 		{name: "unrelated page", url: "devtools://devtools/bundled/inspector.html", want: false},
+		{name: "remote page with workbench in path", url: "https://example.test/workbench.html", want: false},
+		{name: "local web preview with workbench in path", url: "http://127.0.0.1:3000/workbench.html", want: false},
+		{name: "workbench in query", url: "vscode-file://vscode-app/other.html?next=workbench.html", want: false},
+		{name: "foreign vscode-file host", url: "vscode-file://other/workbench.html", want: false},
 	}
 
 	for _, tt := range tests {
