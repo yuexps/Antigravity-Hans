@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261107-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -10,12 +10,63 @@
   let observer;
   let cancelled = false;
   let flushScheduler;
+  let removeToggleUI = null;
   window.__antigravityZhPatchCleanup = () => {
     cancelled = true;
     observer?.disconnect();
     window.removeEventListener('DOMContentLoaded', run);
     flushScheduler?.cancel();
+    removeToggleUI?.();
   };
+
+  // ===== 中英切换：记录每个被改写节点的原文，切回英文时按原样还原 =====
+  // WeakMap 挂在 window 上，词库热更新后新实例仍能还原旧实例翻译过的节点。
+  const LANG_KEY = 'antigravityHansLang';
+  const POS_KEY = 'antigravityHansTogglePos';
+  const originals = window.__antigravityZhOriginals ||
+    (window.__antigravityZhOriginals = { texts: new WeakMap(), attrs: new WeakMap() });
+  let lang = 'zh';
+  try { if (window.localStorage?.getItem(LANG_KEY) === 'en') lang = 'en'; } catch (_e) { /* data: 页面无 localStorage */ }
+  let originalDocLang = null;
+
+  // 写入译文并记录原文。若节点当前值不是上次写入的译文，说明应用自己更新了文本，以当前值为新原文。
+  function writeText(node, value) {
+    const prev = node.nodeValue;
+    const record = originals.texts.get(node);
+    if (record && record.zh === prev) record.zh = value;
+    else originals.texts.set(node, { orig: prev, zh: value });
+    node.nodeValue = value;
+  }
+
+  function writeAttr(element, name, value) {
+    const prev = element.getAttribute(name);
+    let map = originals.attrs.get(element);
+    if (!map) originals.attrs.set(element, (map = new Map()));
+    const record = map.get(name);
+    if (record && record.zh === prev) record.zh = value;
+    else map.set(name, { orig: prev, zh: value });
+    element.setAttribute(name, value);
+  }
+
+  function restoreOriginals() {
+    const walker = document.createTreeWalker(document, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = originals.texts.get(node);
+      if (text) {
+        // 仅还原仍是本脚本译文的节点；已被应用改写的内容保持不动
+        if (node.nodeValue === text.zh) node.nodeValue = text.orig;
+        originals.texts.delete(node);
+      }
+      const attrs = originals.attrs.get(node);
+      if (attrs) {
+        for (const [name, record] of attrs) {
+          if (node.getAttribute(name) === record.zh) node.setAttribute(name, record.orig);
+        }
+        originals.attrs.delete(node);
+      }
+      node.__zh_patched = false;
+    }
+  }
 
   const phrases = new Map([
     ["Teamwork Graph CLI is Atlassian's agent-first interface to your entire work context: Jira issues, Confluence pages, Bitbucket PRs, along with your connected third-party data sources. Purpose-built for coding agents like Antigravity (terminal or desktop), and powered by Atlassian's context graph. Try: \"draft a Jira issue from this PR and link it to the epic.\" Run /twg-setup after install to connect Atlassian Teamwork Graph CLI to Antigravity.", "Teamwork Graph CLI 是 Atlassian 面向智能体的工作上下文接口，可访问 Jira 问题、Confluence 页面、Bitbucket 拉取请求和已连接的第三方数据源。它基于 Atlassian 上下文图谱，专为 Antigravity 等终端或桌面编程智能体构建。试着说：“根据此拉取请求起草 Jira 问题并将其关联到史诗任务。”安装后运行 /twg-setup，将 Atlassian Teamwork Graph CLI 连接到 Antigravity。"],
@@ -1846,7 +1897,7 @@
     if (!element) return false;
 
     // 跳过代码与编辑区（textarea 放到下方输入区规则中，保留自身 placeholder/aria-label 翻译）
-    if (element.closest('script, style, code, pre, .xterm, .monaco-editor')) {
+    if (element.closest('script, style, code, pre, .xterm, .monaco-editor, [data-agy-hans-ui]')) {
       return true;
     }
 
@@ -2008,12 +2059,12 @@
       const key = (child.nodeValue || '').trim();
       if (!key) {
         // 中文句子不保留节点间空白
-        child.nodeValue = '';
+        if (child.nodeValue) writeText(child, '');
         child.__zh_patched = true;
         continue;
       }
       if (!rule.nodes.has(key)) continue;
-      child.nodeValue = rule.nodes.get(key);
+      writeText(child, rule.nodes.get(key));
       child.__zh_patched = true;
     }
     return true;
@@ -2027,7 +2078,7 @@
       const value = element.getAttribute?.(attr);
       if (!value) continue;
       const translated = translate(value);
-      if (translated !== value) element.setAttribute(attr, translated);
+      if (translated !== value) writeAttr(element, attr, translated);
     }
   }
 
@@ -2040,7 +2091,7 @@
       if (root.__zh_patched) return;
       const val = root.nodeValue || '';
       const translated = translate(val);
-      if (translated !== val) root.nodeValue = translated;
+      if (translated !== val) writeText(root, translated);
       root.__zh_patched = true;
       return;
     }
@@ -2063,7 +2114,7 @@
         if (node.__zh_patched) continue;
         const val = node.nodeValue || '';
         const translated = translate(val);
-        if (translated !== val) node.nodeValue = translated;
+        if (translated !== val) writeText(node, translated);
         node.__zh_patched = true;
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (node.__zh_patched) continue;
@@ -2101,22 +2152,147 @@
     return { schedule, cancel };
   }
 
-  function run() {
-    if (cancelled) return;
+  function applyChinese(resetMarks) {
+    if (originalDocLang === null) originalDocLang = document.documentElement.lang || '';
     document.documentElement.lang = 'zh-CN';
-    if (updating) {
+    if (resetMarks) {
       const stale = document.createTreeWalker(document, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let node = stale.nextNode(); node; node = stale.nextNode()) node.__zh_patched = false;
     }
     translateNode(document);
+  }
+
+  function setLang(next, persist = true) {
+    next = next === 'en' ? 'en' : 'zh';
+    if (cancelled || next === lang) return;
+    lang = next;
+    if (persist) {
+      try { window.localStorage?.setItem(LANG_KEY, next); } catch (_e) { /* ignore */ }
+    }
+    if (next === 'en') {
+      flushScheduler?.cancel();
+      restoreOriginals();
+      if (originalDocLang !== null) document.documentElement.lang = originalDocLang;
+    } else {
+      applyChinese(true);
+    }
+    updateToggleUI();
+  }
+
+  // ===== 悬浮切换按钮（可拖动，位置与语言偏好保存在 localStorage） =====
+  let toggleButton = null;
+
+  function updateToggleUI() {
+    if (!toggleButton) return;
+    // 按钮显示“点击后将切换到的语言”
+    toggleButton.textContent = lang === 'zh' ? 'EN' : '中';
+    const tip = lang === 'zh' ? 'Switch to English (Antigravity-Hans)' : '切换为中文（Antigravity-Hans）';
+    toggleButton.title = tip;
+    toggleButton.setAttribute('aria-label', tip);
+  }
+
+  function mountToggleUI() {
+    if (toggleButton || !document.body) return;
+    if (/^data:/i.test(window.location.href)) return; // 启动闪屏页不放按钮
+    try { if (window.top !== window) return; } catch (_e) { return; } // 仅顶层窗口
+
+    const SIZE = 30;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('data-agy-hans-ui', '');
+    Object.assign(btn.style, {
+      position: 'fixed', zIndex: '2147483647', width: SIZE + 'px', height: SIZE + 'px',
+      padding: '0', margin: '0', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.28)',
+      background: 'rgba(32,33,36,0.72)', color: '#fff', font: '600 12px/1 system-ui, -apple-system, sans-serif',
+      cursor: 'pointer', opacity: '0.45', userSelect: 'none', touchAction: 'none',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.3)', transition: 'opacity .15s', webkitAppRegion: 'no-drag',
+    });
+    btn.style.setProperty('-webkit-app-region', 'no-drag');
+
+    const clamp = (v, max) => Math.max(4, Math.min(v, max - SIZE - 4));
+    const placeAt = (left, top) => {
+      btn.style.left = clamp(left, window.innerWidth) + 'px';
+      btn.style.top = clamp(top, window.innerHeight) + 'px';
+      btn.style.right = btn.style.bottom = 'auto';
+    };
+    let saved = null;
+    try { saved = JSON.parse(window.localStorage?.getItem(POS_KEY) || 'null'); } catch (_e) { /* ignore */ }
+    if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) placeAt(saved.left, saved.top);
+    else placeAt(window.innerWidth - SIZE - 16, window.innerHeight - SIZE - 72);
+
+    const onEnter = () => { btn.style.opacity = '1'; };
+    const onLeave = () => { if (!drag) btn.style.opacity = '0.45'; };
+    let drag = null;
+    const onDown = (e) => {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      const rect = btn.getBoundingClientRect();
+      drag = { dx: e.clientX - rect.left, dy: e.clientY - rect.top, sx: e.clientX, sy: e.clientY, moved: false };
+      try { btn.setPointerCapture(e.pointerId); } catch (_e) { /* ignore */ }
+    };
+    const onMove = (e) => {
+      if (!drag) return;
+      if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
+      drag.moved = true;
+      placeAt(e.clientX - drag.dx, e.clientY - drag.dy);
+    };
+    const onUp = (e) => {
+      if (!drag) return;
+      const moved = drag.moved;
+      drag = null;
+      try { btn.releasePointerCapture(e.pointerId); } catch (_e) { /* ignore */ }
+      e.stopPropagation();
+      if (moved) {
+        try {
+          window.localStorage?.setItem(POS_KEY, JSON.stringify({ left: parseFloat(btn.style.left), top: parseFloat(btn.style.top) }));
+        } catch (_e) { /* ignore */ }
+      } else {
+        setLang(lang === 'zh' ? 'en' : 'zh');
+      }
+    };
+    // 键盘（Enter / 空格）触发的 click 的 detail 为 0；鼠标点击已在 pointerup 中处理
+    const onClick = (e) => { e.stopPropagation(); if (e.detail === 0) setLang(lang === 'zh' ? 'en' : 'zh'); };
+    const onResize = () => placeAt(parseFloat(btn.style.left), parseFloat(btn.style.top));
+    // 其他窗口切换语言时同步（同源页面共享 localStorage）
+    const onStorage = (e) => { if (e.key === LANG_KEY) setLang(e.newValue, false); };
+
+    btn.addEventListener('pointerenter', onEnter);
+    btn.addEventListener('pointerleave', onLeave);
+    btn.addEventListener('pointerdown', onDown);
+    btn.addEventListener('pointermove', onMove);
+    btn.addEventListener('pointerup', onUp);
+    btn.addEventListener('click', onClick);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('storage', onStorage);
+
+    document.body.appendChild(btn);
+    toggleButton = btn;
+    updateToggleUI();
+    removeToggleUI = () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('storage', onStorage);
+      btn.remove();
+      toggleButton = null;
+      if (window.__antigravityZhSetLang === setLang) delete window.__antigravityZhSetLang;
+    };
+  }
+
+  function run() {
+    if (cancelled) return;
+    if (lang === 'zh') applyChinese(updating);
+    // 控制台可用：__antigravityZhSetLang('en') / __antigravityZhSetLang('zh')
+    window.__antigravityZhSetLang = setLang;
 
     flushScheduler = createFlushScheduler((batchNodes, batchElements) => {
-      if (cancelled) return;
+      if (cancelled || lang !== 'zh') return;
       for (const node of batchNodes) translateNode(node);
       for (const element of batchElements) translateElement(element);
     });
 
     observer = new MutationObserver((mutations) => {
+      // 应用若整体重建 body，把切换按钮挂回去
+      if (toggleButton && !toggleButton.isConnected && document.body) document.body.appendChild(toggleButton);
+      if (lang !== 'zh') return;
       const nodesToTranslate = [];
       const elementsToTranslate = [];
 
@@ -2155,6 +2331,7 @@
       // 监听容器身份变化。Settings 页面经常先挂载空节点，再异步补 class/id。
       attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid'],
     });
+    mountToggleUI();
   }
 
   if (document.readyState === 'loading') {
