@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.30.0-20261110-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -25,9 +25,41 @@
   const POS_KEY = 'antigravityHansTogglePos';
   const originals = window.__antigravityZhOriginals ||
     (window.__antigravityZhOriginals = { texts: new WeakMap(), attrs: new WeakMap() });
-  let lang = 'zh';
-  try { if (window.localStorage?.getItem(LANG_KEY) === 'en') lang = 'en'; } catch (_e) { /* data: 页面无 localStorage */ }
+
+  // 偏好持久化（localStorage）
+  function loadPref(key) {
+    try { return window.localStorage?.getItem(key) ?? null; } catch (_e) { return null; } // data: 页面无 localStorage
+  }
+  function savePref(key, value) {
+    try { window.localStorage?.setItem(key, value); } catch (_e) { /* ignore */ }
+  }
+
+  let lang = loadPref(LANG_KEY) === 'en' ? 'en' : 'zh';
   let originalDocLang = null;
+
+  // 自定义翻译名单（由启动器从 custom-translations.txt 注入）：[[原文, 译文], ...]
+  // 整段文本与原文一致（忽略大小写和首尾空白）时优先使用；译文为空表示保留英文原文。
+  const customTranslations = new Map();
+  const customOutputs = new Set(); // 自定义译文本身不再被二次翻译（观察器会重处理写入的文本）
+  for (const item of Array.isArray(window.__antigravityZhCustom) ? window.__antigravityZhCustom : []) {
+    if (!Array.isArray(item)) continue;
+    const key = String(item[0] ?? '').trim().toLowerCase();
+    const target = String(item[1] ?? '').trim();
+    if (!key) continue;
+    customTranslations.set(key, target);
+    if (target) customOutputs.add(target);
+  }
+
+  // 内置预设「选项名保留英文」：默认关闭，可在悬浮按钮菜单（双击或右键）中勾选。
+  // 仅包含选项名 / 档位名，说明文字照常汉化；custom-translations.txt 的个人规则优先于预设。
+  const ENGLISH_LABELS_KEY = 'antigravityHansEnglishLabels';
+  const englishLabelsPreset = new Set([
+    // 对话权限预设菜单
+    'This Conversation', 'Request Review', 'Default', 'Auto', 'Turbo',
+    // 模型推理强度档位
+    'High', 'Medium', 'Low',
+  ].map((item) => item.toLowerCase()));
+  let englishLabels = loadPref(ENGLISH_LABELS_KEY) === '1';
 
   // 写入译文并记录原文。若节点当前值不是上次写入的译文，说明应用自己更新了文本，以当前值为新原文。
   function writeText(node, value) {
@@ -423,6 +455,7 @@
     ['Configure AI models and view your quota.', '配置 AI 模型并查看额度。'],
     ['Terminal commands the agent can execute.', '智能体可执行的终端命令。'],
     ["Explore other marketplace customizations", "探索市场中的其他自定义项"],
+    ["Only this conversation uses this preset.", "仅当前对话使用此预设。"],
     ['Cancel questionnaire and stop the agent', '取消问卷并停止智能体'],
     ['Security agent decides if commands run.', '由安全智能体决定是否运行命令。'],
     ['Block all browser JavaScript execution.', '阻止所有浏览器 JavaScript 执行。'],
@@ -584,6 +617,7 @@
     ['Copy full URL to clipboard', '复制完整 URL 到剪贴板'],
     ['Search MCP servers by name', '按名称搜索 MCP 服务器'],
     ["Cloud Hosting & Deployment", "云托管与部署"],
+    ["Your This Computer setting", "您在“此电脑”中的设置"],
     ['Antigravity Starter Quota', 'Antigravity 起始配额'],
     ['Skills and Rules Settings', '技能与规则设置'],
     ['MCP Authentication Error:', 'MCP 身份验证错误：'],
@@ -898,6 +932,7 @@
     ['Permission Preset', '权限预设'],
     ['Permission preset', '权限预设'],
     ["Reopen Closed Tab", "重新打开已关闭的标签页"],
+    ["This Conversation", "当前对话"],
     ["Built-in Browser", "内置浏览器"],
     ["External Browser", "外部浏览器"],
     ["Browsing History", "浏览历史记录"],
@@ -1150,6 +1185,7 @@
     ['AI Shortcuts', 'AI 快捷方式'],
     ["Instructions", "指令"],
     ["More Plugins", "更多插件"],
+    ["Limited time", "限时提供"],
     ['Danger Zone', '危险操作'],
     ['Setting up…', '正在配置…'],
     ['Thinking...', '思考中...'],
@@ -1640,6 +1676,22 @@
       .trim();
   }
 
+  // 英文日期统一转为中文格式：November 18, 2026 → 2026 年 11 月 18 日；Nov 18 → 11 月 18 日。
+  // 日期数值原样保留，只改写书写格式；仅作用于已含中文的译文（见 translate 第 6 步），
+  // 纯英文文本（未翻译内容、用户数据）不受影响。
+  const englishMonths = {
+    jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12,
+  };
+  const englishDateRegex = /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(\d{4})\b)?/g;
+  function localizeEnglishDates(str) {
+    return str.replace(englishDateRegex, (match, month, day, year) => {
+      const m = englishMonths[month.slice(0, month.toLowerCase() === 'sept' ? 4 : 3).toLowerCase()];
+      const d = Number(day);
+      if (!m || d < 1 || d > 31) return match;
+      return year ? `${year} 年 ${m} 月 ${d} 日` : `${m} 月 ${d} 日`;
+    });
+  }
+
   function formatShortDuration(str) {
     return str
       .trim()
@@ -1802,7 +1854,7 @@
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*months?\b/gi, '$1 个月'],
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*years?\b/gi, '$1 年'],
 
-    // 模型可用性与公告提示（模型名与日期属于数据，原样保留）
+    // 模型可用性与公告提示（模型名原样保留；日期由 translate 第 6 步统一转为中文格式）
     [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${date} 起，您当前使用的套餐将不再提供第三方模型访问。`],
     [/^([\w .-]+?) is currently available to Ultra and paid Pro plan subscribers\.$/gi, (_m, model) => `${model} 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。`],
     [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${date} 从 Antigravity 中移除。`],
@@ -1816,6 +1868,13 @@
   // 核心翻译流水线：精准完全匹配优先 -> 动态进度栏 -> 长句及复合短语子串 -> 动态变量规则
   function translate(value) {
     if (!value || !/[A-Za-z]/.test(value)) return value;
+    if (customTranslations.size) {
+      const whole = value.trim();
+      if (customOutputs.has(whole)) return value;
+      const custom = customTranslations.get(whole.toLowerCase());
+      if (custom !== undefined) return custom ? value.replace(whole, () => custom) : value;
+    }
+    if (englishLabels && englishLabelsPreset.has(value.trim().toLowerCase())) return value;
     // 项目名称属于数据；完整删除模板须先于通用词条处理。
     // 观察器重处理译文时，也不能改写名称中的英文。
     if (/^永久删除项目“[\s\S]*”及其中的 \d+ 个活跃对话。$/.test(value.trim())) return value;
@@ -1888,6 +1947,9 @@
     for (const [pattern, target] of patternsPost) {
       next = next.replace(pattern, target);
     }
+
+    // 6. 已含中文的译文中，英文日期统一转为“年 月 日”（新增带日期的规则无需单独处理）
+    if (/[\u4e00-\u9fff]/.test(next)) next = localizeEnglishDates(next);
 
     return next;
   }
@@ -2166,9 +2228,7 @@
     next = next === 'en' ? 'en' : 'zh';
     if (cancelled || next === lang) return;
     lang = next;
-    if (persist) {
-      try { window.localStorage?.setItem(LANG_KEY, next); } catch (_e) { /* ignore */ }
-    }
+    if (persist) savePref(LANG_KEY, next);
     if (next === 'en') {
       flushScheduler?.cancel();
       restoreOriginals();
@@ -2179,16 +2239,117 @@
     updateToggleUI();
   }
 
-  // ===== 悬浮切换按钮（可拖动，位置与语言偏好保存在 localStorage） =====
+  // 开关「选项名保留英文」预设；中文状态下先还原再按新规则重译，英文状态下仅记录偏好
+  function setEnglishLabels(next, persist = true) {
+    next = !!next;
+    if (cancelled || next === englishLabels) return;
+    englishLabels = next;
+    if (persist) savePref(ENGLISH_LABELS_KEY, next ? '1' : '0');
+    if (lang === 'zh') {
+      flushScheduler?.cancel();
+      restoreOriginals();
+      applyChinese(true);
+    }
+    updateToggleUI();
+  }
+
+  // ===== 悬浮切换按钮（可拖动，位置与偏好经 savePref 持久化） =====
+  // 单击：中英切换；双击或右键：打开选项菜单
   let toggleButton = null;
+  let optionsMenu = null;
+  let refreshMenu = null;
 
   function updateToggleUI() {
+    refreshMenu?.();
     if (!toggleButton) return;
     // 按钮显示“点击后将切换到的语言”
     toggleButton.textContent = lang === 'zh' ? 'EN' : '中';
-    const tip = lang === 'zh' ? 'Switch to English (Antigravity-Hans)' : '切换为中文（Antigravity-Hans）';
+    const tip = (lang === 'zh' ? '单击切换为英文' : '单击切换为中文') + '；双击或右键打开选项（Antigravity-Hans）';
     toggleButton.title = tip;
     toggleButton.setAttribute('aria-label', tip);
+  }
+
+  function closeOptionsMenu() {
+    optionsMenu?.remove();
+    optionsMenu = null;
+    refreshMenu = null;
+  }
+
+  function openOptionsMenu() {
+    if (!toggleButton) return;
+    if (optionsMenu) { closeOptionsMenu(); return; }
+    const menu = document.createElement('div');
+    menu.setAttribute('data-agy-hans-ui', '');
+    menu.setAttribute('role', 'menu');
+    Object.assign(menu.style, {
+      position: 'fixed', zIndex: '2147483647', minWidth: '220px', maxWidth: '280px', padding: '6px',
+      borderRadius: '10px', background: 'rgba(32,33,36,0.96)', color: '#e8eaed',
+      border: '1px solid rgba(255,255,255,0.14)', boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+      font: '13px/1.4 system-ui, -apple-system, sans-serif', userSelect: 'none',
+    });
+    menu.style.setProperty('-webkit-app-region', 'no-drag');
+
+    const makeRow = (role, onSelect) => {
+      const row = document.createElement('div');
+      row.setAttribute('role', role);
+      row.tabIndex = 0;
+      Object.assign(row.style, { display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '7px 8px', borderRadius: '6px', cursor: 'pointer', outline: 'none' });
+      const mark = document.createElement('span');
+      Object.assign(mark.style, { width: '16px', flex: '0 0 16px', textAlign: 'center' });
+      const body = document.createElement('span');
+      row.append(mark, body);
+      const highlight = (on) => { row.style.background = on ? 'rgba(255,255,255,0.08)' : 'transparent'; };
+      row.addEventListener('pointerenter', () => highlight(true));
+      row.addEventListener('pointerleave', () => highlight(document.activeElement === row));
+      row.addEventListener('focus', () => highlight(true));
+      row.addEventListener('blur', () => highlight(false));
+      row.addEventListener('click', (e) => { e.stopPropagation(); onSelect(); });
+      row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(); } });
+      return { row, mark, body };
+    };
+    const zh = makeRow('menuitemradio', () => setLang('zh'));
+    zh.body.textContent = '中文';
+    const en = makeRow('menuitemradio', () => setLang('en'));
+    en.body.textContent = 'English';
+    const divider = document.createElement('div');
+    Object.assign(divider.style, { height: '1px', margin: '4px 6px', background: 'rgba(255,255,255,0.12)' });
+    const labels = makeRow('menuitemcheckbox', () => setEnglishLabels(!englishLabels));
+    const title = document.createElement('div');
+    title.textContent = '选项名保留英文';
+    const hint = document.createElement('div');
+    hint.textContent = '权限模式、模型等级等保留英文，说明仍为中文（中文状态下生效）';
+    Object.assign(hint.style, { fontSize: '11px', opacity: '0.65', marginTop: '2px' });
+    labels.body.append(title, hint);
+    menu.append(zh.row, en.row, divider, labels.row);
+
+    refreshMenu = () => {
+      zh.mark.textContent = lang === 'zh' ? '●' : '○';
+      en.mark.textContent = lang === 'en' ? '●' : '○';
+      zh.row.setAttribute('aria-checked', String(lang === 'zh'));
+      en.row.setAttribute('aria-checked', String(lang === 'en'));
+      labels.mark.textContent = englishLabels ? '☑' : '☐';
+      labels.row.setAttribute('aria-checked', String(englishLabels));
+    };
+    refreshMenu();
+
+    document.body.appendChild(menu);
+    optionsMenu = menu;
+    positionOptionsMenu();
+    zh.row.focus?.({ preventScroll: true });
+  }
+
+  // 默认显示在按钮左上方，并限制在可见区域内；窗口缩放时重新定位
+  function positionOptionsMenu() {
+    if (!optionsMenu || !toggleButton) return;
+    const b = toggleButton.getBoundingClientRect();
+    const m = optionsMenu.getBoundingClientRect();
+    let left = b.right - m.width;
+    let top = b.top - m.height - 8;
+    if (top < 4) top = b.bottom + 8;
+    left = Math.max(4, Math.min(left, window.innerWidth - m.width - 4));
+    top = Math.max(4, Math.min(top, window.innerHeight - m.height - 4));
+    optionsMenu.style.left = left + 'px';
+    optionsMenu.style.top = top + 'px';
   }
 
   function mountToggleUI() {
@@ -2197,9 +2358,11 @@
     try { if (window.top !== window) return; } catch (_e) { return; } // 仅顶层窗口
 
     const SIZE = 30;
+    const DOUBLE_CLICK_MS = 250;
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.setAttribute('data-agy-hans-ui', '');
+    btn.setAttribute('aria-haspopup', 'menu');
     Object.assign(btn.style, {
       position: 'fixed', zIndex: '2147483647', width: SIZE + 'px', height: SIZE + 'px',
       padding: '0', margin: '0', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.28)',
@@ -2216,9 +2379,22 @@
       btn.style.right = btn.style.bottom = 'auto';
     };
     let saved = null;
-    try { saved = JSON.parse(window.localStorage?.getItem(POS_KEY) || 'null'); } catch (_e) { /* ignore */ }
+    try { saved = JSON.parse(loadPref(POS_KEY) || 'null'); } catch (_e) { /* ignore */ }
     if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) placeAt(saved.left, saved.top);
     else placeAt(window.innerWidth - SIZE - 16, window.innerHeight - SIZE - 72);
+
+    // 单击延迟到确认不是双击后再切换语言；第二次点击则打开选项菜单
+    let tapTimer = null;
+    const toggleLang = () => setLang(lang === 'zh' ? 'en' : 'zh');
+    const onTap = () => {
+      if (tapTimer !== null) {
+        clearTimeout(tapTimer);
+        tapTimer = null;
+        openOptionsMenu();
+        return;
+      }
+      tapTimer = setTimeout(() => { tapTimer = null; closeOptionsMenu(); toggleLang(); }, DOUBLE_CLICK_MS);
+    };
 
     const onEnter = () => { btn.style.opacity = '1'; };
     const onLeave = () => { if (!drag) btn.style.opacity = '0.45'; };
@@ -2234,6 +2410,7 @@
       if (!drag) return;
       if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
       drag.moved = true;
+      closeOptionsMenu();
       placeAt(e.clientX - drag.dx, e.clientY - drag.dy);
     };
     const onUp = (e) => {
@@ -2243,18 +2420,26 @@
       try { btn.releasePointerCapture(e.pointerId); } catch (_e) { /* ignore */ }
       e.stopPropagation();
       if (moved) {
-        try {
-          window.localStorage?.setItem(POS_KEY, JSON.stringify({ left: parseFloat(btn.style.left), top: parseFloat(btn.style.top) }));
-        } catch (_e) { /* ignore */ }
+        savePref(POS_KEY, JSON.stringify({ left: parseFloat(btn.style.left), top: parseFloat(btn.style.top) }));
       } else {
-        setLang(lang === 'zh' ? 'en' : 'zh');
+        onTap();
       }
     };
-    // 键盘（Enter / 空格）触发的 click 的 detail 为 0；鼠标点击已在 pointerup 中处理
-    const onClick = (e) => { e.stopPropagation(); if (e.detail === 0) setLang(lang === 'zh' ? 'en' : 'zh'); };
-    const onResize = () => placeAt(parseFloat(btn.style.left), parseFloat(btn.style.top));
-    // 其他窗口切换语言时同步（同源页面共享 localStorage）
-    const onStorage = (e) => { if (e.key === LANG_KEY) setLang(e.newValue, false); };
+    // 键盘（Enter / 空格）触发的 click 的 detail 为 0：立即切换；鼠标点击已在 pointerup 中处理
+    const onClick = (e) => { e.stopPropagation(); if (e.detail === 0) toggleLang(); };
+    // 右键或键盘菜单键：直接打开选项菜单
+    const onContextMenu = (e) => { e.preventDefault(); e.stopPropagation(); openOptionsMenu(); };
+    const onResize = () => { placeAt(parseFloat(btn.style.left), parseFloat(btn.style.top)); positionOptionsMenu(); };
+    // 其他窗口修改偏好时同步（同源页面共享 localStorage）
+    const onStorage = (e) => {
+      if (e.key === LANG_KEY) setLang(e.newValue, false);
+      else if (e.key === ENGLISH_LABELS_KEY) setEnglishLabels(e.newValue === '1', false);
+    };
+    // 点击菜单和按钮以外的位置、按 Esc 时关闭菜单
+    const onDocPointerDown = (e) => {
+      if (optionsMenu && !optionsMenu.contains(e.target) && e.target !== btn) closeOptionsMenu();
+    };
+    const onKeyDown = (e) => { if (e.key === 'Escape' && optionsMenu) { closeOptionsMenu(); btn.focus?.(); } };
 
     btn.addEventListener('pointerenter', onEnter);
     btn.addEventListener('pointerleave', onLeave);
@@ -2262,15 +2447,22 @@
     btn.addEventListener('pointermove', onMove);
     btn.addEventListener('pointerup', onUp);
     btn.addEventListener('click', onClick);
+    btn.addEventListener('contextmenu', onContextMenu);
     window.addEventListener('resize', onResize);
     window.addEventListener('storage', onStorage);
+    document.addEventListener('pointerdown', onDocPointerDown, true);
+    document.addEventListener('keydown', onKeyDown, true);
 
     document.body.appendChild(btn);
     toggleButton = btn;
     updateToggleUI();
     removeToggleUI = () => {
+      if (tapTimer !== null) clearTimeout(tapTimer);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('storage', onStorage);
+      document.removeEventListener('pointerdown', onDocPointerDown, true);
+      document.removeEventListener('keydown', onKeyDown, true);
+      closeOptionsMenu();
       btn.remove();
       toggleButton = null;
       if (window.__antigravityZhSetLang === setLang) delete window.__antigravityZhSetLang;
@@ -2279,6 +2471,8 @@
 
   function run() {
     if (cancelled) return;
+    // 词库或自定义翻译名单更新时，先还原旧实例写入的译文再按新规则重译，否则已是中文的文本回不到英文
+    if (updating) restoreOriginals();
     if (lang === 'zh') applyChinese(updating);
     // 控制台可用：__antigravityZhSetLang('en') / __antigravityZhSetLang('zh')
     window.__antigravityZhSetLang = setLang;
