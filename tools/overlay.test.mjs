@@ -397,13 +397,13 @@ test('unknown project permission layouts and skipped content remain untouched', 
 
 test('2.26.0 normal app model availability tooltips are localized', () => {
   for (const [input, expected] of [
-    ['Sonnet 5.5 is now available on paid Pro and Ultra plans. Third-party model access will no longer be available on your current plan starting on November 2, 2026.', 'Sonnet 5.5 已面向付费 Pro 与 Ultra 套餐开放。自 November 2, 2026 起，您当前使用的套餐将不再提供第三方模型访问。'],
-    ['Opus 5.5 is now available on paid Pro and Ultra plans. Third-party model access will no longer be available on your current plan starting on November 2, 2026.', 'Opus 5.5 已面向付费 Pro 与 Ultra 套餐开放。自 November 2, 2026 起，您当前使用的套餐将不再提供第三方模型访问。'],
+    ['Sonnet 5.5 is now available on paid Pro and Ultra plans. Third-party model access will no longer be available on your current plan starting on November 2, 2026.', 'Sonnet 5.5 已面向付费 Pro 与 Ultra 套餐开放。自 2026 年 11 月 2 日 起，您当前使用的套餐将不再提供第三方模型访问。'],
+    ['Opus 5.5 is now available on paid Pro and Ultra plans. Third-party model access will no longer be available on your current plan starting on November 2, 2026.', 'Opus 5.5 已面向付费 Pro 与 Ultra 套餐开放。自 2026 年 11 月 2 日 起，您当前使用的套餐将不再提供第三方模型访问。'],
     ['Gemini 4 Argon is currently available to Ultra and paid Pro plan subscribers.', 'Gemini 4 Argon 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。'],
-    ['GPT-OSS will be removed from Antigravity on November 2, 2026.', 'GPT-OSS 将于 November 2, 2026 从 Antigravity 中移除。'],
+    ['GPT-OSS will be removed from Antigravity on November 2, 2026.', 'GPT-OSS 将于 2026 年 11 月 2 日 从 Antigravity 中移除。'],
   ]) {
     assert.equal(translate(input), expected);
-    // 模型名与日期属于数据，二次翻译必须幂等且原样保留
+    // 模型名原样保留、日期转为中文格式，二次翻译必须幂等
     assert.equal(translate(expected), expected);
   }
 });
@@ -560,4 +560,19 @@ test('custom translations keep English or apply user wording', () => {
   // 未注入名单时行为不变
   assert.equal(translate('Request Review'), '请求审核');
   assert.equal(translate('Turbo'), '极速');
+});
+
+test('English dates inside translated text become Chinese year/month/day', () => {
+  for (const [input, expected] of [
+    ['GPT-OSS will be removed from Antigravity on November 18, 2026.', 'GPT-OSS 将于 2026 年 11 月 18 日 从 Antigravity 中移除。'],
+    ['GPT-OSS will be removed from Antigravity on Sept 3rd, 2027.', 'GPT-OSS 将于 2027 年 9 月 3 日 从 Antigravity 中移除。'],
+    ['GPT-OSS will be removed from Antigravity on Jan. 5.', 'GPT-OSS 将于 1 月 5 日 从 Antigravity 中移除。'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+  // 纯英文（未翻译/用户数据）中的日期保持原样；非法日期与小写单词不改写
+  assert.equal(translate('Released on November 18, 2026 by the team'), 'Released on November 18, 2026 by the team');
+  assert.equal(translate('GPT-OSS will be removed from Antigravity on November 45.'), 'GPT-OSS 将于 November 45 从 Antigravity 中移除。');
+  assert.equal(translate('Requesting permission to read /tmp/May 5, 2026.txt'), '正在请求权限：读取 /tmp/May 5, 2026.txt');
 });

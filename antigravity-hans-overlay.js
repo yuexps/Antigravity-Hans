@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r3';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r4';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1653,6 +1653,22 @@
       .trim();
   }
 
+  // 英文日期统一转为中文格式：November 18, 2026 → 2026 年 11 月 18 日；Nov 18 → 11 月 18 日。
+  // 日期数值原样保留，只改写书写格式；仅作用于已含中文的译文（见 translate 第 6 步），
+  // 纯英文文本（未翻译内容、用户数据）不受影响。
+  const englishMonths = {
+    jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12,
+  };
+  const englishDateRegex = /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(\d{4})\b)?/g;
+  function localizeEnglishDates(str) {
+    return str.replace(englishDateRegex, (match, month, day, year) => {
+      const m = englishMonths[month.slice(0, month.toLowerCase() === 'sept' ? 4 : 3).toLowerCase()];
+      const d = Number(day);
+      if (!m || d < 1 || d > 31) return match;
+      return year ? `${year} 年 ${m} 月 ${d} 日` : `${m} 月 ${d} 日`;
+    });
+  }
+
   function formatShortDuration(str) {
     return str
       .trim()
@@ -1815,7 +1831,7 @@
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*months?\b/gi, '$1 个月'],
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*years?\b/gi, '$1 年'],
 
-    // 模型可用性与公告提示（模型名与日期属于数据，原样保留）
+    // 模型可用性与公告提示（模型名原样保留；日期由 translate 第 6 步统一转为中文格式）
     [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${date} 起，您当前使用的套餐将不再提供第三方模型访问。`],
     [/^([\w .-]+?) is currently available to Ultra and paid Pro plan subscribers\.$/gi, (_m, model) => `${model} 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。`],
     [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${date} 从 Antigravity 中移除。`],
@@ -1907,6 +1923,9 @@
     for (const [pattern, target] of patternsPost) {
       next = next.replace(pattern, target);
     }
+
+    // 6. 已含中文的译文中，英文日期统一转为“年 月 日”（新增带日期的规则无需单独处理）
+    if (/[\u4e00-\u9fff]/.test(next)) next = localizeEnglishDates(next);
 
     return next;
   }
