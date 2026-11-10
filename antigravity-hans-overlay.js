@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.29.0-20261110-r3';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -28,6 +28,19 @@
   let lang = 'zh';
   try { if (window.localStorage?.getItem(LANG_KEY) === 'en') lang = 'en'; } catch (_e) { /* data: 页面无 localStorage */ }
   let originalDocLang = null;
+
+  // 自定义翻译名单（由启动器从 custom-translations.txt 注入）：[[原文, 译文], ...]
+  // 整段文本与原文一致（忽略大小写和首尾空白）时优先使用；译文为空表示保留英文原文。
+  const customTranslations = new Map();
+  const customOutputs = new Set(); // 自定义译文本身不再被二次翻译（观察器会重处理写入的文本）
+  for (const item of Array.isArray(window.__antigravityZhCustom) ? window.__antigravityZhCustom : []) {
+    if (!Array.isArray(item)) continue;
+    const key = String(item[0] ?? '').trim().toLowerCase();
+    const target = String(item[1] ?? '').trim();
+    if (!key) continue;
+    customTranslations.set(key, target);
+    if (target) customOutputs.add(target);
+  }
 
   // 写入译文并记录原文。若节点当前值不是上次写入的译文，说明应用自己更新了文本，以当前值为新原文。
   function writeText(node, value) {
@@ -1816,6 +1829,12 @@
   // 核心翻译流水线：精准完全匹配优先 -> 动态进度栏 -> 长句及复合短语子串 -> 动态变量规则
   function translate(value) {
     if (!value || !/[A-Za-z]/.test(value)) return value;
+    if (customTranslations.size) {
+      const whole = value.trim();
+      if (customOutputs.has(whole)) return value;
+      const custom = customTranslations.get(whole.toLowerCase());
+      if (custom !== undefined) return custom ? value.replace(whole, () => custom) : value;
+    }
     // 项目名称属于数据；完整删除模板须先于通用词条处理。
     // 观察器重处理译文时，也不能改写名称中的英文。
     if (/^永久删除项目“[\s\S]*”及其中的 \d+ 个活跃对话。$/.test(value.trim())) return value;
@@ -2279,6 +2298,8 @@
 
   function run() {
     if (cancelled) return;
+    // 词库或自定义翻译名单更新时，先还原旧实例写入的译文再按新规则重译，否则已是中文的文本回不到英文
+    if (updating) restoreOriginals();
     if (lang === 'zh') applyChinese(updating);
     // 控制台可用：__antigravityZhSetLang('en') / __antigravityZhSetLang('zh')
     window.__antigravityZhSetLang = setLang;

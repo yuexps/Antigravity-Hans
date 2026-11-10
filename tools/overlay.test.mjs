@@ -538,3 +538,26 @@ test('toggle button itself is never translated', () => {
   context.translateElementForTest(element);
   assert.equal(altered, false);
 });
+
+test('custom translations keep English or apply user wording', () => {
+  const ctx = {
+    window: {
+      addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+      __antigravityZhCustom: [['  request review ', ''], ['Turbo', '快速模式'], ['Default', 'Auto 模式'], ['', 'x'], 'bad', [42, null]],
+    },
+    document: { readyState: 'loading' },
+  };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.translateForTest = translate;\n  function run() {'), ctx);
+  const t = ctx.translateForTest;
+  assert.equal(t('Request Review'), 'Request Review', '译文为空：保留英文，匹配忽略大小写与首尾空白');
+  assert.equal(t(' Turbo '), ' 快速模式 ', '使用自定义译文并保留首尾空白');
+  assert.equal(t('快速模式'), '快速模式');
+  assert.equal(t('Default'), 'Auto 模式');
+  assert.equal(t('Auto 模式'), 'Auto 模式', '含英文的自定义译文不会被二次翻译');
+  assert.equal(t('42'), '42');
+  assert.equal(t('Every command requires approval.'), '每条命令都需要审核。', '名单外照常翻译');
+  // 未注入名单时行为不变
+  assert.equal(translate('Request Review'), '请求审核');
+  assert.equal(translate('Turbo'), '极速');
+});

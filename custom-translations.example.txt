@@ -1,0 +1,18 @@
+# Antigravity-Hans 自定义翻译名单
+#
+# 用法：把本文件复制（或重命名）为 custom-translations.txt，放在 antigravity-hans 程序同一目录下。
+# 修改后重新运行汉化（如双击中文快捷方式）即可生效，无需重启应用。
+#
+# 两种写法（一行一条，# 开头为注释）：
+#   英文原文              → 保留英文，不翻译
+#   英文原文 = 你的译文    → 使用你自己的译文
+#
+# 注意：按“整段文字”匹配（不区分大小写）。例如写 Default 后，界面上所有恰好是 “Default”
+#       的文字都会受影响；长句中间出现的 Default 不受影响。
+
+# 示例：保留英文
+This Conversation
+Request Review
+
+# 示例：换成自己的译法
+Turbo = 快速模式
