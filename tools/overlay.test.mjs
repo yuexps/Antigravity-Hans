@@ -576,3 +576,65 @@ test('English dates inside translated text become Chinese year/month/day', () =>
   assert.equal(translate('GPT-OSS will be removed from Antigravity on November 45.'), 'GPT-OSS 将于 November 45 从 Antigravity 中移除。');
   assert.equal(translate('Requesting permission to read /tmp/May 5, 2026.txt'), '正在请求权限：读取 /tmp/May 5, 2026.txt');
 });
+
+test('2.30.0 permission and model menu tooltips are localized', () => {
+  for (const [input, expected] of [
+    ['Only this conversation uses this preset.', '仅当前对话使用此预设。'],
+    ['Your This Computer setting', '您在“此电脑”中的设置'],
+    ['This Conversation', '当前对话'],
+    ['Limited time', '限时提供'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+});
+
+test('built-in "keep English labels" preset is off by default and toggles live', () => {
+  const store = new Map();
+  const parent = { nodeType: 1, closest() { return null; }, getAttribute() { return null; }, setAttribute() {} };
+  const make = (value) => ({ nodeType: 3, nodeValue: value, parentElement: parent });
+  const turbo = make('Turbo');
+  const desc = make('Run all commands without restrictions.');
+  const high = make('High');
+  const title = make('This Conversation');
+  const nodes = [parent, turbo, desc, high, title];
+  const build = (custom) => {
+    const doc = {
+      nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' },
+      createTreeWalker() { let i = 0; return { nextNode: () => nodes[i++] ?? null }; },
+    };
+    const win = {
+      addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+      localStorage: { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)) },
+      __antigravityZhCustom: custom,
+    };
+    const ctx = { window: win, document: doc, Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 } };
+    vm.createContext(ctx);
+    vm.runInContext(source.replace('  function run() {', '  globalThis.hooks = { setEnglishLabels, applyChinese, setLang };\n  function run() {'), ctx);
+    return ctx.hooks;
+  };
+  const snapshot = () => [turbo, desc, high, title].map((n) => n.nodeValue).join(' | ');
+
+  let hooks = build([]);
+  hooks.applyChinese(false);
+  assert.equal(snapshot(), '极速 | 无限制运行所有命令。 | 高 | 当前对话', '默认关闭：全部汉化');
+
+  hooks.setEnglishLabels(true);
+  assert.equal(snapshot(), 'Turbo | 无限制运行所有命令。 | High | This Conversation', '开启：选项名英文、说明中文');
+  assert.equal(store.get('antigravityHansEnglishLabels'), '1');
+
+  hooks.setLang('en');
+  assert.equal(snapshot(), 'Turbo | Run all commands without restrictions. | High | This Conversation');
+  hooks.setLang('zh');
+  assert.equal(snapshot(), 'Turbo | 无限制运行所有命令。 | High | This Conversation');
+
+  hooks.setEnglishLabels(false);
+  assert.equal(snapshot(), '极速 | 无限制运行所有命令。 | 高 | 当前对话', '关闭后恢复全部汉化');
+
+  // 偏好持久化：新实例读取已开启的偏好；个人名单优先于预设
+  store.set('antigravityHansEnglishLabels', '1');
+  turbo.nodeValue = 'Turbo'; desc.nodeValue = 'Run all commands without restrictions.'; high.nodeValue = 'High'; title.nodeValue = 'This Conversation';
+  hooks = build([['Turbo', '快速模式']]);
+  hooks.applyChinese(true);
+  assert.equal(snapshot(), '快速模式 | 无限制运行所有命令。 | High | This Conversation');
+});
