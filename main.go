@@ -65,6 +65,7 @@ func main() {
 		isShortcut := containsArg(args, "--shortcut") || containsArg(args, "-shortcut") || containsArg(args, "--create-shortcut")
 		isApp := containsArg(args, "--app") || containsArg(args, "-app")
 		isIDE := containsArg(args, "--ide") || containsArg(args, "-ide")
+		attachOnly := containsArg(args, "--attach-only")
 
 		if isShortcut {
 			if isIDE {
@@ -86,10 +87,10 @@ func main() {
 
 		// 动态汉化参数
 		if isIDE {
-			Run(AppIDE, overlaySource, interactive)
+			Run(AppIDE, overlaySource, interactive, attachOnly)
 			return
 		} else if isApp {
-			Run(AppNormal, overlaySource, interactive)
+			Run(AppNormal, overlaySource, interactive, attachOnly)
 			return
 		}
 
@@ -102,6 +103,7 @@ func main() {
 		fmt.Println("  antigravity-hans --shortcut --app  # 生成 Antigravity 中文快捷方式")
 		fmt.Println("  antigravity-hans --shortcut --ide  # 生成 Antigravity IDE 中文快捷方式")
 		fmt.Println("  antigravity-hans --stop            # 结束由本工具启动的汉化监视器")
+		fmt.Println("  antigravity-hans --app --attach-only  # 仅连接已有调试端口，不启动或重启应用")
 		fmt.Println("  antigravity-hans --trust-external-overlay  # 跳过校验，强制加载同目录外部汉化脚本")
 		return
 	}
@@ -139,11 +141,11 @@ func runMainMenu(overlaySource string) {
 		switch choice {
 		case "1":
 			fmt.Println("\n正在启动 Antigravity 动态汉化...")
-			Run(AppNormal, overlaySource, true)
+			Run(AppNormal, overlaySource, true, false)
 			pressEnterToContinue(reader)
 		case "2":
 			fmt.Println("\n正在启动 Antigravity IDE 动态汉化...")
-			Run(AppIDE, overlaySource, true)
+			Run(AppIDE, overlaySource, true, false)
 			pressEnterToContinue(reader)
 		case "3":
 			runPatchMenu(overlaySource)
