@@ -33,7 +33,7 @@ func TestAttachOnlyDoesNotLaunchWithoutDebugPort(t *testing.T) {
 	previousStdout := os.Stdout
 	os.Stdout = writer
 	defer func() { os.Stdout = previousStdout }()
-	Run(cfg, "", false, true)
+	Run(cfg, "", false, true, nil)
 	_ = writer.Close()
 	os.Stdout = previousStdout
 	output, err := io.ReadAll(reader)

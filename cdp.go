@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -382,7 +383,7 @@ func WaitForPort(port int, maxWaitMs int) bool {
 // interactive 为 false 时（--nogui / 后台启动）不会询问安装实例，
 // 否则在控制台被隐藏的快捷方式下会永久挂起。
 // attachOnly 为 true 时只复用已开启的调试端口，不启动或重启应用。
-func Run(cfg AppConfig, overlaySource string, interactive, attachOnly bool) {
+func Run(cfg AppConfig, overlaySource string, interactive, attachOnly bool, input *bufio.Reader) {
 	// 单实例保护：重复双击快捷方式会让多个监视器叠加注入
 	release, ok := acquireMonitorLock(cfg)
 	if !ok {
@@ -414,7 +415,7 @@ func Run(cfg AppConfig, overlaySource string, interactive, attachOnly bool) {
 	// 进程未开启调试端口则重启
 	if app.Running {
 		fmt.Printf("[提示] 检测到 %s 正在运行，但未开启调试端口。正在重新拉起...\n", app.Name)
-		if !KillProcess(cfg) {
+		if !KillProcess(cfg, interactive, input) {
 			return
 		}
 		time.Sleep(1500 * time.Millisecond)
@@ -453,7 +454,10 @@ func Run(cfg AppConfig, overlaySource string, interactive, attachOnly bool) {
 			} else {
 				var choice int
 				fmt.Printf("请选择 (1-%d, 默认 1): ", len(app.AllPaths))
-				fmt.Scan(&choice)
+				if input != nil {
+					line, _ := input.ReadString('\n')
+					fmt.Sscan(line, &choice)
+				}
 				if choice < 1 || choice > len(app.AllPaths) {
 					choice = 1
 				}

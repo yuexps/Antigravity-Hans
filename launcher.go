@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -40,17 +41,36 @@ func LaunchWithDebug(appPath string, port int) error {
 // 各平台可在自己的 init 中调整（见 quit_windows.go）。
 var gracefulQuitTimeout = 8 * time.Second
 
-// KillProcess 结束目标 App 进程并确保完全退出。
-// macOS 上会先请求应用正常退出（触发保存 / 热退出流程），避免直接 SIGKILL
-// 让用户丢失正在进行的会话与未落盘内容。
-func KillProcess(cfg AppConfig) bool {
+// KillProcess 先请求正常退出；仅 Windows 交互模式可在用户确认后清理后台残留。
+func KillProcess(cfg AppConfig, interactive bool, input *bufio.Reader) bool {
 	fmt.Printf("正在请求 %s 正常退出（保存状态）...\n", cfg.Name)
-	if err := quitAndWait(cfg, requestGracefulQuit, waitForAppExit); err != nil {
+	err := quitOrOfferBackgroundCleanup(interactive, func() error {
+		return quitAndWait(cfg, requestGracefulQuit, waitForAppExit)
+	}, func() (bool, error) {
+		return requestBackgroundCleanup(cfg, input)
+	})
+	if err != nil {
 		fmt.Printf("[提示] 已中止重启: %v。请保存内容并手动退出应用后重试。\n", err)
 		return false
 	}
-	fmt.Printf("[成功] %s 已正常退出。\n", cfg.Name)
+	fmt.Printf("[成功] %s 已退出。\n", cfg.Name)
 	return true
+}
+
+// 只有正常退出失败且允许交互时才提供后台清理；取消或失败都中止重启。
+func quitOrOfferBackgroundCleanup(interactive bool, quit func() error, cleanup func() (bool, error)) error {
+	err := quit()
+	if err == nil || !interactive {
+		return err
+	}
+	completed, cleanupErr := cleanup()
+	if cleanupErr != nil {
+		return fmt.Errorf("%v；后台进程处理失败: %w", err, cleanupErr)
+	}
+	if completed {
+		return nil
+	}
+	return err
 }
 
 func quitAndWait(cfg AppConfig, request func(AppConfig) error, wait func(AppConfig, time.Duration) bool) error {
