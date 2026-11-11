@@ -54,6 +54,7 @@ func main() {
 
 	// 命令行参数模式（非交互）
 	if len(args) > 0 {
+		input := bufio.NewReader(os.Stdin)
 		// 静态补丁参数
 		if containsArg(args, "--patch") || containsArg(args, "-patch") {
 			runPatchMenu(overlaySource)
@@ -86,10 +87,10 @@ func main() {
 
 		// 动态汉化参数
 		if isIDE {
-			Run(AppIDE, overlaySource, interactive, attachOnly)
+			Run(AppIDE, overlaySource, interactive, attachOnly, input)
 			return
 		} else if isApp {
-			Run(AppNormal, overlaySource, interactive, attachOnly)
+			Run(AppNormal, overlaySource, interactive, attachOnly, input)
 			return
 		}
 
@@ -141,11 +142,11 @@ func runMainMenu(overlaySource string, trustCustomTranslations bool) {
 		switch choice {
 		case "1":
 			fmt.Println("\n正在启动 Antigravity 动态汉化...")
-			Run(AppNormal, overlaySource, true, false)
+			Run(AppNormal, overlaySource, true, false, reader)
 			pressEnterToContinue(reader)
 		case "2":
 			fmt.Println("\n正在启动 Antigravity IDE 动态汉化...")
-			Run(AppIDE, overlaySource, true, false)
+			Run(AppIDE, overlaySource, true, false, reader)
 			pressEnterToContinue(reader)
 		case "3":
 			runPatchMenu(overlaySource)
