@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.30.0-20261110-r16';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.30.0-20261111-r17';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -11,6 +11,7 @@
   let cancelled = false;
   let flushScheduler;
   let removeToggleUI = null;
+  let removePreferenceSync = null;
   let ideNlsChanges = [];
   window.__antigravityZhPatchCleanup = () => {
     cancelled = true;
@@ -18,7 +19,9 @@
     window.removeEventListener('DOMContentLoaded', run);
     flushScheduler?.cancel();
     restoreIdeNlsMessages();
+    removePreferenceSync?.();
     removeToggleUI?.();
+    if (window.__antigravityZhSetLang === setLang) delete window.__antigravityZhSetLang;
   };
 
   // ===== 中英切换：记录每个被改写节点的原文，切回英文时按原样还原 =====
@@ -42,14 +45,12 @@
   // 自定义翻译名单（由启动器从 custom-translations.txt 注入）：[[原文, 译文], ...]
   // 整段文本与原文一致（忽略大小写和首尾空白）时优先使用；译文为空表示保留英文原文。
   const customTranslations = new Map();
-  const customOutputs = new Set(); // 自定义译文本身不再被二次翻译（观察器会重处理写入的文本）
   for (const item of Array.isArray(window.__antigravityZhCustom) ? window.__antigravityZhCustom : []) {
     if (!Array.isArray(item)) continue;
     const key = String(item[0] ?? '').trim().toLowerCase();
     const target = String(item[1] ?? '').trim();
     if (!key) continue;
     customTranslations.set(key, target);
-    if (target) customOutputs.add(target);
   }
 
   // 内置预设「选项名保留英文」：默认关闭，可在悬浮按钮菜单（双击或右键）中勾选。
@@ -1258,9 +1259,12 @@
         messages[3866] !== 'Code with Agent') return;
     for (const [index, original, translated] of ideNlsSupplement) {
       if (messages[index] !== original) continue;
+      const custom = customTranslations.get(original.trim().toLowerCase());
+      const replacement = custom === undefined ? translated : (custom || original);
+      if (replacement === original) continue;
       try {
-        messages[index] = translated;
-        if (messages[index] === translated) ideNlsChanges.push({ messages, index, original, translated });
+        messages[index] = replacement;
+        if (messages[index] === replacement) ideNlsChanges.push({ messages, index, original, translated: replacement });
       } catch (_e) { /* Some workbenches may expose read-only localization data. */ }
     }
   }
@@ -3929,13 +3933,11 @@
       .trim();
   }
 
-  // 英文日期统一转为中文格式：November 18, 2026 → 2026 年 11 月 18 日；Nov 18 → 11 月 18 日。
-  // 日期数值原样保留，只改写书写格式；仅作用于已含中文的译文（见 translate 第 6 步），
-  // 纯英文文本（未翻译内容、用户数据）不受影响。
+  // 仅格式化已确认模板中完整的日期字段，不改写路径、名称等用户数据。
   const englishMonths = {
     jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12,
   };
-  const englishDateRegex = /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(\d{4})\b)?/g;
+  const englishDateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(\d{4}))?$/;
   function localizeEnglishDates(str) {
     return str.replace(englishDateRegex, (match, month, day, year) => {
       const m = englishMonths[month.slice(0, month.toLowerCase() === 'sept' ? 4 : 3).toLowerCase()];
@@ -4110,10 +4112,10 @@
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*months?\b/gi, '$1 个月'],
     [/(?<=[\u4e00-\u9fff][^\n]*?)(\d+)\s*years?\b/gi, '$1 年'],
 
-    // 模型可用性与公告提示（模型名原样保留；日期由 translate 第 6 步统一转为中文格式）
-    [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${date} 起，您当前使用的套餐将不再提供第三方模型访问。`],
+    // 模型可用性与公告提示（模型名原样保留，只格式化完整的日期字段）
+    [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${localizeEnglishDates(date)} 起，您当前使用的套餐将不再提供第三方模型访问。`],
     [/^([\w .-]+?) is currently available to Ultra and paid Pro plan subscribers\.$/gi, (_m, model) => `${model} 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。`],
-    [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${date} 从 Antigravity 中移除。`],
+    [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${localizeEnglishDates(date)} 从 Antigravity 中移除。`],
   ];
 
   function replacePhrase(value, source, target) {
@@ -4126,7 +4128,6 @@
     if (!value || !/[A-Za-z]/.test(value)) return value;
     if (customTranslations.size) {
       const whole = value.trim();
-      if (customOutputs.has(whole)) return value;
       const custom = customTranslations.get(whole.toLowerCase());
       if (custom !== undefined) return custom ? value.replace(whole, () => custom) : value;
     }
@@ -4232,9 +4233,6 @@
     for (const [pattern, target] of patternsPost) {
       next = next.replace(pattern, target);
     }
-
-    // 6. 已含中文的译文中，英文日期统一转为“年 月 日”（新增带日期的规则无需单独处理）
-    if (/[\u4e00-\u9fff]/.test(next)) next = localizeEnglishDates(next);
 
     return next;
   }
@@ -4713,6 +4711,8 @@
     for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
       const value = element.getAttribute?.(attr);
       if (!value) continue;
+      const tracked = originals.attrs.get(element)?.get(attr);
+      if (tracked && tracked.zh === value) continue;
       const translated = translateScopedNavigation(element, value) ??
         (attr === 'aria-label' ? translateAriaLabel(value) : null) ?? translate(value);
       if (translated !== value) writeAttr(element, attr, translated);
@@ -4722,6 +4722,8 @@
   // “Type” 在筛选/详情中表示类型，在计划提示里是“输入”。
   function translateTextValue(node) {
     const value = node.nodeValue || '';
+    const tracked = originals.texts.get(node);
+    if (tracked && tracked.zh === value) return value;
     if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
       return value.replace('Type', '输入');
     }
@@ -4830,6 +4832,7 @@
       applyChinese(true);
     }
     updateToggleUI();
+    broadcastPreferenceState();
   }
 
   // 开关「选项名保留英文」预设；中文状态下先还原再按新规则重译，英文状态下仅记录偏好
@@ -4844,6 +4847,72 @@
       applyChinese(true);
     }
     updateToggleUI();
+    broadcastPreferenceState();
+  }
+
+  // IDE 的智能体 iframe 与工作台属于不同来源，不能依赖跨来源 storage 事件。
+  // 父窗口只响应本机 iframe 的状态请求；子页面只接受来自顶层窗口的状态。
+  const preferencePeers = new Map();
+  const preferenceRequest = 'antigravity-hans-preferences-request';
+  const preferenceState = 'antigravity-hans-preferences-state';
+  function sendPreferenceState(peer, origin) {
+    try {
+      if (peer.closed) { preferencePeers.delete(peer); return; }
+      peer.postMessage({ type: preferenceState, lang, englishLabels }, origin);
+    }
+    catch (_e) { preferencePeers.delete(peer); }
+  }
+  function broadcastPreferenceState() {
+    for (const [peer, origin] of preferencePeers) sendPreferenceState(peer, origin);
+  }
+  function startPreferenceSync() {
+    let topWindow;
+    try { topWindow = window.top; } catch (_e) { /* unavailable in restricted frames */ }
+    const isFrame = !!topWindow && topWindow !== window;
+    const isWorkbench = !isFrame && /\/(?:workbench|workbench-jetski-agent)\.html$/.test(window.location?.pathname || '');
+    const isAgentFrame = isFrame && window.location?.protocol === 'http:' &&
+      window.location?.hostname === '127.0.0.1' &&
+      (window.location.pathname === '/' || window.location.pathname === '/settings-standalone');
+    const onStorage = (e) => {
+      if (e.key === LANG_KEY) setLang(e.newValue, false);
+      else if (e.key === ENGLISH_LABELS_KEY) setEnglishLabels(e.newValue === '1', false);
+    };
+    const onMessage = (e) => {
+      const data = e.data;
+      if (!data || typeof data !== 'object') return;
+      if (isAgentFrame && e.source === topWindow &&
+          (e.origin === 'vscode-file://vscode-app' || e.origin === 'null') && data.type === preferenceState &&
+          (data.lang === 'en' || data.lang === 'zh') && typeof data.englishLabels === 'boolean') {
+        setLang(data.lang, false);
+        setEnglishLabels(data.englishLabels, false);
+      } else if (isWorkbench && data.type === preferenceRequest && e.source &&
+          /^http:\/\/127\.0\.0\.1:\d{1,5}$/.test(e.origin)) {
+        for (const peer of preferencePeers.keys()) {
+          try { if (peer.closed) preferencePeers.delete(peer); } catch (_e) { preferencePeers.delete(peer); }
+        }
+        if (preferencePeers.size < 100 || preferencePeers.has(e.source)) {
+          preferencePeers.set(e.source, e.origin);
+          sendPreferenceState(e.source, e.origin);
+        }
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('message', onMessage);
+    let timer = null;
+    if (isAgentFrame) {
+      const requestState = () => {
+        try { topWindow.postMessage({ type: preferenceRequest }, '*'); } catch (_e) { /* parent unavailable */ }
+      };
+      requestState();
+      // 重发请求以覆盖父窗口稍后注入或重载的情况。
+      timer = setInterval(requestState, 3000);
+    }
+    removePreferenceSync = () => {
+      if (timer !== null) clearInterval(timer);
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('message', onMessage);
+      preferencePeers.clear();
+    };
   }
 
   // ===== 悬浮切换按钮（可拖动，位置与偏好经 savePref 持久化） =====
@@ -5023,11 +5092,6 @@
     // 右键或键盘菜单键：直接打开选项菜单
     const onContextMenu = (e) => { e.preventDefault(); e.stopPropagation(); openOptionsMenu(); };
     const onResize = () => { placeAt(parseFloat(btn.style.left), parseFloat(btn.style.top)); positionOptionsMenu(); };
-    // 其他窗口修改偏好时同步（同源页面共享 localStorage）
-    const onStorage = (e) => {
-      if (e.key === LANG_KEY) setLang(e.newValue, false);
-      else if (e.key === ENGLISH_LABELS_KEY) setEnglishLabels(e.newValue === '1', false);
-    };
     // 点击菜单和按钮以外的位置、按 Esc 时关闭菜单
     const onDocPointerDown = (e) => {
       if (optionsMenu && !optionsMenu.contains(e.target) && e.target !== btn) closeOptionsMenu();
@@ -5042,7 +5106,6 @@
     btn.addEventListener('click', onClick);
     btn.addEventListener('contextmenu', onContextMenu);
     window.addEventListener('resize', onResize);
-    window.addEventListener('storage', onStorage);
     document.addEventListener('pointerdown', onDocPointerDown, true);
     document.addEventListener('keydown', onKeyDown, true);
 
@@ -5052,13 +5115,11 @@
     removeToggleUI = () => {
       if (tapTimer !== null) clearTimeout(tapTimer);
       window.removeEventListener('resize', onResize);
-      window.removeEventListener('storage', onStorage);
       document.removeEventListener('pointerdown', onDocPointerDown, true);
       document.removeEventListener('keydown', onKeyDown, true);
       closeOptionsMenu();
       btn.remove();
       toggleButton = null;
-      if (window.__antigravityZhSetLang === setLang) delete window.__antigravityZhSetLang;
     };
   }
 
@@ -5071,6 +5132,7 @@
     }
     // 控制台可用：__antigravityZhSetLang('en') / __antigravityZhSetLang('zh')
     window.__antigravityZhSetLang = setLang;
+    startPreferenceSync();
 
     flushScheduler = createFlushScheduler((batchNodes, batchElements) => {
       if (cancelled || lang !== 'zh') return;

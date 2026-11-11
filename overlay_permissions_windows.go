@@ -12,3 +12,7 @@ import (
 func verifyOverlayOwner(_ os.FileInfo) error {
 	return fmt.Errorf("Windows 外部脚本需要通过 --trust-external-overlay 显式信任")
 }
+
+func verifyCustomTranslationsOwner(_ os.FileInfo) error {
+	return fmt.Errorf("Windows 自定义翻译名单需要通过 --trust-custom-translations 显式信任")
+}

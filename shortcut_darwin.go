@@ -10,7 +10,7 @@ import (
 )
 
 // CreateChineseShortcut 创建一个运行动态汉化的 “原名字 中文.app” 包装应用
-func CreateChineseShortcut(cfg AppConfig) error {
+func CreateChineseShortcut(cfg AppConfig, trustCustomTranslations bool) error {
 	// 获取当前 antigravity-hans 的绝对路径
 	selfExe, err := os.Executable()
 	if err != nil {
@@ -103,7 +103,7 @@ func CreateChineseShortcut(cfg AppConfig) error {
 		arg = "--ide"
 	}
 	// 监视进程的日志落到 ~/Library/Logs，便于排查“没有汉化”这类静默失败
-	launcherContent := macLauncherScript(selfExeAbs, arg)
+	launcherContent := macLauncherScript(selfExeAbs, arg, trustCustomTranslations)
 	launcherPath := filepath.Join(macosDir, "launcher")
 	launcherRel, _ := filepath.Rel(appsDir, launcherPath)
 	if err := writeRootFileAtomic(root, launcherRel, []byte(launcherContent), 0755); err != nil {
@@ -132,13 +132,17 @@ func CreateChineseShortcut(cfg AppConfig) error {
 	return nil
 }
 
-func macLauncherScript(selfExe, arg string) string {
+func macLauncherScript(selfExe, arg string, trustCustomTranslations bool) string {
+	trustArg := ""
+	if trustCustomTranslations {
+		trustArg = " " + trustCustomTranslationsArg
+	}
 	return fmt.Sprintf(`#!/bin/bash
 # 启动后台汉化监视进程，日志写入 ~/Library/Logs/antigravity-hans.log
 LOG_DIR="$HOME/Library/Logs"
 LOG_FILE="$LOG_DIR/antigravity-hans.log"
 mkdir -p "$LOG_DIR"
-nohup %s %s --nogui >> "$LOG_FILE" 2>&1 &
+nohup %s %s --nogui%s >> "$LOG_FILE" 2>&1 &
 # 汉化监视器负责启动原应用，避免 open 与调试模式启动争抢单实例锁。
-`, shellQuote(selfExe), shellQuote(arg))
+`, shellQuote(selfExe), shellQuote(arg), trustArg)
 }

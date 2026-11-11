@@ -13,7 +13,7 @@ import (
 )
 
 // CreateChineseShortcut 创建一个运行动态汉化的“原名字 中文”桌面快捷方式
-func CreateChineseShortcut(cfg AppConfig) error {
+func CreateChineseShortcut(cfg AppConfig, trustCustomTranslations bool) error {
 	// 获取当前 antigravity-hans.exe 的绝对路径
 	selfExe, err := os.Executable()
 	if err != nil {
@@ -62,15 +62,11 @@ func CreateChineseShortcut(cfg AppConfig) error {
 
 	// 目标快捷方式的保存路径，默认放在当前用户桌面
 	targetLnkPath := filepath.Join(desktopDir, newLnkName)
+	arg := shortcutArguments(cfg, trustCustomTranslations)
 
 	var psScript string
 	if foundOldLnk != "" {
 		// 复制原快捷方式，并修改 Target 和 Args，保留 IconLocation
-		arg := "--app --nogui"
-		if strings.Contains(strings.ToLower(cfg.Name), "ide") {
-			arg = "--ide --nogui"
-		}
-
 		psScript = fmt.Sprintf(`
 $sh = New-Object -ComObject WScript.Shell
 $oldLnk = $sh.CreateShortcut(%s)
@@ -98,10 +94,6 @@ $newLnk.Save()
 		if targetExe == "" {
 			return fmt.Errorf("找不到 %s 的安装路径，无法创建快捷方式", cfg.Name)
 		}
-		arg := "--app --nogui"
-		if strings.Contains(strings.ToLower(cfg.Name), "ide") {
-			arg = "--ide --nogui"
-		}
 		psScript = fmt.Sprintf(`
 $sh = New-Object -ComObject WScript.Shell
 $newLnk = $sh.CreateShortcut(%s)
@@ -122,6 +114,17 @@ $newLnk.Save()
 
 	fmt.Printf("[成功] 已在桌面创建快捷方式: %s\n", targetLnkPath)
 	return nil
+}
+
+func shortcutArguments(cfg AppConfig, trustCustomTranslations bool) string {
+	arg := "--app --nogui"
+	if strings.Contains(strings.ToLower(cfg.Name), "ide") {
+		arg = "--ide --nogui"
+	}
+	if trustCustomTranslations {
+		arg += " " + trustCustomTranslationsArg
+	}
+	return arg
 }
 
 func getDesktopPath() string {

@@ -175,6 +175,7 @@ func acquireMonitorLock(cfg AppConfig) (func(), bool) {
 	if err := lockMonitorFile(f); err != nil {
 		_ = f.Close()
 		fmt.Printf("[提示] %s 的汉化监视器已在运行或状态文件无法加锁: %v\n", cfg.Name, err)
+		fmt.Println("       更新词库或自定义名单时，请先执行 --stop，再重新启动汉化。")
 		return nil, false
 	}
 	closeLock := func() { _ = unlockMonitorFile(f); _ = f.Close() }
