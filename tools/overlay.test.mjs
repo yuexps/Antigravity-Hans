@@ -1296,6 +1296,20 @@ test('2.30.0 permission and model menu tooltips are localized', () => {
   }
 });
 
+test('Swarm skill descriptions and Carbon availability are localized', () => {
+  for (const [input, expected] of [
+    ["(Preview & Quota Heavy) Run a swarm: several agents working in parallel on one task, each in its own conversation, collaborating through a shared message board. Use when the work splits into pieces that can be done at the same time, or when a second pair of eyes should check the first pair's work.",
+      '（预览版，额度消耗较高）启动智能体群组：多个智能体并行处理同一项任务，各自使用独立对话，并通过共享消息板协作。当工作可拆分成同时进行的部分，或需要其他智能体复核结果时使用。'],
+    ['ONLY for the native-swarm worker whose brief says it is the monitor. On a timer, it checks whether the whole swarm has stalled and calls on the one member who can unstick it. Coordinators and other workers: do not load this.',
+      '仅供任务说明中被指定为监控员的原生 Swarm 成员使用。它会定时检查整个群组是否停滞，并请能解除阻碍的成员介入。协调员和其他成员不要加载此技能。'],
+    ['Gemini 4 Carbon is currently available to Ultra plan subscribers.', 'Gemini 4 Carbon 目前向 Ultra 套餐订阅用户开放。'],
+  ]) {
+    assert.equal(translate(input), expected, input);
+    assert.equal(translate(expected), expected, 'translations must be stable when observed again');
+  }
+  assert.equal(translate('Gemini 4 Carbon'), 'Gemini 4 Carbon');
+});
+
 test('updated IDE agent controls and status messages are localized', () => {
   for (const [input, expected] of [
     ['Stop Task', '停止任务'],
