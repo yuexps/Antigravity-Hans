@@ -17,6 +17,7 @@ import (
 //	Turbo                 只写英文 → 保留英文，不翻译
 //	Turbo = 快速模式       英文 = 中文 → 使用自定义译文
 const customTranslationsFileName = "custom-translations.txt"
+const trustCustomTranslationsArg = "--trust-custom-translations"
 
 const (
 	maxCustomTranslationsSize    = 64 << 10
@@ -79,27 +80,50 @@ func customTranslationsPrelude(entries []customTranslation) string {
 	return "if (typeof window !== 'undefined') window.__antigravityZhCustom = " + string(data) + ";\n"
 }
 
+// readCustomTranslationsFile checks the origin as well as the file type: custom
+// labels can change the meaning of authorization and other sensitive controls.
+func readCustomTranslationsFile(path string, allowUnverified bool) ([]customTranslation, error) {
+	data, info, err := readRegularFile(path, maxCustomTranslationsSize)
+	if err != nil {
+		return nil, err
+	}
+	if !allowUnverified {
+		if err := verifyCustomTranslationsOwner(info); err != nil {
+			return nil, err
+		}
+		parent, err := os.Stat(filepath.Dir(path))
+		if err != nil {
+			return nil, err
+		}
+		if err := verifyCustomTranslationsOwner(parent); err != nil {
+			return nil, err
+		}
+	}
+	return parseCustomTranslations(data), nil
+}
+
 // LoadCustomTranslations 读取可执行文件同目录下的自定义翻译名单；文件不存在时返回空名单。
-// 名单只是数据（不会被执行），因此只要求普通文件、非符号链接且体积受限。
-func LoadCustomTranslations() []customTranslation {
+func LoadCustomTranslations(allowUnverified bool) []customTranslation {
 	exePath, err := os.Executable()
 	if err != nil {
 		return nil
 	}
 	path := filepath.Join(filepath.Dir(exePath), customTranslationsFileName)
-	data, _, err := readRegularFile(path, maxCustomTranslationsSize)
+	entries, err := readCustomTranslationsFile(path, allowUnverified)
 	if err != nil {
 		if !errors.Is(err, fs.ErrNotExist) {
 			fmt.Printf("[警告] 已忽略自定义翻译名单: %v\n       路径: %s\n", err, path)
 		}
 		return nil
 	}
-	entries := parseCustomTranslations(data)
 	keep := 0
 	for _, entry := range entries {
 		if entry.Target == "" {
 			keep++
 		}
+	}
+	if allowUnverified {
+		fmt.Println("[警告] 已显式信任自定义翻译名单，请确认其来源可靠。")
 	}
 	fmt.Printf("[提示] 已加载自定义翻译名单: %d 条（保留英文 %d 条，自定义译文 %d 条）(%s)\n", len(entries), keep, len(entries)-keep, path)
 	return entries

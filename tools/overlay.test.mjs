@@ -1216,6 +1216,47 @@ test('custom translations keep English or apply user wording', () => {
   assert.equal(translate('Turbo'), '极速');
 });
 
+test('custom outputs do not suppress independent text or attribute rules', () => {
+  const parent = { nodeType: 1, closest() { return null; }, getAttribute() { return null; }, setAttribute() {} };
+  const turbo = { nodeType: 3, nodeValue: 'Turbo', parentElement: parent };
+  const defaults = { nodeType: 3, nodeValue: 'Default', parentElement: parent };
+  const attrs = new Map([['title', 'Turbo'], ['aria-label', 'Default']]);
+  const element = {
+    nodeType: 1, parentElement: parent, closest() { return null; },
+    getAttribute: (name) => attrs.get(name) ?? null, setAttribute: (name, value) => attrs.set(name, value),
+  };
+  const nodes = [parent, turbo, defaults, element];
+  const document = {
+    nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' },
+    querySelectorAll() { return []; },
+    createTreeWalker() { let i = 0; return { nextNode: () => nodes[i++] ?? null }; },
+  };
+  const window = {
+    addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+    __antigravityZhCustom: [['Turbo', 'Default'], ['Default', '默认值']],
+  };
+  const ctx = { window, document, Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 } };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.hooks = { applyChinese, translateNode, translateElement, setLang };\n  function run() {'), ctx);
+  ctx.hooks.applyChinese(false);
+  assert.equal(turbo.nodeValue, 'Default');
+  assert.equal(defaults.nodeValue, '默认值');
+  assert.equal(attrs.get('title'), 'Default');
+  assert.equal(attrs.get('aria-label'), '默认值');
+  turbo.__zh_patched = false;
+  ctx.hooks.translateNode(turbo);
+  ctx.hooks.translateElement(element);
+  assert.equal(turbo.nodeValue, 'Default', 'observer must preserve this node’s custom output');
+  assert.equal(attrs.get('title'), 'Default', 'observer must preserve this attribute’s custom output');
+  turbo.nodeValue = 'High';
+  turbo.__zh_patched = false;
+  ctx.hooks.translateNode(turbo);
+  assert.equal(turbo.nodeValue, '高', 'application changes must still be translated');
+  ctx.hooks.setLang('en');
+  assert.equal(defaults.nodeValue, 'Default');
+  assert.equal(attrs.get('title'), 'Turbo');
+});
+
 test('English dates inside translated text become Chinese year/month/day', () => {
   for (const [input, expected] of [
     ['GPT-OSS will be removed from Antigravity on November 18, 2026.', 'GPT-OSS 将于 2026 年 11 月 18 日 从 Antigravity 中移除。'],
@@ -1229,6 +1270,17 @@ test('English dates inside translated text become Chinese year/month/day', () =>
   assert.equal(translate('Released on November 18, 2026 by the team'), 'Released on November 18, 2026 by the team');
   assert.equal(translate('GPT-OSS will be removed from Antigravity on November 45.'), 'GPT-OSS 将于 November 45 从 Antigravity 中移除。');
   assert.equal(translate('Requesting permission to read /tmp/May 5, 2026.txt'), '正在请求权限：读取 /tmp/May 5, 2026.txt');
+  assert.equal(translate('已选择 /workspace/May 5, 2026/report.txt'), '已选择 /workspace/May 5, 2026/report.txt');
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  const attrs = new Map([['title', '已选择 /workspace/May 5, 2026/report.txt']]);
+  const element = {
+    nodeType: 1, closest() { return null; },
+    getAttribute: (name) => attrs.get(name) ?? null, setAttribute: (name, value) => attrs.set(name, value),
+  };
+  context.translateElementForTest(element);
+  assert.equal(attrs.get('title'), '已选择 /workspace/May 5, 2026/report.txt');
+  assert.equal(translate('GPT-OSS will be removed from Antigravity on /workspace/May 5, 2026/report.txt.'),
+    'GPT-OSS 将于 /workspace/May 5, 2026/report.txt 从 Antigravity 中移除。');
 });
 
 test('2.30.0 permission and model menu tooltips are localized', () => {
@@ -1387,6 +1439,29 @@ test('IDE native language supplement follows overlay language changes and cleanu
   assert.equal(messages[147], 'Extensions');
 });
 
+test('IDE native supplement respects personal rules without changing unmatched entries', () => {
+  const messages = new Array(16558);
+  messages[3864] = 'Used to represent onboardingsteps which have not been completed';
+  messages[3865] = 'Used to represent onboarding steps which have been completed';
+  messages[3866] = 'Code with Agent';
+  messages[147] = 'Extensions';
+  messages[5685] = 'Click to focus this command in the terminal.';
+  const window = {
+    addEventListener() {}, removeEventListener() {},
+    location: { pathname: '/workbench.html', href: 'vscode-file://vscode-app/workbench.html' },
+    _VSCODE_NLS_LANGUAGE: 'zh-cn', _VSCODE_NLS_MESSAGES: messages,
+    __antigravityZhCustom: [['extensions', ''], ['Click to focus this command in the terminal.', '聚焦命令']],
+  };
+  const ctx = { window, document: { readyState: 'loading' } };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.hooks = { applyIdeNlsMessages, restoreIdeNlsMessages };\n  function run() {'), ctx);
+  ctx.hooks.applyIdeNlsMessages();
+  assert.equal(messages[147], 'Extensions');
+  assert.equal(messages[5685], '聚焦命令');
+  ctx.hooks.restoreIdeNlsMessages();
+  assert.equal(messages[5685], 'Click to focus this command in the terminal.');
+});
+
 test('slash command descriptions are localized without changing commands', () => {
   const descriptions = [
     ['Run until the specified goal is completely finished.', '持续运行，直到指定目标完全完成。'],
@@ -1529,4 +1604,78 @@ test('built-in "keep English labels" preset is off by default and toggles live',
   hooks = build([['Turbo', '快速模式']]);
   hooks.applyChinese(true);
   assert.equal(snapshot(), '快速模式 | 不受限制地运行所有命令。 | High | This Conversation');
+});
+
+test('IDE workbench synchronizes language and label preferences with cross-origin agent frames', () => {
+  function makePage(location, preferences = {}) {
+    const listeners = new Map();
+    const timers = new Map();
+    const store = new Map(Object.entries(preferences));
+    const parent = { nodeType: 1, closest() { return null; }, getAttribute() { return null; }, setAttribute() {} };
+    const feedback = { nodeType: 3, nodeValue: 'Give Feedback', parentElement: parent };
+    const turbo = { nodeType: 3, nodeValue: 'Turbo', parentElement: parent };
+    const nodes = [parent, feedback, turbo];
+    const document = {
+      nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' },
+      querySelectorAll() { return []; },
+      createTreeWalker() { let i = 0; return { nextNode: () => nodes[i++] ?? null }; },
+    };
+    const window = {
+      location,
+      localStorage: { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)) },
+      addEventListener(type, handler) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(handler); },
+      removeEventListener(type, handler) { listeners.get(type)?.delete(handler); },
+    };
+    const ctx = {
+      window, document, Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 },
+      setInterval(fn) { const id = timers.size + 1; timers.set(id, fn); return id; },
+      clearInterval(id) { timers.delete(id); },
+    };
+    vm.createContext(ctx);
+    vm.runInContext(source.replace('  function run() {', '  globalThis.hooks = { startPreferenceSync, setLang, setEnglishLabels, applyChinese };\n  function run() {'), ctx);
+    return { ctx, window, feedback, turbo, timers, dispatch(type, event) { for (const handler of listeners.get(type) ?? []) handler(event); } };
+  }
+
+  const top = makePage({ pathname: '/workbench.html', href: 'vscode-file://vscode-app/workbench.html' }, { antigravityHansLang: 'en' });
+  top.window.top = top.window;
+  top.ctx.hooks.startPreferenceSync();
+  const frame = makePage({ protocol: 'http:', hostname: '127.0.0.1', pathname: '/', href: 'http://127.0.0.1:63517/' });
+  const childProxy = {
+    postMessage(data, origin) {
+      assert.equal(origin, 'http://127.0.0.1:63517');
+      frame.dispatch('message', { data, source: topProxy, origin: 'vscode-file://vscode-app' });
+    },
+  };
+  const topProxy = {
+    postMessage(data) { top.dispatch('message', { data, source: childProxy, origin: 'http://127.0.0.1:63517' }); },
+  };
+  frame.window.top = topProxy;
+  frame.ctx.hooks.applyChinese(false);
+  assert.equal(frame.feedback.nodeValue, '提供反馈');
+  frame.ctx.hooks.startPreferenceSync();
+  assert.equal(frame.feedback.nodeValue, 'Give Feedback', 'frame adopts the workbench language on connection');
+  top.ctx.hooks.setLang('zh');
+  assert.equal(frame.feedback.nodeValue, '提供反馈');
+  top.ctx.hooks.setEnglishLabels(true);
+  assert.equal(frame.turbo.nodeValue, 'Turbo');
+  top.ctx.hooks.setEnglishLabels(false);
+  assert.equal(frame.turbo.nodeValue, '极速');
+
+  frame.dispatch('message', { data: { type: 'antigravity-hans-preferences-state', lang: 'en', englishLabels: true }, source: {}, origin: 'http://evil.test' });
+  frame.dispatch('message', { data: { type: 'antigravity-hans-preferences-state', lang: 'en', englishLabels: true }, source: topProxy, origin: 'https://example.test' });
+  frame.dispatch('message', { data: { type: 'antigravity-hans-preferences-state', lang: 'invalid', englishLabels: true }, source: topProxy });
+  assert.equal(frame.feedback.nodeValue, '提供反馈', 'untrusted or malformed messages cannot change the frame');
+  let foreignReplies = 0;
+  top.dispatch('message', { data: { type: 'antigravity-hans-preferences-request' }, source: { postMessage() { foreignReplies++; } }, origin: 'https://example.test' });
+  assert.equal(foreignReplies, 0);
+
+  frame.dispatch('storage', { key: 'antigravityHansLang', newValue: 'en' });
+  assert.equal(frame.feedback.nodeValue, 'Give Feedback', 'same-origin storage events work in frames too');
+  for (const tick of frame.timers.values()) tick();
+  assert.equal(frame.feedback.nodeValue, '提供反馈', 'periodic requests recover after a parent reload');
+  frame.window.__antigravityZhPatchCleanup();
+  assert.equal(frame.timers.size, 0);
+  top.ctx.hooks.setLang('en');
+  assert.equal(frame.feedback.nodeValue, '提供反馈', 'cleanup unregisters preference listeners');
+  top.window.__antigravityZhPatchCleanup();
 });

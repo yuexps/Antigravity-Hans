@@ -18,3 +18,7 @@ func verifyOverlayOwner(info os.FileInfo) error {
 	}
 	return nil
 }
+
+func verifyCustomTranslationsOwner(info os.FileInfo) error {
+	return verifyOverlayOwner(info)
+}

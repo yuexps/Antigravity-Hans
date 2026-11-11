@@ -20,7 +20,7 @@ func TestMacLauncherPreservesUnusualExecutablePath(t *testing.T) {
 	if err := os.WriteFile(self, []byte("#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$AGY_HANS_TEST_OUTPUT\"\n"), 0700); err != nil {
 		t.Fatal(err)
 	}
-	script := macLauncherScript(self, "--app")
+	script := macLauncherScript(self, "--app", false)
 	start := strings.Index(script, "\nnohup ")
 	if start < 0 {
 		t.Fatal("launcher command missing")
@@ -39,5 +39,14 @@ func TestMacLauncherPreservesUnusualExecutablePath(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "UNEXPECTED")); !os.IsNotExist(err) {
 		t.Fatal("launcher executed path contents")
+	}
+}
+
+func TestMacLauncherRequiresExplicitCustomTrust(t *testing.T) {
+	if strings.Contains(macLauncherScript("/tmp/launcher", "--app", false), trustCustomTranslationsArg) {
+		t.Fatal("unrequested custom trust included in launcher")
+	}
+	if !strings.Contains(macLauncherScript("/tmp/launcher", "--app", true), trustCustomTranslationsArg) {
+		t.Fatal("explicit custom trust missing from launcher")
 	}
 }

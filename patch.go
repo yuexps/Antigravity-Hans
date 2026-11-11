@@ -89,9 +89,9 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 		return false
 	}
 
-	// 提前进行写权限校验
-	testFile := filepath.Join(workbenchDir, ".write_test")
-	if err := os.WriteFile(testFile, []byte("test"), 0644); err != nil {
+	// 使用独占创建的临时文件探测写权限，不能覆盖已有的用户文件。
+	probe, err := os.CreateTemp(workbenchDir, ".agy-hans-write-*")
+	if err != nil {
 		fmt.Println("[错误] 目录写入权限不足，无法安装补丁。")
 		if IsMac {
 			fmt.Println("       若该 .app 由安装包部署在 /Applications 且属主为 root，请用 sudo 运行本工具；")
@@ -101,7 +101,16 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 		}
 		return false
 	}
-	os.Remove(testFile)
+	probeName := probe.Name()
+	if err := probe.Close(); err != nil {
+		_ = os.Remove(probeName)
+		fmt.Printf("[错误] 关闭写入探测文件失败: %v\n", err)
+		return false
+	}
+	if err := os.Remove(probeName); err != nil {
+		fmt.Printf("[错误] 清理写入探测文件失败: %v\n", err)
+		return false
+	}
 
 	// 检测是否已注入
 	htmlFiles := []string{"workbench.html", "workbench-jetski-agent.html"}
@@ -109,8 +118,12 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 		htmlPath := filepath.Join(workbenchDir, htmlName)
 		if content, err := os.ReadFile(htmlPath); err == nil {
 			if strings.Contains(string(content), `<script src="./antigravity-hans-overlay.js"></script>`) {
-				fmt.Printf("\n[提示] 检测到 %s 已经注入过汉化补丁，无需重复注入。\n", inst.Name)
-				return false
+				if err := writePatchOverlay(workbenchDir, overlaySource); err != nil {
+					fmt.Printf("[错误] 更新补丁文件失败: %v\n", err)
+					return false
+				}
+				fmt.Printf("[完成] 已更新 %s 的静态汉化脚本和自定义名单。\n", inst.Name)
+				return true
 			}
 		}
 	}
@@ -121,7 +134,7 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 	// 权限保持 0644：若补丁是以 sudo 安装的，文件属主为 root，
 	// 仍须保证普通用户身份启动的 IDE 能读取它（收窄到 0600 会导致界面异常）。
 	overlayDest := filepath.Join(workbenchDir, "antigravity-hans-overlay.js")
-	if err := os.WriteFile(overlayDest, []byte(overlaySource), 0644); err != nil {
+	if err := writePatchOverlay(workbenchDir, overlaySource); err != nil {
 		fmt.Printf("[错误] 写入补丁文件失败: %v\n", err)
 		return false
 	}
@@ -163,14 +176,8 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 			html = strings.Replace(html, "</body>", scriptTag+"\n</body>", 1)
 		}
 
-		// 原子方式写入 HTML
-		tmpPath := htmlPath + ".tmp"
-		if err := os.WriteFile(tmpPath, []byte(html), 0644); err != nil {
-			fmt.Printf("[错误] 写入临时文件失败: %v\n", err)
-			return false
-		}
-		if err := os.Rename(tmpPath, htmlPath); err != nil {
-			os.Remove(tmpPath)
+		// 原子替换 HTML，避免覆盖已有的 .tmp 文件或跟随符号链接。
+		if err := writePatchFile(workbenchDir, htmlName, []byte(html)); err != nil {
 			fmt.Printf("[错误] 替换 %s 失败: %v\n", htmlName, err)
 			return false
 		}
@@ -219,6 +226,20 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 
 	fmt.Printf("[完成] %s 静态注入完成！请启动应用查看效果。\n", inst.Name)
 	return true
+}
+
+// writePatchOverlay replaces the script atomically without following an existing symlink.
+func writePatchOverlay(workbenchDir, overlaySource string) error {
+	return writePatchFile(workbenchDir, "antigravity-hans-overlay.js", []byte(overlaySource))
+}
+
+func writePatchFile(workbenchDir, name string, data []byte) error {
+	root, err := os.OpenRoot(workbenchDir)
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+	return writeRootFileAtomic(root, name, data, 0644)
 }
 
 // UninstallPatch 还原静态汉化补丁

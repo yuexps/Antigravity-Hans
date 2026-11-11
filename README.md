@@ -61,6 +61,7 @@ antigravity-hans --shortcut --ide  # 仅 Antigravity IDE
 # 维护
 antigravity-hans --stop                    # 结束由本工具启动的汉化监视器
 antigravity-hans --trust-external-overlay  # 显式信任同目录外部汉化脚本（类型与大小限制仍生效）
+antigravity-hans --app --trust-custom-translations  # 显式信任同目录自定义翻译名单
 ```
 
 ---
@@ -109,8 +110,10 @@ Turbo = 快速模式
 
 - `#` 只在行首时表示注释（不支持行尾注释）。
 - 界面文字与原文**整段一致**（不区分大小写）时生效，名单外的内容照常汉化；默认没有名单，即全部汉化。
-- 修改后重新运行汉化（如双击中文快捷方式）即可生效，无需重启应用。
-- 名单仅作为数据注入（JSON 编码），译文只写入文本，不会被当作脚本或 HTML 执行；删除文件即恢复默认汉化。
+- 名单可以改变权限等界面文字，请只使用可信的名单。macOS 默认检查名单和所在目录的所有者及写权限；Windows 无法通过该检查验证 ACL，需显式传入 `--trust-custom-translations` 才会加载。文件类型和大小限制始终生效。
+- Windows 用户如需通过中文快捷方式加载可信名单，可运行 `antigravity-hans --shortcut --trust-custom-translations` 重新生成快捷方式；这个选项会保留在新快捷方式中。直接启动或安装静态补丁时，也需分别附带该选项。
+- 修改或删除名单后，动态模式先运行 `antigravity-hans --stop` 结束旧监视器，再启动汉化，无需重启应用；静态模式则需先关闭 IDE，重新运行工具并选择“注入静态汉化”，以更新已安装的脚本。
+- 名单仅作为数据注入（JSON 编码），译文只写入文本，不会被当作脚本或 HTML 执行；删除文件并按上述步骤更新后恢复默认汉化。
 
 ---
 
