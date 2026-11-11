@@ -2,8 +2,8 @@
 
 专为 **Google Antigravity** 及 **Antigravity IDE** 开发的中文汉化工具。
 
-> **适配版本**：**Antigravity `2.30.0`** 与 **Antigravity IDE `2.6.0`**。
-> IDE 的智能体和独立设置页面需要动态监视器；本次适配的验证范围和限制见[更新记录](docs/LOCAL-UPDATE-2026-11-10.md)。
+> **适配版本**：**Antigravity `2.31.0`** 与 **Antigravity IDE `2.6.0`**。
+> 普通版的 Swarm 面板，以及 IDE 的智能体和独立设置页面，需要动态监视器；本次适配的验证范围和限制见[更新记录](docs/LOCAL-UPDATE-2026-11-11.md)。
 
 ---
 
@@ -71,7 +71,7 @@ antigravity-hans --app --trust-custom-translations  # 显式信任同目录自�
 1. **动态汉化（推荐）**：
    - 支持 Antigravity 及 Antigravity IDE。
    - 通过 CDP 动态翻译界面，保留应用安装资源；注入状态随应用页面关闭而消失。
-   - IDE 2.6.0 的智能体及独立设置页面需要动态监视器；静态补丁不会覆盖这些内嵌页面。
+   - 普通版 Swarm 面板和 IDE 2.6.0 的智能体及独立设置页面需要动态监视器；静态补丁不会覆盖这些内嵌页面。
    - 可通过 `--shortcut` 参数一键生成桌面快捷方式，日常双击即可自动启动汉化。
 2. **静态补丁（仅支持 Antigravity IDE）**：
    - 直接修改本地 IDE 安装包资源并修复校验和，一劳永逸，支持随时一键还原。

@@ -6,11 +6,12 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import './swarm-overlay.test.mjs';
 
 const source = fs.readFileSync(new URL('../antigravity-hans-overlay.js', import.meta.url), 'utf8');
 const context = { window: { addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' } }, document: { readyState: 'loading' } };
 vm.createContext(context);
-vm.runInContext(source.replace('  function run() {', '  globalThis.translateForTest = translate; globalThis.translateElementForTest = translateElement; globalThis.translateNodeForTest = translateNode; globalThis.isInAntigravityContainerForTest = isInAntigravityContainer; globalThis.createFlushSchedulerForTest = createFlushScheduler; globalThis.restoreProtectedCustomizationNamesForTest = restoreProtectedCustomizationNames; globalThis.translateKnownSlashDescriptionForTest = translateKnownSlashDescription;\n  function run() {'), context);
+vm.runInContext(source.replace('  function run() {', '  globalThis.translateForTest = translate; globalThis.translateElementForTest = translateElement; globalThis.translateNodeForTest = translateNode; globalThis.isInAntigravityContainerForTest = isInAntigravityContainer; globalThis.createFlushSchedulerForTest = createFlushScheduler; globalThis.restoreProtectedCustomizationNamesForTest = restoreProtectedCustomizationNames; globalThis.translateKnownSlashDescriptionForTest = translateKnownSlashDescription; globalThis.translateCoordinatorWelcomeForTest = translateCoordinatorWelcome; globalThis.shouldSkipSubtreeForTest = shouldSkipSubtree;\n  function run() {'), context);
 const translate = context.translateForTest;
 
 test('updated overlays replace their observer and use the requested fingerprint', () => {
@@ -1295,6 +1296,127 @@ test('2.30.0 permission and model menu tooltips are localized', () => {
   }
 });
 
+test('updated IDE agent controls and status messages are localized', () => {
+  for (const [input, expected] of [
+    ['Stop Task', '停止任务'],
+    ['Run (unsandboxed)', '运行（不在沙盒中）'],
+    ['Review permissions', '审查权限'],
+    ['Remote Permissions', '远程权限'],
+    ['Forked conversation', '派生的对话'],
+    ['Coordinator settings', '协调员设置'],
+    ['No upcoming run.', '没有即将执行的任务。'],
+    ['Paused. Resume it to schedule the next run.', '已暂停。恢复后将安排下次执行。'],
+    ['Telemetry is turned off in settings', '遥测功能已在设置中关闭'],
+    ['Telemetry is off for this conversation.', '此对话的遥测功能已关闭。'],
+    ['Telemetry is off for all conversations.', '所有对话的遥测功能均已关闭。'],
+    ['Run in a new git worktree', '在新的 Git 工作树中运行'],
+    ['Your quota for this model is running low.', '你对此模型的额度即将用完。'],
+    ['Your AI credits balance is too low to continue.', '你的 AI 积分余额不足，无法继续。'],
+    ['This conversation is in a different workspace.', '此对话位于其他工作区。'],
+    ['This project is associated with a different workspace.', '此项目关联到其他工作区。'],
+    ['Send a message in the main conversation first to start a side question', '请先在主对话中发送一条消息，然后再发起副问题'],
+    ['This error is likely temporary. You can prompt the model to try again after some time.', '此错误可能是暂时的。稍后可以提示模型重试。'],
+    ['You can prompt the model to try again or start a new conversation if the error persists.', '你可以提示模型重试；如果错误仍然存在，请开始新对话。'],
+  ]) {
+    assert.equal(translate(input), expected, input);
+    assert.equal(translate(expected), expected, 'translations must be stable when observed again');
+  }
+});
+
+test('2.31 controls, safe rewind explanations and Carbon model levels are localized', () => {
+  for (const [input, expected] of [
+    ['Run Now', '立即运行'],
+    ['Manage Permissions', '管理权限'],
+    ['Next: Review Permissions', '下一步：审核权限'],
+    ['Please fill out all required values to continue.', '请填写所有必填项后继续。'],
+    ['Select a model to send message', '请选择用于发送消息的模型'],
+    ['Creating the forked conversation...', '正在创建派生对话...'],
+    ['Creating worktree for the forked conversation...', '正在为派生对话创建工作树...'],
+    ['Creating workspace for the forked conversation...', '正在为派生对话创建工作区...'],
+    ['Failed to update permissions. Please try again.', '更新权限失败，请重试。'],
+    ['Failed to resolve permissions. Please try again.', '解析权限失败，请重试。'],
+    ['Cannot start best-of-N mode: some subagents are still running.', '无法启动 Best of N 模式：仍有子智能体运行中。'],
+    ['Cannot start best-of-N mode: background tasks are still running.', '无法启动 Best of N 模式：仍有后台任务运行中。'],
+    ['Cannot revert a message sent while the agent was running', '无法回退到智能体运行时发送的消息'],
+    ['Rewinds the conversation only. Files in this workspace stay as they are now.', '仅回退对话，此工作区内的文件保持当前状态。'],
+    ['A full copy of this workspace, uncommitted changes included.', '此工作区的完整副本，包括未提交的更改。'],
+    ['Keeps working in this workspace. Nothing is copied.', '继续在此工作区工作，不复制任何内容。'],
+    ['Unlock the power of agent swarms.', '充分发挥智能体群组的能力。'],
+    ['Open Swarm Board', '打开 Swarm 消息板'],
+    ['Browser steps', '浏览器步骤'],
+    ['Taking Screenshot', '正在截图'],
+    ['Clicked in Browser', '已在浏览器中点击'],
+    ['Typed into Browser', '已在浏览器中输入'],
+    ['Semantic searching', '正在语义搜索'],
+    ['Needs your approval', '需要你的批准'],
+    ['Site Allowlist', '网站允许列表'],
+    ['Add to allowlist', '添加到允许列表'],
+    ['Added to allowlist', '已添加到允许列表'],
+    ['Gemini 4 Carbon (High)', 'Gemini 4 Carbon (高)'],
+    ['Select model, current: Gemini 4 Carbon (Low)', '选择模型，当前：Gemini 4 Carbon (低)'],
+  ]) {
+    assert.equal(translate(input), expected, input);
+    assert.equal(translate(expected), expected, 'translations must be stable when observed again');
+  }
+  assert.equal(translate('Gemini 4 Carbon'), 'Gemini 4 Carbon', 'the model name is an identifier');
+  assert.equal(translate('Unavailable'), '不可用');
+});
+
+test('2.31 activity labels preserve queries, paths, URLs and tool names', () => {
+  for (const target of ['Last 7 days/10 files', "C:/中文/$& $$ $'", 'https://example.test/10 files?q=30 minutes', 'line one\nline two']) {
+    for (const [prefix, translated] of [
+      ['Read URL: ', '已读取 URL：'], ['Searched web: ', '已搜索网页：'],
+      ['Searched for files: ', '已搜索文件：'], ['Invoked subagent: ', '已调用子智能体：'],
+      ['Used MCP tool: ', '已使用 MCP 工具：'], ['Forked from ', '派生自 '],
+    ]) {
+      const input = ` ${prefix}${target} `;
+      const expected = ` ${translated}${target} `;
+      assert.equal(translate(input), expected);
+      assert.equal(translate(expected), expected, 'observer processing must not alter dynamic content');
+    }
+    const input = `Using browser · ${target} (12s)`;
+    const expected = `正在使用浏览器 · ${target}（12 秒）`;
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+  assert.equal(translate('Show 7 earlier steps'), '显示更早的 7 个步骤');
+});
+
+test('coordinator welcome preserves project names and split DOM nodes', () => {
+  const originalWalker = context.document.createTreeWalker;
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  context.NodeFilter = { SHOW_TEXT: 4 };
+  const suffix = ". I coordinate the work for this project. Ask me a question or hand me a task, and I'll answer directly or start workers that run in parallel.";
+  const follow = "You can follow the workers in the Dashboard, and I'll post an update when something finishes or needs you.";
+  try {
+    for (const name of ['Last 7 days', "项目 $& $' / 10 files"]) {
+      const prefix = { nodeType: 3, nodeValue: 'Welcome to ' };
+      const nameNode = { nodeType: 3, nodeValue: name,
+        parentElement: { closest: (selector) => selector === '[data-testid="coordinator-welcome"] strong' ? {} : null } };
+      const suffixNodes = suffix.split(/(?<=\s)/).map((nodeValue) => ({ nodeType: 3, nodeValue }));
+      const followNodes = follow.split(/(?<=\s)/).map((nodeValue) => ({ nodeType: 3, nodeValue }));
+      const strong = { contains: (node) => node === nameNode };
+      const first = { nodes: [prefix, nameNode, ...suffixNodes], querySelectorAll: () => [strong] };
+      const second = { nodes: followNodes };
+      const welcome = { matches: (selector) => selector === '[data-testid="coordinator-welcome"]', querySelectorAll: () => [first, second] };
+      context.document.createTreeWalker = (root) => { let i = 0; return { nextNode: () => root.nodes[i++] ?? null }; };
+      assert.equal(context.shouldSkipSubtreeForTest(nameNode), true);
+      assert.equal(context.translateCoordinatorWelcomeForTest(welcome), true);
+      assert.equal(nameNode.nodeValue, name);
+      assert.equal(first.nodes.map((node) => node.nodeValue).join(''), `欢迎来到 ${name}。我是本项目的协调员。你可以向我提问或交给我任务，我会直接回答，或启动并行工作的成员。`);
+      assert.equal(second.nodes.map((node) => node.nodeValue).join(''), '你可以在控制面板中查看各成员的进展；有任务完成或需要你参与时，我会发布更新。');
+      assert.equal(context.translateCoordinatorWelcomeForTest(welcome), true);
+      suffixNodes[1].nodeValue = 'application update ';
+      context.translateCoordinatorWelcomeForTest(welcome);
+      assert.equal(nameNode.nodeValue, name);
+      assert.equal(suffixNodes[1].nodeValue, 'application update ', 'application changes must not be overwritten');
+      assert.equal(prefix.nodeValue, 'Welcome to ', 'other translated pieces must be restored');
+    }
+  } finally {
+    context.document.createTreeWalker = originalWalker;
+  }
+});
+
 test('IDE quick settings hover descriptions preserve policy scope', () => {
   const pairs = [
     ['Show AI autocomplete suggestions in the editor', '在编辑器中显示 AI 自动补全建议'],
@@ -1678,4 +1800,31 @@ test('IDE workbench synchronizes language and label preferences with cross-origi
   top.ctx.hooks.setLang('en');
   assert.equal(frame.feedback.nodeValue, '提供反馈', 'cleanup unregisters preference listeners');
   top.window.__antigravityZhPatchCleanup();
+});
+
+test('normal app shares preferences only with the recognized Swarm plugin frame', () => {
+  const listeners = new Map();
+  const window = {
+    location: { protocol: 'https:', hostname: '127.0.0.1', pathname: '/', href: 'https://127.0.0.1:50648/' },
+    localStorage: { getItem: (key) => key === 'antigravityHansLang' ? 'en' : key === 'antigravityHansEnglishLabels' ? '1' : null },
+    addEventListener(type, handler) { listeners.set(type, handler); },
+    removeEventListener(type, handler) { if (listeners.get(type) === handler) listeners.delete(type); },
+  };
+  window.top = window;
+  const ctx = { window, document: { readyState: 'loading' } };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.startSyncForTest = startPreferenceSync;\n  function run() {'), ctx);
+  ctx.startSyncForTest();
+  const replies = [];
+  const peer = { postMessage(data, origin) { replies.push({ data, origin }); } };
+  const request = { type: 'antigravity-hans-preferences-request' };
+  listeners.get('message')({ data: request, source: peer, origin: 'plugin://swarm--swarm_board-ab12c' });
+  assert.equal(replies.length, 1);
+  assert.equal(replies[0].data.lang, 'en');
+  assert.equal(replies[0].data.englishLabels, true);
+  assert.equal(replies[0].origin, 'plugin://swarm--swarm_board-ab12c');
+  listeners.get('message')({ data: request, source: peer, origin: 'plugin://swarm--swarm_board-ab12c.example' });
+  assert.equal(replies.length, 1, 'unrecognized plugin origins must not receive preferences');
+  window.__antigravityZhPatchCleanup();
+  assert.equal(listeners.has('message'), false);
 });

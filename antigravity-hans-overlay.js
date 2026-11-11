@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.30.0-20261111-r17';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.31.0-20261111-r18';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1470,11 +1470,14 @@
     ["Optional branch or ref used when creating a new Cog workspace (defaults to main if unset).", "创建新 Cog 工作区时可选的分支或引用（未设置时默认为 main）。"],
     ["Controls whether the agent can run custom JavaScript to automate complex browser actions.", "控制智能体是否可以运行自定义 JavaScript 来自动化复杂浏览器操作。"],
     ["You are logged in using environment credentials and cannot sign out from the application.", "你使用环境凭据登录，无法在应用中退出登录。"],
+    ["You can prompt the model to try again or start a new conversation if the error persists.", "你可以提示模型重试；如果错误仍然存在，请开始新对话。"],
     ["A label for this computer when you connect from another device. Changing it reconnects.", "从其他设备连接时用于标识这台电脑的名称。更改该名称将重新建立连接。"],
     ["Choose whether to be notified when the agent needs your attention or completes a task.", "选择是否在智能体需要您关注或完成任务时收到通知。"],
     ["Create, edit, review, resize, and brand-check Canva designs with the Canva MCP server.", "使用 Canva MCP 服务器创建、编辑、审阅和调整 Canva 设计，并检查品牌一致性。"],
     ["When enabled, Antigravity will play a sound when Agent finishes generating a response.", "启用后，Antigravity 会在智能体完成回复生成时播放提示音。"],
     ["When enabled, the agent will include default customizations, including default skills.", "启用后，智能体将包含默认自定义项（包括默认技能）。"],
+    ["Agent can retrieve console logs from the browser and return it for further processing.", "智能体可以读取浏览器控制台日志并返回，以供后续处理。"],
+    ["This error is likely temporary. You can prompt the model to try again after some time.", "此错误可能是暂时的。稍后可以提示模型重试。"],
     ["Comment on the plan before your agent starts, and get a walkthrough when it finishes.", "在智能体开始前审查并批注计划，并在完成后获取详细的演练讲解。"],
     ["The agent asks for permission before executing commands matched by a deny list entry.", "智能体在执行匹配拒绝列表条目的命令前，会先请求权限。"],
     ["The browser subagent can be invoked by typing /browser in the conversation input box.", "你可以在对话输入框中输入 /browser 来调用浏览器子智能体。"],
@@ -1493,6 +1496,7 @@
     ["What functionality you expect your account tier to have available that is missing", "你期望当前账号套餐提供但尚未提供的功能"],
     ["Are you sure you want to delete this conversation? This action cannot be undone.", "确定要删除此对话吗？此操作无法撤销。"],
     ["Receive product updates, tips, and promotions from Google Antigravity via email.", "通过电子邮件接收 Google Antigravity 的产品更新、技巧和促销信息。"],
+    ["Cannot revert messages before or at the point where Best of N mode was triggered", "无法回退到触发 Best of N 模式时或之前的消息"],
     ["Which workspace the New Conversation button and keyboard shortcut start you in.", "通过“新会话”按钮及键盘快捷键新建会话时所默认进入的工作区。"],
     ["Compact the conversation now (summarize history to free up the context window).", "立即压缩对话（概括历史记录以释放上下文窗口空间）。"],
     ["Reflect on recent successes or corrections to capture reusable skills or rules.", "回顾近期的成功经验或修正，提炼可复用的技能或规则。"],
@@ -1507,6 +1511,7 @@
     ["Show browser notifications when your action is needed or execution finishes.", "需要你操作或执行结束时，显示浏览器通知。"],
     ["These MCP allowlist rules are enforced by your organization's administrator.", "这些 MCP 白名单规则由你所在组织的管理员强制实施。"],
     ["Ignore events triggered by the automation owner to avoid self-trigger loops.", "忽略由自动化任务所有者触发的事件，以避免自触发循环。"],
+    ["Rewinds the conversation only. Files in this workspace stay as they are now.", "仅回退对话，此工作区内的文件保持当前状态。"],
     ["Check pending conversations in the last 3 days that require action from me.", "检查最近 3 天内需要我处理的待办对话。"],
     ["Configure built-in browser, link opening, and browser subagent preferences.", "配置内置浏览器、链接打开方式及浏览器子智能体首选项。"],
     ["Ignore events emitted by automated review or robot accounts (groupagent-*).", "忽略由自动审查或机器人账号 (groupagent-*) 发出的事件。"],
@@ -1543,6 +1548,7 @@
     ["Open in current window, Continue conversation in the current workspace", "在当前窗口打开，并在当前工作区继续对话"],
     ["When enabled, sandboxed commands are allowed to make network requests.", "启用后，允许沙盒中的命令发起网络请求。"],
     ["Rules token budget exceeded. Large rules are demoted to path pointers.", "规则的 Token 预算已超出。较大的规则会降级为路径引用。"],
+    ["Send a message in the main conversation first to start a side question", "请先在主对话中发送一条消息，然后再发起副问题"],
     ["Agent settings and permissions for conversations outside of projects.", "为项目外对话配置智能体设置和权限。"],
     ["Configure a chat bot so you can use Jetski directly from Google Chat.", "配置聊天机器人，以便直接从 Google Chat 使用 Jetski。"],
     ["Google3 chats will be regrouped into their workspaces in the sidebar.", "Google3 聊天将在侧边栏中重新按其工作区分组。"],
@@ -1589,6 +1595,7 @@
     ["The conversation was compacted to fit within the context window.", "对话已压缩以适应上下文窗口。"],
     ["This extension has no declared permissions requiring user input.", "此扩展未声明需要用户确认的权限。"],
     ["Full interface for coding, developer tools, and managing agents.", "完整界面，适合编程、使用开发者工具和管理智能体。"],
+    ["Cannot start best-of-N mode: background tasks are still running.", "无法启动 Best of N 模式：仍有后台任务运行中。"],
     ["Add an MCP server above or add a custom one via the MCP Config.", "在上方添加 MCP 服务器，或通过 MCP 配置添加自定义服务器。"],
     ["Agent settings and permissions can be further customized below.", "智能体设置和权限可在下方进一步自定义。"],
     ["Agents have full access to your machine and external resources.", "智能体可完整访问你的电脑和外部资源。"],
@@ -1616,6 +1623,7 @@
     ["Tip: Complex tasks get better results with multiple responses.", "提示：复杂任务使用多个回复通常会得到更好的结果。"],
     ["A license or project selection is required to use Antigravity.", "使用 Antigravity 需要许可证或选择项目。"],
     ["Invoke a team of agents to autonomously tackle large projects.", "调用智能体团队自主处理大型项目。"],
+    ["Cannot start best-of-N mode: some subagents are still running.", "无法启动 Best of N 模式：仍有子智能体运行中。"],
     ["Allow opening pull requests and grant access to specific PRs.", "允许创建拉取请求并授予对特定 PR 的访问权限。"],
     ["Browse and enable plugins from the Build With Google catalog.", "从 Build With Google 目录中浏览并启用插件。"],
     ["Configure allowed and denied paths for file reads and writes.", "配置允许和拒绝读写的文件路径。"],
@@ -1635,6 +1643,7 @@
     ["Grant create, update, or delete access to specific branches.", "授予对指定分支的创建、更新或删除权限。"],
     ["Used to represent onboarding steps which have been completed", "用于表示已完成的入门步骤"],
     ["Invoke the Boost multi-agent orchestrator for complex tasks.", "调用 Boost 多智能体协调器处理复杂任务。"],
+    ["A full copy of this workspace, uncommitted changes included.", "此工作区的完整副本，包括未提交的更改。"],
     ["Allow/deny agent browser actuation access to specific URLs.", "允许或拒绝智能体浏览器针对特定网址执行页面操作。"],
     ["Configure the agent's visual theme and display preferences.", "配置智能体的视觉主题与界面显示偏好。"],
     ["Manage how Best of N sets up the workspace its arms run in.", "管理 Best of N 如何配置其各分支运行所在的工作区。"],
@@ -1656,6 +1665,7 @@
     ["Agent can scroll on browser pages to access more content.", "智能体可以滚动浏览器页面以访问更多内容。"],
     ["A comma-separated list like repo-a, repo-b, or * for all.", "使用逗号分隔的列表，例如 repo-a、repo-b，或使用 * 表示全部。"],
     ["Enable navigation suggestions that predict your next edit", "启用预测下一处编辑位置的导航建议"],
+    ["Cannot revert to a message that was cleared to save space", "无法回退到为节省空间而清除的消息"],
     ["Clone current workspace into a new independent workspace", "将当前工作区克隆到全新的独立工作区中"],
     ["Configure allowed and denied URLs for browser actuation.", "配置允许和拒绝浏览器执行操作的 URL。"],
     ["Configure link opening and built-in browser preferences.", "配置链接打开方式和内置浏览器偏好设置。"],
@@ -1669,6 +1679,7 @@
     ["Attackers might be trying to steal your information from", "攻击者可能正试图从以下网站窃取你的信息："],
     ["Trigger multiple response variants from the same prompt.", "使用同一提示词生成多个不同的回复。"],
     ["No project selected or project management not available.", "未选择项目，或项目管理不可用。"],
+    ["Cannot revert a message sent while the agent was running", "无法回退到智能体运行时发送的消息"],
     ["Access and clone GitHub repositories in remote projects", "在远程项目中访问和克隆 GitHub 仓库"],
     ["Allow/deny agent command execution outside the sandbox.", "允许或拒绝智能体在沙盒之外执行命令。"],
     ["Automatically reproduce bugs, trace causes, test fixes.", "自动复现缺陷、追踪根本原因并测试修复方案。"],
@@ -1692,6 +1703,8 @@
     ["Open Google Chrome on the machine running Antigravity.", "在运行 Antigravity 的电脑上打开 Google Chrome。"],
     ["There was an unexpected issue setting up your account.", "设置账号时出现意外问题。"],
     ["A Google Cloud project is required to use Antigravity.", "使用 Antigravity 需要 Google Cloud 项目。"],
+    ["Cannot start best-of-N mode while the agent is running", "智能体运行时无法启动 Best of N 模式"],
+    ["This project is associated with a different workspace.", "此项目关联到其他工作区。"],
     ["Choose between the Default and Project 4K experience.", "在默认体验与 Project 4K 体验之间选择。"],
     ["Configure default behaviors, skills, and MCP servers.", "配置默认行为、技能和 MCP 服务器。"],
     ["Curated collection of agent skills for science tasks.", "精选的科学任务智能体技能集。"],
@@ -1726,6 +1739,7 @@
     ["You currently don't have any MCP Servers installed.", "您当前还没有安装任何 MCP 服务器。"],
     ["Custom models are only supported on Linux machines.", "自定义模型仅支持 Linux 计算机。"],
     ["Why are you opting out of auto-triggered Best-of-N?", "为什么要退出自动触发的 Best of N？"],
+    ["Keeps working in this workspace. Nothing is copied.", "继续在此工作区工作，不复制任何内容。"],
     ["? This will remove it from your MCP configuration.", "？这将把它从您的 MCP 配置中移除。"],
     ["Aborted due to condition callback returning false.", "由于条件回调返回 false，操作已中止。"],
     ["Allow sandboxed commands to make network requests.", "允许沙盒中的命令发起网络请求。"],
@@ -1752,6 +1766,8 @@
     ["Connect an account so the agent can use this app.", "连接账号，让智能体能够使用此应用。"],
     ["The agent was prevented from accessing some sites", "已阻止智能体访问某些网站"],
     ["For Antigravity Business consumption options, see", "有关 Antigravity Business 的用量选项，请参阅"],
+    ["Creating workspace for the forked conversation...", "正在为派生对话创建工作区..."],
+    ["The server returned no conversation to fork into.", "服务器未返回可供派生的对话。"],
     ["Choose where links open by default when clicked.", "选择点击链接时默认在哪里打开。"],
     ["Display and preserve intermediate thinking steps", "显示并保留中间思考步骤"],
     ["Files modified by the agent in this conversation", "智能体在此对话中修改的文件"],
@@ -1763,6 +1779,9 @@
     ["URLs the agent can actuate on using the browser.", "智能体可通过浏览器执行操作的 URL。"],
     ["Uses your local files and tools. Schedules only.", "使用本地文件和工具，仅支持定时运行。"],
     ["Keeps working in this folder. Nothing is copied.", "继续在此文件夹中工作，不会复制任何内容。"],
+    ["Please fill out all required values to continue.", "请填写所有必填项后继续。"],
+    ["Creating worktree for the forked conversation...", "正在为派生对话创建工作树..."],
+    ["Failed to resolve permissions. Please try again.", "解析权限失败，请重试。"],
     ["Absolute path to the Chrome/Chromium executable", "Chrome 可执行文件的绝对路径"],
     ["Allow a one-time administrator (UAC) elevation?", "允许一次性管理员 (UAC) 提权？"],
     ["Allow running this command outside the sandbox?", "允许在沙盒外运行此命令？"],
@@ -1779,6 +1798,8 @@
     ["How this feature would help you and other users", "此功能将如何帮助你和其他用户"],
     ["Settings for conversations outside of projects.", "项目之外的对话设置。"],
     ["Whatever the voice-engine-addr flag serves you.", "使用由 voice-engine-addr 参数提供的语音引擎。"],
+    ["Failed to update permissions. Please try again.", "更新权限失败，请重试。"],
+    ["Your AI credits balance is too low to continue.", "你的 AI 积分余额不足，无法继续。"],
     ["Automations do not inherit Global Permissions.", "自动化任务不继承全局权限。"],
     ["Check availability, schedule events, and RSVP.", "查看空闲时间、安排活动并回复活动邀请。"],
     ["Configure allowed and denied URLs for reading.", "配置允许和拒绝读取的 URL。"],
@@ -1791,6 +1812,8 @@
     ["Encountered an error while running the plugin.", "运行插件时出错。"],
     ["Change VCS in General settings, under Advanced", "在“常规”设置的“高级”部分更改版本控制系统"],
     ["Show AI autocomplete suggestions in the editor", "在编辑器中显示 AI 自动补全建议"],
+    ["Cannot revert messages with file diff comments", "无法回退包含文件差异评论的消息"],
+    ["This conversation is in a different workspace.", "此对话位于其他工作区。"],
     ["? This removes it from your config directory.", "？这会将它从您的配置目录中移除。"],
     ["Any error messages seen when trying to log in", "尝试登录时看到的任何错误信息"],
     ["Are you sure you want to delete the workspace", "确定要删除工作区"],
@@ -1802,6 +1825,7 @@
     ["Ask the agent to diagnose and fix this server", "让智能体诊断并修复此服务器"],
     ["Image rendering blocked (strict mode enabled)", "图片渲染已阻止（已启用严格模式）"],
     ["Too many requests, please try again in a bit!", "请求过于频繁，请稍后重试！"],
+    ["Cannot revert messages with artifact comments", "无法回退包含产物评论的消息"],
     ["Agent needs permission to execute JavaScript", "智能体需要权限才能执行 JavaScript"],
     ["Conversation copied as Markdown to clipboard", "对话已作为 Markdown 复制到剪贴板"],
     ["Please list the steps to reproduce the issue", "请列出复现此问题的步骤"],
@@ -1814,6 +1838,7 @@
     ["Some non-image binary content was truncated.", "部分非图像二进制内容已被截断。"],
     ["Here's how you and your agents work together", "了解你与智能体如何协作"],
     ["Collaborate with the agent to complete tasks", "与智能体协作完成任务"],
+    ["The agent has encountered an internal error.", "智能体遇到了内部错误。"],
     ["% of the customization budget is available.", "% 的自定义预算可用。"],
     ["broadcast Go Live, Click to run live server", "广播 Go Live，点击运行实时服务器"],
     ["Configure the browser subagent. It requires", "配置浏览器子智能体。它需要"],
@@ -1828,6 +1853,7 @@
     ["Conversation is not open in this Hub window", "此对话未在当前主窗口中打开"],
     ["Are you sure you want to reload the window?", "确定要重新加载窗口吗？"],
     ["Google3 projects are deprecated. Learn more", "Google3 项目已弃用。了解详情"],
+    ["Paused. Resume it to schedule the next run.", "已暂停。恢复后将安排下次执行。"],
     ["Antigravity would like to use the browser.", "Antigravity 想要使用浏览器。"],
     ["Confirmation required to execute this step", "执行此步骤需要确认"],
     ["Failed to inspect license for this project", "检查当前项目的许可证信息失败"],
@@ -1852,6 +1878,9 @@
     ["Type a voice variant name, such as rev27.", "输入语音变体名称，例如 rev27。"],
     ["Restores workspace and chat to this point", "将工作区和聊天恢复到此时的状态"],
     ["Finish onboarding to start using the IDE.", "完成入门设置后即可开始使用 IDE。"],
+    ["Could not apply the selected permissions.", "无法应用选定的权限。"],
+    ["Cannot revert messages with file comments", "无法回退包含文件评论的消息"],
+    ["Your quota for this model is running low.", "你对此模型的额度即将用完。"],
     ["Commands and files these agents can use.", "这些智能体可调用的命令与文件。"],
     ["Configure AI models and view your quota.", "配置 AI 模型并查看额度。"],
     ["Controls the actions the agent can take.", "控制智能体可以执行的操作。"],
@@ -1876,6 +1905,8 @@
     ["Files and resources in cloud workspaces", "云工作区中的文件与资源"],
     ["The remote shared a link for this push.", "远程端为此次推送提供了链接。"],
     ["Plan carefully before executing a task.", "执行任务前先仔细规划。"],
+    ["Telemetry is off for this conversation.", "此对话的遥测功能已关闭。"],
+    ["Telemetry is off for all conversations.", "所有对话的遥测功能均已关闭。"],
     ["Allow/deny specific terminal commands.", "允许或拒绝指定终端命令。"],
     ["Google Drive integration not available", "Google 云端硬盘集成不可用"],
     ["No (tell the agent what to do instead)", "否（告诉智能体改做什么）"],
@@ -1919,6 +1950,7 @@
     ["No customizations match your search.", "没有与搜索条件匹配的自定义项。"],
     ["Manage project folders and settings.", "管理项目文件夹和设置。"],
     ["Authenticated via Enterprise Gateway", "已通过企业网关身份验证"],
+    ["Agent encountered an internal error.", "智能体遇到内部错误。"],
     ["(tell the agent what to do instead)", "（告诉智能体改做什么）"],
     ["Are you sure you want to delete the", "确定要删除"],
     ["Browser Javascript Execution Policy", "浏览器 JavaScript 执行策略"],
@@ -1937,6 +1969,8 @@
     ["Keep All Chat Edits in this Session", "保留此会话中的所有聊天编辑"],
     ["Chief of Staff voice message failed", "统筹助手语音消息发送失败"],
     ["Importing project from AI Studio...", "正在从 AI Studio 导入项目..."],
+    ["Creating the forked conversation...", "正在创建派生对话..."],
+    ["Telemetry is turned off in settings", "遥测功能已在设置中关闭"],
     ["all commands without restrictions.", "无限制运行所有命令。"],
     ["Build with Antigravity IDE Plugins", "使用 Antigravity IDE 插件构建"],
     ["to have the agent generate a plan.", "让智能体生成计划。"],
@@ -1975,6 +2009,7 @@
     ["Pairs (arm order may be shuffled)", "配对（分组顺序可能会打乱）"],
     ["Discover helpful skills & plugins", "发现有用的技能与插件"],
     ["Chief of Staff voice mode stopped", "统筹助手语音模式已停止"],
+    ["Unlock the power of agent swarms.", "充分发挥智能体群组的能力。"],
     ["扫描二维码以此设备上打开 Remote Control, or ", "扫描二维码以在远程控制中打开此设备，或 "],
     ["扫描二维码以在此设备上打开 Remote Control, or", "扫描二维码以在远程控制中打开此设备，或"],
     ["Allow write access to this path?", "允许写入此路径？"],
@@ -2058,6 +2093,7 @@
     ["Enable tab in gitignored files", "在 Git 忽略的文件中启用 Tab"],
     ["Dismiss artifact update notice", "关闭产物更新通知"],
     ["Show the welcome screen again.", "重新显示欢迎界面。"],
+    ["Select a model to send message", "请选择用于发送消息的模型"],
     ["Agent always asks for review.", "智能体始终请求审核。"],
     ["Agent terminated due to error", "智能体因错误而终止"],
     ["Browser Actuation Permissions", "浏览器操作权限"],
@@ -2241,6 +2277,7 @@
     ["Open Folder (Interactive)", "打开文件夹（交互式）"],
     ["Work in a CitC workspace.", "在 CitC 工作区中工作。"],
     ["What counts as a document", "哪些内容算作文档"],
+    ["Run in a new git worktree", "在新的 Git 工作树中运行"],
     ["Any relevant information", "任何相关信息"],
     ["Commands Outside Sandbox", "沙盒外命令执行"],
     ["Complete Onboarding Step", "完成引导步骤"],
@@ -2289,6 +2326,7 @@
     ["Enable Tab Sounds (Beta)", "启用 Tab 音效（测试版）"],
     ["Work in a Cog workspace.", "在 Cog 工作区中工作。"],
     ["Show Conversation Picker", "显示对话选择器"],
+    ["Next: Review Permissions", "下一步：审核权限"],
     ["Advanced Command Access", "高级命令访问"],
     ["Agent execution failed.", "智能体执行失败。"],
     ["Allow reading this URL?", "允许读取此 URL？"],
@@ -2341,6 +2379,7 @@
     ["This page isn’t working", "此页面无法正常运行"],
     ["Amend and Upload Failed", "修订并上传失败"],
     ["Updates to your sidebar", "侧边栏更新"],
+    ["Fork Environment Notice", "派生环境提示"],
     ["Announcements and tips", "公告和提示"],
     ["Antigravity - Settings", "Antigravity - 设置"],
     ["Artifact Review Policy", "产物审核策略"],
@@ -2571,6 +2610,7 @@
     ["Open Chat with Agent", "打开与智能体的聊天"],
     ["Quick Settings Panel", "快捷设置面板"],
     ["ABFS mount directory", "ABFS 挂载目录"],
+    ["Coordinator settings", "协调员设置"],
     ["Advanced Web Access", "高级网页访问"],
     ["Agent security mode", "智能体安全模式"],
     ["App update required", "需要更新应用程序"],
@@ -2642,6 +2682,12 @@
     ["Upload Chain Failed", "上传链失败"],
     ["ABFS workspace name", "ABFS 工作区名称"],
     ["Citc workspace name", "CitC 工作区名称"],
+    ["Clicking in Browser", "正在浏览器中点击"],
+    ["Typing into Browser", "正在浏览器中输入"],
+    ["Dragging in Browser", "正在浏览器中拖动"],
+    ["Show 1 earlier step", "显示更早的 1 个步骤"],
+    ["Needs your approval", "需要你的批准"],
+    ["Forked conversation", "派生的对话"],
     ["Add inline comment", "添加行内批注"],
     ["Add Scheduled Task", "添加定时任务"],
     ["Agent Conversation", "智能体对话"],
@@ -2739,6 +2785,18 @@
     ["Next side question", "下一个侧边问题"],
     ["Close skills panel", "关闭技能面板"],
     ["Open Fig Workspace", "打开 Fig 工作区"],
+    ["Manage Permissions", "管理权限"],
+    ["Searched for files", "已搜索文件"],
+    ["Clicked in Browser", "已在浏览器中点击"],
+    ["Typed into Browser", "已在浏览器中输入"],
+    ["Dragged in Browser", "已在浏览器中拖动"],
+    ["Semantic searching", "正在语义搜索"],
+    ["Hide earlier steps", "隐藏更早的步骤"],
+    ["Idle Guard Warning", "空闲保护提醒"],
+    ["No folder selected", "未选择文件夹"],
+    ["Added to allowlist", "已添加到允许列表"],
+    ["Review permissions", "审查权限"],
+    ["Remote Permissions", "远程权限"],
     ["Add to Chat/Quote", "添加到聊天/引用"],
     ["Advanced Settings", "高级设置"],
     ["Analyzed Task Log", "已分析任务日志"],
@@ -2813,6 +2871,12 @@
     ["2x playback speed", "2 倍播放速度"],
     ["Google Extensions", "Google 扩展"],
     ["This Conversation", "当前对话"],
+    ["Taking Screenshot", "正在截图"],
+    ["Semantic searched", "已完成语义搜索"],
+    ["Goal Verification", "目标验证"],
+    ["Command execution", "命令执行"],
+    ["Analyzing content", "正在分析内容"],
+    ["Run (unsandboxed)", "运行（不在沙盒中）"],
     ["Add Custom Model", "添加自定义模型"],
     ["Auth and Billing", "身份验证与账单"],
     ["Background Tasks", "后台任务"],
@@ -2895,6 +2959,15 @@
     ["Reset Onboarding", "重置入门设置"],
     ["New CLs Uploaded", "已上传多个新的更改列表"],
     ["ABFS branch name", "ABFS 分支名称"],
+    ["Open Swarm Board", "打开 Swarm 消息板"],
+    ["Invoked subagent", "已调用子智能体"],
+    ["Analyzed content", "已分析内容"],
+    ["Open Source Code", "打开源代码"],
+    ["Video attachment", "视频附件"],
+    ["Image attachment", "图片附件"],
+    ["Creating Fork...", "正在派生..."],
+    ["Add to allowlist", "添加到允许列表"],
+    ["No upcoming run.", "没有即将执行的任务。"],
     [", or copy link.", "，或复制链接。"],
     ["1 agent running", "1 个代理正在运行"],
     ["Actual behavior", "实际行为"],
@@ -2985,6 +3058,8 @@
     ["Remind me later", "稍后提醒我"],
     ["Create New Rule", "创建新规则"],
     ["New CL Uploaded", "已上传新的更改列表"],
+    ["Took Screenshot", "已截图"],
+    ["Generated media", "生成的媒体"],
     [", or copy link", "，或复制链接"],
     ["Add automation", "添加自动化"],
     ["Add MCP Server", "添加 MCP 服务器"],
@@ -3085,6 +3160,8 @@
     ["Search results", "搜索结果"],
     ["GoB Repository", "GoB 仓库"],
     ["Workspace Name", "工作区名称"],
+    ["Confirm & Save", "确认并保存"],
+    ["Site Allowlist", "网站允许列表"],
     ["Access grants", "访问授权"],
     ["Agent Decides", "由智能体决定"],
     ["Agent options", "智能体选项"],
@@ -3188,6 +3265,9 @@
     ["Close Sidebar", "关闭侧边栏"],
     ["Refresh rules", "刷新规则"],
     ["New Fig Share", "新建 Fig 共享"],
+    ["Browser steps", "浏览器步骤"],
+    ["Using browser", "正在使用浏览器"],
+    ["Used MCP tool", "已使用 MCP 工具"],
     ["Add Shortcut", "添加快捷键"],
     ["AI Shortcuts", "AI 快捷方式"],
     ["Always Allow", "始终允许"],
@@ -3282,6 +3362,7 @@
     ["Report Issue", "报告问题"],
     ["Branch / Ref", "分支 / 引用"],
     ["Limited time", "限时提供"],
+    ["Searched web", "已搜索网页"],
     ["Accept Step", "接受此步骤"],
     ["Add context", "添加上下文"],
     ["Add Handler", "添加处理程序"],
@@ -3367,6 +3448,7 @@
     ["Start voice", "开始语音"],
     ["No branches", "没有分支"],
     ["No shortcut", "无快捷键"],
+    ["Browser Use", "浏览器操作"],
     ["+ Add Hook", "+ 添加钩子"],
     ["Add Folder", "添加文件夹"],
     ["Allow once", "允许一次"],
@@ -3515,6 +3597,7 @@
     ["End voice", "结束语音"],
     ["More info", "更多信息"],
     ["Changelog", "更新日志"],
+    ["Stop Task", "停止任务"],
     ["[MODIFY]", "[修改]"],
     ["Advanced", "高级"],
     ["Archived", "已归档"],
@@ -3580,6 +3663,7 @@
     ["No links", "没有链接"],
     ["Optional", "可选"],
     ["Voice on", "语音已开启"],
+    ["Read URL", "已读取 URL"],
     ["Account", "账户"],
     ["Actions", "操作"],
     ["Add MCP", "添加 MCP"],
@@ -3646,6 +3730,7 @@
     ["Sign In", "登录"],
     ["Changes", "更改"],
     ["Suggest", "建议"],
+    ["Run Now", "立即运行"],
     ["Accent", "强调色"],
     ["Accept", "接受"],
     ["Agents", "智能体"],
@@ -4017,6 +4102,28 @@
     return value.replace(text, () => translated); // 回调避免目标中的 $& / $' 被当作替换指令。
   }
 
+  // 工具步骤中的查询、URL、文件模式和工具名是变量，整体匹配后立即返回。
+  const activityPrefixes = [
+    ['Read URL: ', '已读取 URL：'], ['Searched web: ', '已搜索网页：'],
+    ['Searched for files: ', '已搜索文件：'], ['Invoked subagent: ', '已调用子智能体：'],
+    ['Used MCP tool: ', '已使用 MCP 工具：'], ['Forked from ', '派生自 '],
+  ];
+  function translateActivity(value) {
+    const text = value.trim();
+    if (/^(?:已读取 URL：|已搜索网页：|已搜索文件：|已调用子智能体：|已使用 MCP 工具：|派生自 )/.test(text) ||
+        /^正在使用浏览器(?: · [\s\S]+)?（\d+ 秒）$/.test(text)) return value;
+    for (const [prefix, translated] of activityPrefixes) {
+      if (text.startsWith(prefix) && text.length > prefix.length) {
+        return value.replace(text, () => translated + text.slice(prefix.length));
+      }
+    }
+    const browser = text.match(/^Using browser(?: · ([\s\S]+))? \((\d+)s\)$/);
+    if (browser) return value.replace(text, () => `正在使用浏览器${browser[1] ? ` · ${browser[1]}` : ''}（${browser[2]} 秒）`);
+    const earlier = text.match(/^Show (\d+) earlier steps$/);
+    if (earlier) return value.replace(text, () => `显示更早的 ${earlier[1]} 个步骤`);
+    return null;
+  }
+
   // 动态变量与模板匹配（仅针对含捕获组、时间、计算等动态规则）
   const dynamicPatterns = [
 
@@ -4139,6 +4246,8 @@
     if (deletion) return value.replace(value.trim(), () => `永久删除项目“${deletion[1]}”及其中的 ${deletion[2]} 个活跃对话。`);
     const permission = translatePermission(value);
     if (permission !== null) return permission;
+    const activity = translateActivity(value);
+    if (activity !== null) return activity;
     const trimmed = value.trim();
 
     // 文件夹路径和产品名称是变量，先处理已确认的完整控件模板。
@@ -4383,6 +4492,9 @@
   function shouldSkipSubtree(node) {
     const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
     if (!element) return false;
+
+    // 协调员欢迎语中的项目名由用户提供，即使与词条同名也不翻译。
+    if (element.closest('[data-testid="coordinator-welcome"] strong')) return true;
 
     // 删除说明中的项目名称是用户数据，即使与词条同名也不能翻译。
     const strong = element.closest('strong');
@@ -4668,6 +4780,62 @@
     return { nodes, current, source };
   }
 
+  // 协调员欢迎语逐词拆为 span；只改写已确认的固定文案，保留 strong 中的项目名。
+  const translatedCoordinatorParagraphs = new WeakMap();
+  const coordinatorIntro = ". I coordinate the work for this project. Ask me a question or hand me a task, and I'll answer directly or start workers that run in parallel.";
+  const coordinatorFollow = "You can follow the workers in the Dashboard, and I'll post an update when something finishes or needs you.";
+  function coordinatorOriginal(node) {
+    const record = originals.texts.get(node);
+    return record && record.zh === node.nodeValue ? record.orig : (node.nodeValue || '');
+  }
+  function rewriteCoordinatorNodes(nodes, value) {
+    nodes.forEach((node, index) => {
+      const next = index === 0 ? value : '';
+      if (node.nodeValue !== next) writeText(node, next);
+      node.__zh_patched = true;
+    });
+  }
+  function restoreCoordinatorParagraph(paragraph) {
+    const nodes = translatedCoordinatorParagraphs.get(paragraph);
+    if (!nodes) return;
+    for (const node of nodes) restoreTrackedNode(node);
+    translatedCoordinatorParagraphs.delete(paragraph);
+  }
+  function translateCoordinatorWelcome(element) {
+    if (!element.matches?.('[data-testid="coordinator-welcome"]')) return false;
+    const paragraphs = element.querySelectorAll?.(':scope > p');
+    if (!paragraphs || paragraphs.length !== 2) return false;
+    let translated = false;
+    const first = paragraphs[0];
+    const names = first.querySelectorAll?.('strong');
+    if (names?.length === 1) {
+      const name = names[0];
+      const nodes = originalMenuText(first).nodes;
+      const firstName = nodes.findIndex((node) => name.contains(node));
+      let lastName = firstName;
+      while (lastName + 1 < nodes.length && name.contains(nodes[lastName + 1])) lastName++;
+      const before = nodes.slice(0, firstName);
+      const after = nodes.slice(lastName + 1);
+      const matches = firstName > 0 && after.length &&
+        before.map(coordinatorOriginal).join('') === 'Welcome to ' &&
+        after.map(coordinatorOriginal).join('') === coordinatorIntro;
+      if (matches) {
+        rewriteCoordinatorNodes(before, '欢迎来到 ');
+        rewriteCoordinatorNodes(after, '。我是本项目的协调员。你可以向我提问或交给我任务，我会直接回答，或启动并行工作的成员。');
+        translatedCoordinatorParagraphs.set(first, [...before, ...after]);
+        translated = true;
+      } else restoreCoordinatorParagraph(first);
+    } else restoreCoordinatorParagraph(first);
+    const second = paragraphs[1];
+    const nodes = originalMenuText(second).nodes;
+    if (nodes.length && nodes.map(coordinatorOriginal).join('') === coordinatorFollow) {
+      rewriteCoordinatorNodes(nodes, '你可以在控制面板中查看各成员的进展；有任务完成或需要你参与时，我会发布更新。');
+      translatedCoordinatorParagraphs.set(second, nodes);
+      translated = true;
+    } else restoreCoordinatorParagraph(second);
+    return translated;
+  }
+
   function translateKnownSlashDescription(element) {
     if (!element.matches?.('[data-testid="menu-option-description"]') ||
         !element.closest?.('[data-mention-menu]')) return false;
@@ -4707,6 +4875,7 @@
     if (shouldSkip(element)) return;
     if (!isInAntigravityContainer(element)) return;
     translateComposedElement(element);
+    translateCoordinatorWelcome(element);
     translateKnownSlashDescription(element);
     for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
       const value = element.getAttribute?.(attr);
@@ -4885,8 +5054,9 @@
           (data.lang === 'en' || data.lang === 'zh') && typeof data.englishLabels === 'boolean') {
         setLang(data.lang, false);
         setEnglishLabels(data.englishLabels, false);
-      } else if (isWorkbench && data.type === preferenceRequest && e.source &&
-          /^http:\/\/127\.0\.0\.1:\d{1,5}$/.test(e.origin)) {
+      } else if (!isFrame && data.type === preferenceRequest && e.source &&
+          ((isWorkbench && /^http:\/\/127\.0\.0\.1:\d{1,5}$/.test(e.origin)) ||
+           /^plugin:\/\/swarm--swarm_board-[a-z0-9]{5}$/i.test(e.origin))) {
         for (const peer of preferencePeers.keys()) {
           try { if (peer.closed) preferencePeers.delete(peer); } catch (_e) { preferencePeers.delete(peer); }
         }
@@ -5152,6 +5322,12 @@
           const target = mutation.target;
           target.__zh_patched = false;
           const parent = target.parentElement;
+          const welcome = parent?.closest?.('[data-testid="coordinator-welcome"]');
+          if (welcome) {
+            welcome.__zh_patched = false;
+            nodesToTranslate.push(welcome);
+            continue;
+          }
           const description = parent?.closest?.('[data-testid="menu-option-description"]');
           if (description?.closest?.('[data-mention-menu]')) {
             description.__zh_patched = false;
@@ -5174,6 +5350,13 @@
             elementsToTranslate.push(target);
           }
         } else {
+          const welcome = mutation.target.nodeType === Node.ELEMENT_NODE &&
+            mutation.target.closest?.('[data-testid="coordinator-welcome"]');
+          if (welcome) {
+            welcome.__zh_patched = false;
+            nodesToTranslate.push(welcome);
+            continue;
+          }
           const description = mutation.target.nodeType === Node.ELEMENT_NODE &&
             mutation.target.closest?.('[data-testid="menu-option-description"]');
           if (description?.closest?.('[data-mention-menu]')) {

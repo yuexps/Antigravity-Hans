@@ -136,6 +136,9 @@ func candidateTarget(target CDPTarget, cfg AppConfig) (bool, int) {
 	if isTargetPage(target.URL, cfg.Name) {
 		return true, 0
 	}
+	if (cfg.Name == AppNormal.Name || cfg.Name == AppIDE.Name) && isSwarmBoardTarget(target) {
+		return true, swarmFrame
+	}
 	if cfg.Name == AppIDE.Name {
 		if port, ok := ideAgentFramePort(target); ok {
 			return true, port
@@ -237,11 +240,22 @@ func EnsureTargetInjected(target CDPTarget, overlaySource string) (bool, bool, e
 	return ensureTargetInjected(target, overlaySource, 0)
 }
 
-// agentPort is nonzero only for an IDE iframe whose listener ownership was
-// verified by the caller. Such frames may navigate to arbitrary web pages.
+// A positive agentPort identifies an IDE iframe whose listener ownership was
+// verified by the caller. The swarmFrame sentinel identifies a plugin frame.
+// Such frames can navigate, so the destination is checked again at execution.
 func ensureTargetInjected(target CDPTarget, overlaySource string, agentPort int) (bool, bool, error) {
 	var agentRoute string
-	if agentPort != 0 {
+	var swarmHost string
+	if agentPort == swarmFrame {
+		var err error
+		swarmHost, err = swarmBoardHostForTarget(target)
+		if err != nil {
+			return false, true, err
+		}
+		// A plugin frame receives only the dedicated, fixed UI script, never the
+		// user's custom translations or a trusted external overlay.
+		overlaySource = embeddedSwarmOverlayJS
+	} else if agentPort != 0 {
 		port, ok := ideAgentFramePort(target)
 		if !ok || port != agentPort {
 			return false, true, fmt.Errorf("IDE 内嵌页面地址校验失败")
@@ -285,7 +299,9 @@ func ensureTargetInjected(target CDPTarget, overlaySource string, agentPort int)
 		}
 	}
 	injectionSource := fmt.Sprintf("window.__antigravityZhPatchRequestedFingerprint = %q;\n%s", fingerprint, overlaySource)
-	if agentPort != 0 {
+	if agentPort == swarmFrame {
+		injectionSource = swarmBoardInjectionSource(injectionSource, swarmHost)
+	} else if agentPort != 0 {
 		// Do not register a persistent new-document script on a webview. The
 		// frame could navigate to a different page; the watcher must recheck
 		// the new URL and listener owner before each subsequent injection.
@@ -529,7 +545,6 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 	injectionPending := make(map[string]bool)
 	verificationPending := make(map[string]bool)
 	permanentWarnings := make(map[string]bool)
-	fingerprint := overlayFingerprint(overlaySource)
 	injectIfMatch := func(target CDPTarget, rawURL, triggerType string) {
 		candidate, agentPort := candidateTarget(target, cfg)
 		if target.ID == "" || !candidate {
@@ -557,7 +572,7 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 			for attempt := 1; attempt <= maxAttempts; attempt++ {
 				// The iframe listener must still belong to this IDE instance on
 				// every attempt, including retries after the DOM becomes ready.
-				if agentPort != 0 && !isTrustedIDEAgentFrame(target, cfg, agentPort) {
+				if agentPort > 0 && !isTrustedIDEAgentFrame(target, cfg, agentPort) {
 					return
 				}
 				// 单连接复用，检查当前页面并复核注入状态。
@@ -567,7 +582,9 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 					injectedSet[target.ID] = true
 					mu.Unlock()
 					title := getTargetTitle(target.Title, rawURL)
-					if agentPort != 0 {
+					if agentPort == swarmFrame {
+						title = "Swarm 面板"
+					} else if agentPort != 0 {
 						title = "IDE 智能体页面"
 					}
 					fmt.Printf("[%s] 捕获到目标页面，成功注入汉化: %s (ID: %s)\n", triggerType, title, target.ID)
@@ -640,11 +657,15 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 						// 复核已注入页面：若用户刷新导致文档重置（__observedDocument 失效），重新补刀
 						go func(target CDPTarget, agentPort int) {
 							defer func() { mu.Lock(); delete(verificationPending, target.ID); mu.Unlock() }()
-							if agentPort != 0 && !isTrustedIDEAgentFrame(target, cfg, agentPort) {
+							if agentPort > 0 && !isTrustedIDEAgentFrame(target, cfg, agentPort) {
 								mu.Lock()
 								delete(injectedSet, target.ID)
 								mu.Unlock()
 								return
+							}
+							fingerprint := overlayFingerprint(overlaySource)
+							if agentPort == swarmFrame {
+								fingerprint = overlayFingerprint(embeddedSwarmOverlayJS)
 							}
 							if !IsTargetInjected(target, fingerprint) {
 								mu.Lock()
