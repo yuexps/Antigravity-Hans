@@ -32,6 +32,16 @@ jobs:
             goarch: amd64
             artifact: antigravity-hans-windows-amd64
             binary: antigravity-hans-windows-amd64.exe
+          - name: Linux AMD64
+            goos: linux
+            goarch: amd64
+            artifact: antigravity-hans-linux-amd64
+            binary: antigravity-hans-linux-amd64
+          - name: Linux ARM64
+            goos: linux
+            goarch: arm64
+            artifact: antigravity-hans-linux-arm64
+            binary: antigravity-hans-linux-arm64
 
     steps:
       - name: 检出代码

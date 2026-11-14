@@ -9,7 +9,7 @@ import (
 // AppConfig 描述一个目标应用的配置信息
 type AppConfig struct {
 	Name          string
-	Exe           string // 进程名（Windows: Antigravity.exe, macOS: Antigravity）
+	Exe           string // 进程名（Windows: Antigravity.exe, macOS: Antigravity, Linux: antigravity）
 	Port          int
 	PossiblePaths []string
 }
@@ -17,6 +17,7 @@ type AppConfig struct {
 var (
 	IsWindows = runtime.GOOS == "windows"
 	IsMac     = runtime.GOOS == "darwin"
+	IsLinux   = runtime.GOOS == "linux"
 )
 
 // buildAppNormal 构建 Antigravity 普通版配置
@@ -41,6 +42,9 @@ func buildAppNormal() AppConfig {
 			"/Applications/Antigravity.app/Contents/MacOS/Antigravity",
 			filepath.Join(homeDir, "Applications/Antigravity.app/Contents/MacOS/Antigravity"),
 		}
+	case "linux":
+		cfg.Exe = "antigravity"
+		cfg.PossiblePaths = discoverLinuxNormalPaths()
 	default:
 		cfg.Exe = "Antigravity"
 		cfg.PossiblePaths = []string{}
@@ -70,6 +74,9 @@ func buildAppIDE() AppConfig {
 			"/Applications/Antigravity IDE.app/Contents/MacOS/Electron",
 			filepath.Join(homeDir, "Applications/Antigravity IDE.app/Contents/MacOS/Electron"),
 		}
+	case "linux":
+		cfg.Exe = "antigravity-ide"
+		cfg.PossiblePaths = discoverLinuxIDEPaths()
 	default:
 		cfg.Exe = "Electron"
 		cfg.PossiblePaths = []string{}
