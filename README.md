@@ -27,6 +27,12 @@
   ./antigravity-hans-macos-arm64  # Apple Silicon
   ./antigravity-hans-macos-amd64  # Intel
   ```
+- **Linux**（x64 / ARM64，适配 `.deb` / `.rpm` / Arch AUR `/opt/Antigravity` / 官方 `.tar.gz` 等主流安装方式）：
+  ```bash
+  chmod +x antigravity-hans-linux-*
+  ./antigravity-hans-linux-amd64  # x64
+  ./antigravity-hans-linux-arm64  # ARM64
+  ```
 
 ```text
 Antigravity-Hans 启动器
@@ -72,9 +78,10 @@ antigravity-hans --app --trust-custom-translations  # 显式信任同目录自�
    - 支持 Antigravity 及 Antigravity IDE。
    - 通过 CDP 动态翻译界面，保留应用安装资源；注入状态随应用页面关闭而消失。
    - 普通版 Swarm 面板和 IDE 2.6.0 的智能体及独立设置页面需要动态监视器；静态补丁不会覆盖这些内嵌页面。
-   - 可通过 `--shortcut` 参数一键生成桌面快捷方式，日常双击即可自动启动汉化。
+   - 可通过 `--shortcut` 参数一键生成桌面快捷方式，日常双击或从应用菜单即可自动启动汉化（Linux 下会自动生成 `.desktop` 文件到 `~/.local/share/applications/` 及桌面目录）。
 2. **静态补丁（仅支持 Antigravity IDE）**：
    - 直接修改本地 IDE 安装包资源并修复校验和，一劳永逸，支持随时一键还原。
+   - Linux 下若 IDE 安装在 `/usr/share/` 或 `/opt/` 等系统级目录，写入补丁需使用 `sudo` 提权；建议优先使用零改动的动态汉化模式。
 
 ### 中英切换按钮
 
@@ -120,6 +127,7 @@ Turbo = 快速模式
 ## 常见问题
 
 - **macOS 双击「中文」图标后没有汉化**：监视进程日志位于 `~/Library/Logs/antigravity-hans.log`，先看该文件。
+- **Linux 桌面快捷方式与权限**：执行 `--shortcut` 会在 `~/.local/share/applications/` 及桌面目录生成 `.desktop` 启动器；若对系统级目录（如 `/usr/share/`、`/opt/`）下的 IDE 安装静态补丁遇到权限不足，请使用 `sudo` 运行 `--patch`，或改用零改动的动态汉化模式（`--ide`）。
 - **提示汉化监视器已在运行**：说明上一次的监视器仍在工作，可用 `antigravity-hans --stop` 结束它。
 - **提示退出取消或超时**：仅在没有可复用调试端口时请求正常退出（macOS 用 AppleScript，Windows 用不带 `/F` 的 `taskkill`）。Windows 若只检测到无可见窗口的后台进程，会在交互控制台列出 PID 并询问是否强制结束：输入 `Y` 或按回车继续，输入 `N` 取消；强制结束可能丢失未保存的后台工作。存在可见窗口、无法确认进程身份或使用 `--nogui` 时会中止重启，请保存内容并手动退出后重试。
 - **更新后仍使用旧词库**：先结束旧监视器；如果日志提示旧脚本没有清理入口，重新加载当前应用窗口后再启动新版监视器。
@@ -131,7 +139,7 @@ Turbo = 快速模式
 需要 **Go 1.27.4 或更高版本**（`go.mod` 已声明，旧工具链会自动下载对应版本）。
 
 ```bash
-./build.sh    # 交叉编译 macOS / Windows 2个平台到 dist/
+./build.sh    # 交叉编译 macOS / Windows / Linux 3个平台（共 5 个产物）到 dist/
 ```
 
 在 Windows 上也可使用 PowerShell 7 构建单个本地测试版：

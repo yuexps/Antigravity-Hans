@@ -67,10 +67,28 @@ jobs:
           go build -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
             -o dist/antigravity-hans-windows-amd64.exe .
 
+      - name: 编译 Linux AMD64（x64）
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 0
+        run: |
+          go build -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
+            -o dist/antigravity-hans-linux-amd64 .
+
+      - name: 编译 Linux ARM64
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CGO_ENABLED: 0
+        run: |
+          go build -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
+            -o dist/antigravity-hans-linux-arm64 .
+
       - name: 查看产物
         working-directory: dist
         run: |
-          sha256sum antigravity-hans-macos-arm64 antigravity-hans-macos-amd64 antigravity-hans-windows-amd64.exe > SHA256SUMS
+          sha256sum antigravity-hans-macos-arm64 antigravity-hans-macos-amd64 antigravity-hans-windows-amd64.exe antigravity-hans-linux-amd64 antigravity-hans-linux-arm64 > SHA256SUMS
           ls -lh
 
       - name: 发布到 GitHub Releases
@@ -88,6 +106,8 @@ jobs:
             | Windows x64 | `antigravity-hans-windows-amd64.exe` |
             | macOS Apple Silicon | `antigravity-hans-macos-arm64` |
             | macOS Intel | `antigravity-hans-macos-amd64` |
+            | Linux x64 | `antigravity-hans-linux-amd64` |
+            | Linux ARM64 | `antigravity-hans-linux-arm64` |
 
             ### macOS 使用说明
 
@@ -97,10 +117,19 @@ jobs:
             ```
 
             > 若提示"无法验证开发者"，请前往「系统设置 → 隐私与安全性」点击「仍要打开」。
+
+            ### Linux 使用说明
+
+            ```bash
+            chmod +x antigravity-hans-linux-amd64
+            ./antigravity-hans-linux-amd64
+            ```
           files: |
             dist/antigravity-hans-macos-arm64
             dist/antigravity-hans-macos-amd64
             dist/antigravity-hans-windows-amd64.exe
+            dist/antigravity-hans-linux-amd64
+            dist/antigravity-hans-linux-arm64
             dist/SHA256SUMS
           draft: false
           prerelease: false

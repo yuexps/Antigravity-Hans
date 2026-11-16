@@ -4,10 +4,12 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -24,26 +26,37 @@ func GetInstalledIDEApps() []PatchAppInstance {
 	var installed []PatchAppInstance
 
 	cfg := AppIDE
-	paths := []string{}
+	rawPaths := []string{}
 	for _, p := range cfg.PossiblePaths {
 		if _, err := os.Stat(p); err == nil {
-			paths = append(paths, p)
+			rawPaths = append(rawPaths, p)
 		}
 	}
-	if len(paths) == 0 {
+	if len(rawPaths) == 0 {
 		for _, p := range GetPathsFromRegistry(cfg.Name, cfg.Exe) {
-			if !containsStr(paths, p) {
-				paths = append(paths, p)
+			if !containsStr(rawPaths, p) {
+				rawPaths = append(rawPaths, p)
 			}
 		}
 	}
 
-	for _, p := range paths {
+	seen := make(map[string]bool)
+	for _, p := range rawPaths {
+		resolved := p
+		if realPath, err := filepath.EvalSymlinks(p); err == nil {
+			resolved = realPath
+		}
+		resolved = filepath.Clean(resolved)
+		info, err := os.Stat(resolved)
+		if err != nil || info.IsDir() || seen[resolved] {
+			continue
+		}
+		seen[resolved] = true
 		installed = append(installed, PatchAppInstance{
-			Name:    fmt.Sprintf("%s (%s)", cfg.Name, p),
+			Name:    fmt.Sprintf("%s (%s)", cfg.Name, resolved),
 			Exe:     cfg.Exe,
-			ExePath: p,
-			Dir:     filepath.Dir(p),
+			ExePath: resolved,
+			Dir:     filepath.Dir(resolved),
 		})
 	}
 	return installed
@@ -93,12 +106,7 @@ func InstallPatch(inst PatchAppInstance, overlaySource string) bool {
 	probe, err := os.CreateTemp(workbenchDir, ".agy-hans-write-*")
 	if err != nil {
 		fmt.Println("[错误] 目录写入权限不足，无法安装补丁。")
-		if IsMac {
-			fmt.Println("       若该 .app 由安装包部署在 /Applications 且属主为 root，请用 sudo 运行本工具；")
-			fmt.Println("       或者直接改用动态汉化（无需改动任何文件）。")
-		} else {
-			fmt.Println("       如果应用安装在系统敏感目录（如 Program Files），请尝试“以管理员身份运行”此程序。")
-		}
+		fmt.Println(patchPermissionHint())
 		return false
 	}
 	probeName := probe.Name()
@@ -258,6 +266,7 @@ func UninstallPatch(inst PatchAppInstance) bool {
 	workbenchDir := filepath.Join(appDir, "out", "vs", "code", "electron-browser", "workbench")
 
 	restored := false
+	permissionDenied := false
 	htmlFiles := []string{"workbench.html", "workbench-jetski-agent.html"}
 
 	if _, err := os.Stat(workbenchDir); err == nil {
@@ -272,6 +281,9 @@ func UninstallPatch(inst PatchAppInstance) bool {
 					restored = true
 				} else {
 					fmt.Printf("[错误] 还原 %s 失败: %v\n", htmlName, err)
+					if errors.Is(err, os.ErrPermission) {
+						permissionDenied = true
+					}
 				}
 			} else if _, err := os.Stat(htmlPath); err == nil {
 				content, err := os.ReadFile(htmlPath)
@@ -281,6 +293,11 @@ func UninstallPatch(inst PatchAppInstance) bool {
 					if err := os.WriteFile(htmlPath, []byte(html), 0644); err == nil {
 						fmt.Printf("[成功] 清除了 %s 中的注入标签\n", htmlName)
 						restored = true
+					} else {
+						fmt.Printf("[错误] 清理 %s 失败: %v\n", htmlName, err)
+						if errors.Is(err, os.ErrPermission) {
+							permissionDenied = true
+						}
 					}
 				}
 			}
@@ -294,6 +311,9 @@ func UninstallPatch(inst PatchAppInstance) bool {
 				restored = true
 			} else {
 				fmt.Printf("[错误] 删除补丁文件失败: %v\n", err)
+				if errors.Is(err, os.ErrPermission) {
+					permissionDenied = true
+				}
 			}
 		}
 
@@ -306,8 +326,17 @@ func UninstallPatch(inst PatchAppInstance) bool {
 				restored = true
 			} else {
 				fmt.Printf("[错误] 还原 product.json 失败: %v\n", err)
+				if errors.Is(err, os.ErrPermission) {
+					permissionDenied = true
+				}
 			}
 		}
+	}
+
+	if permissionDenied {
+		fmt.Println("[错误] 目录写入权限不足，无法完整还原补丁。")
+		fmt.Println(patchPermissionHint())
+		return false
 	}
 
 	if restored {
@@ -316,6 +345,21 @@ func UninstallPatch(inst PatchAppInstance) bool {
 		fmt.Println("[提示] 未检测到有效的汉化备份或文件，无需还原。")
 	}
 	return true
+}
+
+func patchPermissionHint() string {
+	return patchPermissionHintForOS(runtime.GOOS)
+}
+
+func patchPermissionHintForOS(goos string) string {
+	switch goos {
+	case "darwin":
+		return "       若该 .app 由安装包部署在 /Applications 且属主为 root，请用 sudo 运行本工具；\n       或者直接改用动态汉化（无需改动任何文件）。"
+	case "linux":
+		return "       若应用安装在 /opt 或 /usr/share 等 root 目录，请使用 sudo ./antigravity-hans --patch 运行；\n       或者直接改用动态汉化（无需改动任何文件）。"
+	default:
+		return "       如果应用安装在系统敏感目录（如 Program Files），请尝试“以管理员身份运行”此程序。"
+	}
 }
 
 // copyFile 拷贝文件

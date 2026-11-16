@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -38,6 +39,16 @@ func getIDEArgvPaths() []string {
 			}
 		}
 	}
+	if runtime.GOOS == "linux" {
+		configHome := os.Getenv("XDG_CONFIG_HOME")
+		if configHome == "" || !filepath.IsAbs(configHome) {
+			configHome = filepath.Join(homeDir, ".config")
+		}
+		return []string{
+			filepath.Join(configHome, "Antigravity IDE", "argv.json"),
+			filepath.Join(homeDir, ".antigravity-ide", "argv.json"),
+		}
+	}
 	return []string{
 		filepath.Join(homeDir, ".antigravity-ide", "argv.json"),
 	}
@@ -61,6 +72,20 @@ func getIDEExtensionsDirs() []string {
 				filepath.Join(appData, "Antigravity IDE", "User", "extensions"),
 				filepath.Join(appData, "Antigravity IDE", "extensions"),
 			)
+		}
+	} else if runtime.GOOS == "linux" {
+		configHome := os.Getenv("XDG_CONFIG_HOME")
+		if configHome == "" || !filepath.IsAbs(configHome) {
+			configHome = filepath.Join(homeDir, ".config")
+		}
+		for _, candidate := range []string{
+			filepath.Join(configHome, "Antigravity IDE", "User", "extensions"),
+			filepath.Join(configHome, "Antigravity IDE", "extensions"),
+			filepath.Join(homeDir, ".config", "Antigravity IDE", "extensions"),
+		} {
+			if !containsStr(dirs, candidate) {
+				dirs = append(dirs, candidate)
+			}
 		}
 	}
 
@@ -212,6 +237,19 @@ func getIDECLIPath() string {
 			filepath.Join(localAppData, "Programs/Antigravity IDE/bin/antigravity-ide.cmd"),
 			filepath.Join(programFiles, "Antigravity IDE/bin/antigravity-ide.cmd"),
 		}
+	} else if runtime.GOOS == "linux" {
+		candidates = []string{
+			"/usr/bin/antigravity-ide",
+			"/usr/local/bin/antigravity-ide",
+			"/opt/Antigravity IDE/bin/antigravity-ide",
+			"/opt/antigravity-ide/bin/antigravity-ide",
+			"/usr/share/antigravity-ide/bin/antigravity-ide",
+		}
+		if lookedUp, err := exec.LookPath("antigravity-ide"); err == nil && lookedUp != "" {
+			if !containsStr(candidates, lookedUp) {
+				candidates = append(candidates, lookedUp)
+			}
+		}
 	} else {
 		candidates = []string{
 			"/usr/bin/antigravity-ide",
@@ -220,7 +258,7 @@ func getIDECLIPath() string {
 	}
 
 	for _, p := range candidates {
-		if _, err := os.Stat(p); err == nil {
+		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			return p
 		}
 	}

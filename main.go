@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 )
@@ -127,10 +128,7 @@ func runMainMenu(overlaySource string, trustCustomTranslations bool) {
 		fmt.Println("1. 启动 Antigravity (动态汉化)")
 		fmt.Println("2. 启动 Antigravity IDE (动态汉化)")
 		fmt.Println("3. 静态补丁管理 (仅支持 IDE)")
-		shortcutType := "桌面"
-		if IsMac {
-			shortcutType = "应用程序"
-		}
+		shortcutType := shortcutTypeLabelForOS(runtime.GOOS)
 		fmt.Printf("4. 生成%s快捷启动方式\n", shortcutType)
 		fmt.Println("0. 退出")
 		fmt.Println("----------------------------------------")
@@ -268,6 +266,17 @@ func pressEnterToContinue(reader *bufio.Reader) {
 
 func clearScreen() {
 	fmt.Print("\033[H\033[2J")
+}
+
+func shortcutTypeLabelForOS(goos string) string {
+	switch goos {
+	case "darwin":
+		return "应用程序"
+	case "linux":
+		return "桌面/应用菜单"
+	default:
+		return "桌面"
+	}
 }
 
 func containsArg(args []string, s string) bool {
