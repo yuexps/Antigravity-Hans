@@ -9,8 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/registry"
 )
+
+const minHeadlessConhostBuild = 17763 // Windows 10 1809 引入 conhost --headless
 
 // CreateChineseShortcut 创建一个运行动态汉化的“原名字 中文”桌面快捷方式
 func CreateChineseShortcut(cfg AppConfig, trustCustomTranslations bool) error {
@@ -63,6 +66,7 @@ func CreateChineseShortcut(cfg AppConfig, trustCustomTranslations bool) error {
 	// 目标快捷方式的保存路径，默认放在当前用户桌面
 	targetLnkPath := filepath.Join(desktopDir, newLnkName)
 	arg := shortcutArguments(cfg, trustCustomTranslations)
+	lnkTarget, lnkArgs := shortcutTargetAndArgs(selfExeAbs, arg, findHeadlessConhost())
 
 	var psScript string
 	if foundOldLnk != "" {
@@ -88,7 +92,7 @@ if ($oldLnk.IconLocation -and $oldLnk.IconLocation -like "*.ico*") {
     $newLnk.IconLocation = %s + ",0"
 }
 $newLnk.Save()
-`, psQuote(foundOldLnk), psQuote(targetLnkPath), psQuote(selfExeAbs), psQuote(arg), psQuote(selfDir), psQuote(targetExe))
+`, psQuote(foundOldLnk), psQuote(targetLnkPath), psQuote(lnkTarget), psQuote(lnkArgs), psQuote(selfDir), psQuote(targetExe))
 	} else {
 		// 如果找不到原快捷方式，直接创建一个新的
 		if targetExe == "" {
@@ -102,7 +106,7 @@ $newLnk.Arguments = %s
 $newLnk.WorkingDirectory = %s
 $newLnk.IconLocation = %s + ",0"
 $newLnk.Save()
-`, psQuote(targetLnkPath), psQuote(selfExeAbs), psQuote(arg), psQuote(selfDir), psQuote(targetExe))
+`, psQuote(targetLnkPath), psQuote(lnkTarget), psQuote(lnkArgs), psQuote(selfDir), psQuote(targetExe))
 	}
 
 	// 执行 PowerShell 脚本
@@ -125,6 +129,76 @@ func shortcutArguments(cfg AppConfig, trustCustomTranslations bool) string {
 		arg += " " + trustCustomTranslationsArg
 	}
 	return arg
+}
+
+// shortcutTargetAndArgs 计算桌面快捷方式的实际 TargetPath 与 Arguments。
+// 在 Windows 10 1809+ / Windows 11 默认终端为 Windows Terminal 时，
+// 直接启动控制台程序再调用 ShowWindow(GetConsoleWindow(), SW_HIDE) 无法隐藏
+// Windows Terminal 窗口；改由系统 conhost.exe --headless 拉起可实现彻底无窗口启动。
+// 若当前系统不支持或找不到 conhost.exe，则回退为直接启动当前可执行文件。
+func shortcutTargetAndArgs(selfExeAbs, args, conhostPath string) (string, string) {
+	if conhostPath == "" {
+		return selfExeAbs, args
+	}
+	quotedExe := quoteWindowsArg(selfExeAbs)
+	if args == "" {
+		return conhostPath, "--headless " + quotedExe
+	}
+	return conhostPath, "--headless " + quotedExe + " " + args
+}
+
+func supportsHeadlessConhost(major, build uint32) bool {
+	build &= 0xffff
+	return major > 10 || (major == 10 && build >= minHeadlessConhostBuild)
+}
+
+func findHeadlessConhost() string {
+	major, _, build := windows.RtlGetNtVersionNumbers()
+	if !supportsHeadlessConhost(major, build) {
+		return ""
+	}
+	sysDir, err := windows.GetSystemDirectory()
+	if err != nil || sysDir == "" {
+		return ""
+	}
+	conhostPath := filepath.Join(sysDir, "conhost.exe")
+	info, err := os.Stat(conhostPath)
+	if err != nil || info.IsDir() {
+		return ""
+	}
+	return conhostPath
+}
+
+func quoteWindowsArg(s string) string {
+	if s == "" {
+		return `""`
+	}
+	var b strings.Builder
+	b.WriteByte('"')
+	backslashes := 0
+	for i := 0; i < len(s); i++ {
+		switch s[i] {
+		case '\\':
+			backslashes++
+		case '"':
+			for j := 0; j < backslashes; j++ {
+				b.WriteString(`\\`)
+			}
+			b.WriteString(`\"`)
+			backslashes = 0
+		default:
+			for j := 0; j < backslashes; j++ {
+				b.WriteByte('\\')
+			}
+			backslashes = 0
+			b.WriteByte(s[i])
+		}
+	}
+	for j := 0; j < backslashes; j++ {
+		b.WriteString(`\\`)
+	}
+	b.WriteByte('"')
+	return b.String()
 }
 
 func getDesktopPath() string {
