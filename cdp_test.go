@@ -1,8 +1,11 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 	"unicode/utf8"
 )
 
@@ -102,5 +105,44 @@ func TestCDPResponseError(t *testing.T) {
 		"result": map[string]interface{}{"result": map[string]interface{}{"value": true}},
 	}, "Runtime.evaluate"); err != nil {
 		t.Fatalf("unexpected response error: %v", err)
+	}
+}
+
+// 应用进程不存在时，重连应立即结束而不是等满 reconnectTimeout
+func TestReconnectBrowserStopsWhenAppNotRunning(t *testing.T) {
+	cfg := AppConfig{Name: "ReconnectTestApp", Exe: "reconnect-test-app-not-running.exe", Port: 58329}
+
+	start := time.Now()
+	conn, ok := reconnectBrowser(cfg, 10*time.Millisecond)
+	elapsed := time.Since(start)
+
+	if ok || conn != nil {
+		t.Fatalf("应用未运行时应放弃重连，实际 ok=%v", ok)
+	}
+	if elapsed >= reconnectTimeout {
+		t.Fatalf("应用未运行时不应等满 %s，实际耗时 %s", reconnectTimeout, elapsed)
+	}
+}
+
+// 进程仍在但调试端口消失时，应在 cdpPortGoneLimit 次探测后放弃重连
+func TestReconnectBrowserGivesUpWhenDebugPortGone(t *testing.T) {
+	exePath, err := os.Executable()
+	if err != nil {
+		t.Skipf("无法获取测试进程路径: %v", err)
+	}
+	cfg := AppConfig{Name: "ReconnectTestApp", Exe: filepath.Base(exePath), Port: 58329}
+	if !DetectApp(cfg).Running {
+		t.Skip("当前测试进程未被识别为目标应用，跳过")
+	}
+
+	start := time.Now()
+	conn, ok := reconnectBrowser(cfg, 10*time.Millisecond)
+	elapsed := time.Since(start)
+
+	if ok || conn != nil {
+		t.Fatalf("调试端口消失时应放弃重连，实际 ok=%v", ok)
+	}
+	if elapsed >= reconnectTimeout {
+		t.Fatalf("调试端口消失后不应等满 %s，实际耗时 %s", reconnectTimeout, elapsed)
 	}
 }

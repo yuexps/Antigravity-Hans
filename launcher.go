@@ -41,13 +41,16 @@ func LaunchWithDebug(appPath string, port int) error {
 // 各平台可在自己的 init 中调整（见 quit_windows.go）。
 var gracefulQuitTimeout = 8 * time.Second
 
-// KillProcess 先请求正常退出；仅 Windows 交互模式可在用户确认后清理后台残留。
+// KillProcess 先请求正常退出；正常退出失败时清理无可见窗口的后台残留进程。
+// 交互模式征求用户确认，无交互模式（--nogui）直接清理已严格校验的残留进程。
 func KillProcess(cfg AppConfig, interactive bool, input *bufio.Reader) bool {
 	fmt.Printf("正在请求 %s 正常退出（保存状态）...\n", cfg.Name)
 	err := quitOrOfferBackgroundCleanup(interactive, func() error {
 		return quitAndWait(cfg, requestGracefulQuit, waitForAppExit)
 	}, func() (bool, error) {
 		return requestBackgroundCleanup(cfg, input)
+	}, func() (bool, error) {
+		return autoTerminateBackgroundProcesses(cfg)
 	})
 	if err != nil {
 		fmt.Printf("[提示] 已中止重启: %v。请保存内容并手动退出应用后重试。\n", err)
@@ -57,10 +60,20 @@ func KillProcess(cfg AppConfig, interactive bool, input *bufio.Reader) bool {
 	return true
 }
 
-// 只有正常退出失败且允许交互时才提供后台清理；取消或失败都中止重启。
-func quitOrOfferBackgroundCleanup(interactive bool, quit func() error, cleanup func() (bool, error)) error {
+// 正常退出失败时清理后台残留：交互模式必须由用户确认，无交互模式只能自动清理。
+func quitOrOfferBackgroundCleanup(interactive bool, quit func() error, cleanup, autoCleanup func() (bool, error)) error {
 	err := quit()
-	if err == nil || !interactive {
+	if err == nil {
+		return nil
+	}
+	if !interactive {
+		completed, autoErr := autoCleanup()
+		if autoErr != nil {
+			return fmt.Errorf("%v；自动清理后台进程失败: %w", err, autoErr)
+		}
+		if completed {
+			return nil
+		}
 		return err
 	}
 	completed, cleanupErr := cleanup()

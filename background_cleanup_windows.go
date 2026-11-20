@@ -276,6 +276,28 @@ func terminateBackgroundProcesses(cfg AppConfig, original []backgroundProcessIde
 	return nil
 }
 
+// autoTerminateBackgroundProcesses 在无交互控制台时直接结束已确认的无窗口残留进程。
+// 校验口径与交互路径一致：同会话、安装位置可确认、且没有任何可见窗口。
+func autoTerminateBackgroundProcesses(cfg AppConfig) (bool, error) {
+	targets, err := snapshotBackgroundProcesses(cfg)
+	if err != nil {
+		return false, err
+	}
+	if len(targets) == 0 {
+		return true, nil
+	}
+	ids := make([]string, 0, len(targets))
+	for _, target := range targets {
+		ids = append(ids, fmt.Sprint(target.pid))
+	}
+	fmt.Printf("[提示] 检测到 %s 的无可见窗口进程（PID: %s），无交互模式将直接结束。\n", cfg.Name, strings.Join(ids, ", "))
+	if err := terminateBackgroundProcesses(cfg, targets); err != nil {
+		return false, err
+	}
+	fmt.Printf("[成功] %s 的后台进程已退出。\n", cfg.Name)
+	return true, nil
+}
+
 func requestBackgroundCleanup(cfg AppConfig, input *bufio.Reader) (bool, error) {
 	var mode uint32
 	if input == nil || windows.GetConsoleMode(windows.Handle(os.Stdin.Fd()), &mode) != nil {

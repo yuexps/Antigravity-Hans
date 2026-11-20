@@ -260,7 +260,8 @@ func runPatchMenu(overlaySource string) {
 }
 
 func pressEnterToContinue(reader *bufio.Reader) {
-	fmt.Print("\n按回车键返回主菜单...")
+	fmt.Println()
+	fmt.Print("==> 按回车键返回主菜单...")
 	reader.ReadString('\n')
 }
 

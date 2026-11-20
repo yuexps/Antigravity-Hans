@@ -8,3 +8,8 @@ import "bufio"
 func requestBackgroundCleanup(_ AppConfig, _ *bufio.Reader) (bool, error) {
 	return false, nil
 }
+
+// Without platform support there is nothing to clean up automatically.
+func autoTerminateBackgroundProcesses(_ AppConfig) (bool, error) {
+	return false, nil
+}

@@ -188,6 +188,20 @@ func TestBackgroundCleanupOnlyTerminatesVerifiedProcess(t *testing.T) {
 	}
 }
 
+// 无交互模式（--nogui）应直接结束已校验的无窗口残留进程
+func TestAutoTerminateBackgroundProcesses(t *testing.T) {
+	cfg, _, done := startBackgroundFixture(t)
+	ok, err := autoTerminateBackgroundProcesses(cfg)
+	if !ok || err != nil {
+		t.Fatalf("自动清理应成功: ok=%v error=%v", ok, err)
+	}
+	select {
+	case <-done:
+	case <-time.After(5 * time.Second):
+		t.Fatal("自动清理未结束已校验的后台进程")
+	}
+}
+
 func TestBackgroundCleanupInteractive(t *testing.T) {
 	expected := os.Getenv("AGY_HANS_TEST_BACKGROUND_PROMPT")
 	if expected != "accept" && expected != "decline" {

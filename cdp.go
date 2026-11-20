@@ -713,9 +713,9 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 			// 就地重连，不再递归调用 Watch：
 			// 递归会让上一层的 Watchdog 巡检 goroutine 一直存活（defer 要等内层返回才执行），
 			// 每断线一次就多一个每 2 秒轮询的巡检器，最终自己把自己的调试端口打成连接风暴。
-			newConn, ok := reconnectBrowser(cfg, 1500*time.Millisecond)
+			newConn, ok := reconnectBrowser(cfg, reconnectProbeDelay)
 			if !ok {
-				fmt.Printf("结束 %s 的汉化监视。\n", cfg.Name)
+				fmt.Printf("[提示] %s 的汉化监视已结束，之后新开的页面将恢复英文。\n", cfg.Name)
 				return
 			}
 			conn = newConn
@@ -770,6 +770,13 @@ func Watch(cfg AppConfig, overlaySource string, injectedSet map[string]bool, mu 
 // reconnectTimeout 是断线后持续重连的最长时间，超过则认为应用已不再处于调试模式
 const reconnectTimeout = 30 * time.Second
 
+// reconnectProbeDelay 是断线后首次探测调试端口的等待时间，短等待让退出能被立即发现
+const reconnectProbeDelay = 500 * time.Millisecond
+
+// cdpPortGoneLimit 是连续探测不到调试端口的次数上限。
+// 应用关闭窗口后调试服务随之消失，无需等到 reconnectTimeout 才放弃监视。
+const cdpPortGoneLimit = 2
+
 // enableTargetDiscovery 开启 Target 事件发现
 func enableTargetDiscovery(conn *websocket.Conn) error {
 	discoverCmd := map[string]interface{}{
@@ -796,12 +803,13 @@ func nextBackoff(d time.Duration) time.Duration {
 }
 
 // reconnectBrowser 在长连接断开后重新建立浏览器级连接。
-// 应用已退出或超过 reconnectTimeout 仍未成功时返回 false，由调用方结束监视。
+// 应用已退出、调试端口消失或超过 reconnectTimeout 仍未成功时返回 false，由调用方结束监视。
 func reconnectBrowser(cfg AppConfig, delay time.Duration) (*websocket.Conn, bool) {
 	deadline := time.Now().Add(reconnectTimeout)
 	backoff := delay
+	portGoneCount := 0
 
-	for {
+	for attempt := 1; ; attempt++ {
 		time.Sleep(backoff)
 		if !DetectApp(cfg).Running {
 			fmt.Printf("检测到 %s 已退出。\n", cfg.Name)
@@ -811,13 +819,27 @@ func reconnectBrowser(cfg AppConfig, delay time.Duration) (*websocket.Conn, bool
 			fmt.Printf("[提示] 已重连 %s 超过 %s 仍未成功，应用可能不再以调试模式运行，请重新用本工具启动。\n", cfg.Name, reconnectTimeout)
 			return nil, false
 		}
-		if port, found := findCDPPort(cfg); !found || port != cfg.Port {
+
+		port, found := findCDPPort(cfg)
+		if found && port != cfg.Port {
+			fmt.Printf("[提示] %s 的调试端口已从 %d 变为 %d，请重新用本工具启动以继续汉化。\n", cfg.Name, cfg.Port, port)
+			return nil, false
+		}
+		if !found {
+			portGoneCount++
+			fmt.Printf("[重连] 第 %d 次尝试：未发现 %s 的调试端口（连续 %d/%d 次）\n", attempt, cfg.Name, portGoneCount, cdpPortGoneLimit)
+			if portGoneCount >= cdpPortGoneLimit {
+				fmt.Printf("[提示] %s 的调试接口已关闭（应用可能已退出或不再以调试模式运行），请重新用本工具启动。\n", cfg.Name)
+				return nil, false
+			}
 			backoff = nextBackoff(backoff)
 			continue
 		}
+		portGoneCount = 0
 
 		wsURL, err := getBrowserWSURL(cfg.Port)
 		if err != nil || wsURL == "" {
+			fmt.Printf("[重连] 第 %d 次尝试：调试接口暂不可用（%s 后重试）\n", attempt, nextBackoff(backoff))
 			backoff = nextBackoff(backoff)
 			continue
 		}
@@ -829,10 +851,11 @@ func reconnectBrowser(cfg AppConfig, delay time.Duration) (*websocket.Conn, bool
 		}
 		if err := enableTargetDiscovery(conn); err != nil {
 			_ = conn.Close()
-			fmt.Printf("[警告] 重新开启 Target 发现失败: %v\n", err)
+			fmt.Printf("[警告] 重新开启 Target 发现失败: %v（%s 后重试）\n", err, nextBackoff(backoff))
 			backoff = nextBackoff(backoff)
 			continue
 		}
+		fmt.Printf("[成功] 已重新建立汉化监视连接（第 %d 次尝试）。\n", attempt)
 		return conn, true
 	}
 }
