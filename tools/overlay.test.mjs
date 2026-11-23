@@ -1890,6 +1890,10 @@ test('2.34.0 normal app greetings, orchestrator settings and controls are locali
     ['98% left', '剩余 98%'],
     ['100% left', '剩余 100%'],
     ['4h', '4小时'],
+    ['Project: Antigravity-Hans', '项目：Antigravity-Hans'],
+    ['Open conversation 00000000-0000-4000-8000-000000000001', '打开对话 00000000-0000-4000-8000-000000000001'],
+    ['Updated 11:20 PM', '更新于 11:20 PM'],
+    ['GPT-OSS 120B (Medium)', 'GPT-OSS 120B (中)'],
   ]) {
     assert.equal(translate(input), expected);
     assert.equal(translate(expected), expected, `translation not idempotent: ${expected}`);
