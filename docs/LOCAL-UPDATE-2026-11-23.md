@@ -1,21 +1,33 @@
-# Antigravity 2.34.0 普通版适配
+# Antigravity 2.34.0 / IDE 2.8.0 适配与架构整理记录
 
-## 修改
+- **适配日期**：2026-11-23
+- **目标版本**：Antigravity 普通版 `2.34.0`、Antigravity IDE `2.8.0`（Windows 本地 CDP 实机截图 + DOM 核验）
+- **词库指纹**：`app-2.34.0-20261123-r6` / `swarm-20261123-r1`
 
-- 共用词库新增 15 条 Antigravity 2.34.0 普通版静态界面文案，覆盖「模型与用量」中的新版 Ultra 套餐升级提示、`Orchestrator Settings`（协调器设置 / 协调器模型 / 执行器模型及说明）、模型下拉菜单中的 `Thinking effort` 与 `Extra High` 档位，以及主界面中的 `Edits the conversation title`、`You said`、`Agent said`、`Agent working`、`Breadcrumb` 等控件文案。
-- 推理强度档位补充 `Extra High`（译为「超高」），同步加入「选项名保留英文」内置预设（`englishLabelsPreset`），并修复 `Select model, current: ...` 将 `Extra High` 错拆为 `Extra 高` 的问题；扩展模型档位匹配规则以覆盖 `Gemini 4 Neon Extra High`、`Gemini 4 Hydrogen Extra High`、`Gemini 4 Neon (Extra High)` 与 `GPT-OSS 120B (Medium)`，开启「选项名保留英文」时均保留档位英文。
-- 新增 3 条主界面控件动态模板：`Updated HH:MM`、`Project: <名称>` 与 `Open conversation <UUID>`，保持项目名与会话 ID 原样不变并保证二次扫描幂等。
-- 在 `tools/overlay.test.mjs` 补充 `2.34.0` 回归测试，覆盖新增静态词条、推理强度与预设切换、以及动态变量保护。
-- 同步更新 `README.md` 顶部的普通版适配版本与「选项名保留英文」说明表格。
+## 架构与词库模块化
 
-## 验证与限制
+- **Go 模块拆分**：收敛根目录至唯一入口 [main.go](../main.go)，拆分 `internal/{app,cdp,cli,overlay,patch,process,safeio,shortcut}`（单向依赖、消除全局可变状态与 `*_other.go`），新增 [AGENTS.md](../AGENTS.md) 与 [build.bat](../build.bat)。
+- **词库源码化**：将主词库与 Swarm 插件词库拆分为 `resources/src/{dict,plugins,runtime,ide-nls.json}`，通过 [tools/build-overlay.mjs](../tools/build-overlay.mjs)（接入 CI `--check`）与 [tools/dict.mjs](../tools/dict.mjs) 统一维护并自动构建独立运行期产物。
 
-- 在 macOS (Apple Silicon) 上实机核对了 Antigravity `2.34.0` 普通版的「模型与用量」设置页、模型选择下拉菜单及主对话界面。
-- 本次未对 Antigravity IDE `2.7.0` 的原生 NLS 索引与界面做完整核对，因此 README 中 IDE 适配版本保持 `2.6.0` 不变。
-- 已运行 `node tools/lint-overlay.mjs antigravity-hans-overlay.js`（0 错误、0 新增警告）、`node --test tools/overlay.test.mjs`（69/69 通过）、`go vet ./...`、`go test ./...`（本机因 Antigravity 运行中仅既有的 `TestInstallPatchUpdatesExistingScriptWithoutOverwritingOtherFiles` 受进程探测影响，其余全部通过）及本地 macOS ARM64 编译。
+## 2.34.0 普通版适配
 
+- **动态规则**：新增首页问候语（保护用户名）、分支标签、用量浮窗（`5h limit`、`Resets in ...`、`N% left`、`4h`）、模型推理强度（`Thinking effort`、`Extra High`）与智能体运行计数。
+- **静态词条**：补齐编排器设置、输入框、外观、快捷键、账户套餐及内置技能文案。
+- **Swarm 面板修复**：将宿主正则放宽为 `^swarm--swarm_board-[a-z0-9]{1,16}$`，兼容 2.34.0 的 4 位端口后缀（如 `7192`）。
+- **启动器加固**：[internal/process/launcher.go](../internal/process/launcher.go) 启动目标应用时过滤 `ELECTRON_RUN_AS_NODE`，避免从 IDE 终端拉起 Electron 报错。
 
-## 模型选择器徽标勘误（#31）
+## 2.8.0 IDE 适配与修复
 
-- Windows x64 普通版 2.34.0 的截图显示，模型和协调器旁的 `New` 是状态徽标。根据本机该版本的前端资源，将「新」限定在模型选择器的徽标内，其他界面中的新建操作保留原译。
-- 补充带说明图标和纯文本徽标对应的文本回归用例，并覆盖 `Notice`、普通 `New`、`New Conversation` 及二次处理。词库检查无新增问题；JavaScript 测试 70/70 通过。未将修改后的脚本部署到本机 Antigravity。
+- **智能体多路由支持**：[internal/cdp/ide_agent.go](../internal/cdp/ide_agent.go) 扩展严格路由白名单，支持 `/c/<id>`、`/history`、`/customizations/...`、`/multi`、`/forked/...`、`/view/<id>`、`/sidecars/...` 等 2.8.0 智能体 iframe 路由。
+- **防误翻与漏翻修复**：
+  - [resources/src/runtime/rules.js](../resources/src/runtime/rules.js) 在主窗口排除资源管理器/大纲/时间线/SCM 文件树，避免项目名含 `antigravity` 命中图标类名导致 `resources`/`VERSION` 被误翻；
+  - 将 `[data-cascade-id]` 跳过规则精确收窄为 `[data-cascade-id]:not([data-testid="conversation-view"])`，修复对话视图输入框占位符（`Ask anything, @ to mention, / for actions`）被跳过的问题；
+  - 补齐 IDE 2.8.0 审批/严格模式/工具栏/插件市场等 88 条词条（含 `Split` → `拆分`）。
+- **原生 NLS 核验**：`2.8.0` 底层仍为 VS Code `1.107.0`，[resources/src/ide-nls.json](../resources/src/ide-nls.json) 的 1,111 条索引 100% 精确兼容。
+
+## 验证结果
+
+- `node tools/build-overlay.mjs --check`：通过（主词条 2746 条、IDE NLS 1111 条、Swarm 插件 122 条）
+- `node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs`：72/72 全部通过
+- `node tools/lint-overlay.mjs resources/antigravity-hans-overlay.js`：0 错误
+- `gofmt -l .`、`go vet ./...`、`go test -count=1 ./internal/cdp ./internal/app ./internal/overlay ./internal/shortcut`：全部通过

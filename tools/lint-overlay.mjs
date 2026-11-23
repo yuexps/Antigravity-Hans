@@ -4,7 +4,7 @@
 
 import fs from 'node:fs';
 
-const file = process.argv[2] ?? 'antigravity-hans-overlay.js';
+const file = process.argv[2] ?? 'resources/antigravity-hans-overlay.js';
 const source = fs.readFileSync(file, 'utf8');
 
 const arrayStart = source.indexOf('[', source.indexOf('const phrases = new Map(['));

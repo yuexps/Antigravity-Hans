@@ -6,8 +6,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$overlayPath = Join-Path $repoRoot 'antigravity-hans-overlay.js'
-$swarmOverlayPath = Join-Path $repoRoot 'swarm-overlay.js'
+$overlayPath = Join-Path $repoRoot 'resources/antigravity-hans-overlay.js'
+$swarmOverlayPath = Join-Path $repoRoot 'resources/swarm-overlay.js'
 if ([System.IO.Path]::IsPathRooted($OutputPath)) {
     $resolvedOutput = [System.IO.Path]::GetFullPath($OutputPath)
 } else {

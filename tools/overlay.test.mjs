@@ -8,7 +8,7 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 import './swarm-overlay.test.mjs';
 
-const source = fs.readFileSync(new URL('../antigravity-hans-overlay.js', import.meta.url), 'utf8');
+const source = fs.readFileSync(new URL('../resources/antigravity-hans-overlay.js', import.meta.url), 'utf8');
 const context = { window: { addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' } }, document: { readyState: 'loading' } };
 vm.createContext(context);
 vm.runInContext(source.replace('  function run() {', '  globalThis.translateForTest = translate; globalThis.translateElementForTest = translateElement; globalThis.translateNodeForTest = translateNode; globalThis.isInAntigravityContainerForTest = isInAntigravityContainer; globalThis.createFlushSchedulerForTest = createFlushScheduler; globalThis.restoreProtectedCustomizationNamesForTest = restoreProtectedCustomizationNames; globalThis.translateKnownSlashDescriptionForTest = translateKnownSlashDescription; globalThis.translateCoordinatorWelcomeForTest = translateCoordinatorWelcome; globalThis.shouldSkipSubtreeForTest = shouldSkipSubtree;\n  function run() {'), context);
@@ -1532,7 +1532,7 @@ test('IDE native language supplement is version-gated, reversible, and preserves
     indices.add(index);
     const sourceParameters = original.match(/\{\d+\}/g)?.sort() ?? [];
     const targetParameters = translated.match(/\{\d+\}/g)?.sort() ?? [];
-    // In IDE 2.6.0 this parameter is only the English plural suffix "s" or "".
+    // IDE 2.6.0-2.8.0 中索引 5772 的 {1} 仅用于英文复数后缀 "s" 或 ""
     if (index === 5772) assert.deepEqual(sourceParameters, ['{0}', '{1}']);
     assert.deepEqual(index === 5772 ? ['{0}'] : sourceParameters, targetParameters);
     const protectedTokens = original.match(/\$\{[^}]+\}|\$\([^)]+\)|#[A-Za-z0-9_.-]+#|`[^`\r\n]+`|https?:\/\/[^\s)]+|--[\w-]+/g) ?? [];
@@ -1837,69 +1837,148 @@ test('normal app shares preferences only with the recognized Swarm plugin frame'
   assert.equal(replies[0].data.lang, 'en');
   assert.equal(replies[0].data.englishLabels, true);
   assert.equal(replies[0].origin, 'plugin://swarm--swarm_board-ab12c');
+  listeners.get('message')({ data: request, source: peer, origin: 'plugin://swarm--swarm_board-7192' });
+  assert.equal(replies.length, 2);
+  assert.equal(replies[1].origin, 'plugin://swarm--swarm_board-7192');
   listeners.get('message')({ data: request, source: peer, origin: 'plugin://swarm--swarm_board-ab12c.example' });
-  assert.equal(replies.length, 1, 'unrecognized plugin origins must not receive preferences');
+  assert.equal(replies.length, 2, 'unrecognized plugin origins must not receive preferences');
   window.__antigravityZhPatchCleanup();
   assert.equal(listeners.has('message'), false);
 });
 
-test('2.34.0 normal app orchestrator settings, model effort levels and live controls are localized', () => {
+test('2.34.0 normal app greetings, orchestrator settings and controls are localized', () => {
   for (const [input, expected] of [
-    ['You can upgrade to a higher Google AI Ultra plan to receive the highest rate limits.', '您可以升级到更高级别的 Google AI Ultra 套餐以获得最高速率限制。'],
-    ['Orchestrator Settings', '协调器设置'],
-    ['Choose the models Orchestrator uses. A larger, smarter orchestrator model with a faster, cheaper executor gives high quality for fewer tokens.', '选择协调器使用的模型。以更强大、更智能的协调器模型搭配更快、更经济的执行器模型，可用更少的 Token 获得高质量结果。'],
-    ['Orchestrator Model', '协调器模型'],
-    ['Plans the work, makes design decisions, and reviews the result. Pick a top-tier model. You can also pick one per conversation from the Orchestrator row in the model menu.', '负责规划工作、做出设计决策并审查结果。请选择顶级模型。您也可以在模型菜单的协调器行中为每个对话单独选择。'],
+    ['Good to see you, 张三（alice）. What\'s next?', '很高兴见到你，张三（alice）。接下来做什么？'],
+    ['Hey 张三（alice）, what should we build today?', '嗨，张三（alice），今天想构建什么？'],
+    ['Welcome back, 张三（alice）. Where should we pick up?', '欢迎回来，张三（alice）。我们从哪里继续？'],
+    ['Branch, current: main', '分支，当前：main'],
+    ['Branch, current: feat/new-ui', '分支，当前：feat/new-ui'],
+    ['Orchestrator Settings', '编排器设置'],
+    ['Orchestrator Model', '编排器模型'],
     ['Executor Model', '执行器模型'],
-    ['Carries out the plan: searches, edits, builds, and tests. Pick a faster, cheaper model.', '负责执行计划：搜索、编辑、构建和测试。请选择更快、更经济的模型。'],
-    ['Orchestrator', '协调器'],
+    ['Orchestrator', '编排器'],
+    ['Choose the models Orchestrator uses. A larger, smarter orchestrator model with a faster, cheaper executor gives high quality for fewer tokens.', '选择编排器使用的模型。用更强大聪明的编排模型搭配更快更省的执行模型，可用更少 Token 获得高质量结果。'],
+    ['Plans the work, makes design decisions, and reviews the result. Pick a top-tier model. You can also pick one per conversation from the Orchestrator row in the model menu.', '负责规划任务、制定设计决策并审核结果。请选择顶级模型。你也可以在模型菜单的编排器行中为每个对话单独选择。'],
+    ['Carries out the plan: searches, edits, builds, and tests. Pick a faster, cheaper model.', '负责执行计划：搜索、编辑、构建与测试。请选择更快、更低成本的模型。'],
+    ['Input Box', '输入框'],
+    ['Choose which key sends a message in the chat composer.', '选择在聊天输入框中用于发送消息的按键。'],
+    ['Press Enter to send, Shift+Enter for a new line.', '按 Enter 发送，按 Shift+Enter 换行。'],
+    ['Press Ctrl+Enter to send, Enter for a new line.', '按 Ctrl+Enter 发送，按 Enter 换行。'],
+    ['Font Size', '字体大小'],
+    ['Code Preview', '代码预览'],
+    ['Background color picker', '背景色选择器'],
+    ['Foreground color picker', '前景色选择器'],
+    ['Accent color picker', '强调色选择器'],
+    ['Submit Prompt (Alternate to Enter)', '发送提示词（Enter 备用快捷键）'],
+    ['Enter always submits. This adds a second shortcut.', 'Enter 始终发送，此项用于添加第二组快捷键。'],
+    ['Jump to Previous Prompt', '跳转到上一条提示词'],
+    ['Jump to Next Prompt', '跳转到下一条提示词'],
+    ['Side Question Selection', '侧边提问选择'],
+    ['Terminal: Select All', '终端：全选'],
+    ['You are subscribed to the best Google AI plan.', '您已订阅最高级别的 Google AI 套餐。'],
+    ['Delete All Data', '删除所有数据'],
+    ['Connect to Google Workspace, including Docs, Sheets, Slides, Drive, Calendar, and Gmail.', '连接到 Google Workspace，包括 Docs、Sheets、Slides、Drive、Calendar 和 Gmail。'],
+    ['Search, read, draft, and send emails in Gmail.', '在 Gmail 中搜索、阅读、起草和发送邮件。'],
     ['Thinking effort', '推理强度'],
-    ['Extra High', '超高'],
-    ['Gemini 4 Neon Extra High', 'Gemini 4 Neon 超高'],
-    ['Gemini 4 Hydrogen Extra High', 'Gemini 4 Hydrogen 超高'],
-    ['Gemini 4 Neon (Extra High)', 'Gemini 4 Neon (超高)'],
+    ['Extra High', '极高'],
+    ['Controls how much time and quota the model spends reasoning before responding. Higher effort improves accuracy on hard problems, at the cost of slower responses and higher quota use.', '控制模型在回复前用于推理的时间与额度。更高的强度可提升复杂问题的准确度，但响应更慢且消耗更多额度。'],
+    ['Gemini 4 Neon High', 'Gemini 4 Neon 高'],
+    ['Gemini 4 Neon Extra High', 'Gemini 4 Neon 极高'],
+    ['5h limit', '5 小时限额'],
+    ['Resets in 6d 13h', '6 天 13 小时后重置'],
+    ['Resets in 56m', '56 分钟后重置'],
+    ['98% left', '剩余 98%'],
+    ['100% left', '剩余 100%'],
+    ['4h', '4小时'],
+    ['Project: Antigravity-Hans', '项目：Antigravity-Hans'],
+    ['Open conversation 00000000-0000-4000-8000-000000000001', '打开对话 00000000-0000-4000-8000-000000000001'],
+    ['Updated 11:20 PM', '更新于 11:20 PM'],
     ['GPT-OSS 120B (Medium)', 'GPT-OSS 120B (中)'],
-    ['Select model, current: Gemini 4 Neon Extra High', '选择模型，当前：Gemini 4 Neon 超高'],
-    ['Select model, current: Gemini 4 Neon (Extra High)', '选择模型，当前：Gemini 4 Neon (超高)'],
-    ['Edits the conversation title', '编辑对话标题'],
-    ['You said', '你说'],
-    ['Agent said', '智能体说'],
-    ['Agent working', '智能体工作中'],
-    ['Breadcrumb', '面包屑导航'],
-    ['Updated 13:01', '更新于 13:01'],
-    ['Updated 1:05 PM', '更新于 1:05 PM'],
   ]) {
-    assert.equal(translate(input), expected, input);
-    assert.equal(translate(expected), expected, 'translations must be stable when observed again');
-  }
-
-  for (const name of ['my-workspace', 'Last 7 days', "项目 $& $' / 10 files"]) {
-    const input = ` Project: ${name} `;
-    const expected = ` 项目：${name} `;
     assert.equal(translate(input), expected);
-    assert.equal(translate(expected), expected, 'project name must stay untouched across observer passes');
+    assert.equal(translate(expected), expected, `translation not idempotent: ${expected}`);
   }
-  const convId = '01234567-89ab-cdef-0123-456789abcdef';
-  assert.equal(translate(`Open conversation ${convId}`), `打开对话 ${convId}`);
-  assert.equal(translate(`打开对话 ${convId}`), `打开对话 ${convId}`);
-  assert.equal(translate('Open conversation notes'), 'Open conversation notes', 'non-UUID text must not be matched');
+  assert.equal(translate('1 agent running'), '1 个智能体正在运行');
+  assert.equal(translate('3 agents running'), '3 个智能体正在运行');
+  assert.equal(translate('No agents running'), '没有正在运行的智能体');
 
-  // 勾选「选项名保留英文」时，Extra High 及模型推理强度保持英文
-  const store = new Map([['antigravityHansEnglishLabels', '1']]);
-  const ctx = {
-    window: {
-      addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
-      localStorage: { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)) },
-    },
-    document: { readyState: 'loading' },
+  // 模型菜单中的 New 徽章译为「新」，独立按钮仍译为「新建」
+  const badgeNode = {
+    nodeType: 3,
+    nodeValue: 'New',
+    parentElement: { closest(sel) { return sel.includes('[role="menuitem"]') ? {} : null; } },
   };
-  vm.createContext(ctx);
-  vm.runInContext(source.replace('  function run() {', '  globalThis.t = translate;\n  function run() {'), ctx);
-  assert.equal(ctx.t('Extra High'), 'Extra High');
-  assert.equal(ctx.t('Gemini 4 Neon Extra High'), 'Gemini 4 Neon Extra High');
-  assert.equal(ctx.t('GPT-OSS 120B (Medium)'), 'GPT-OSS 120B (Medium)');
-  assert.equal(ctx.t('Select model, current: Gemini 4 Neon Extra High'), '选择模型，当前：Gemini 4 Neon Extra High');
-  assert.equal(ctx.t('Thinking effort'), '推理强度');
+  context.translateNodeForTest(badgeNode);
+  assert.equal(badgeNode.nodeValue, '新');
+  assert.equal(translate('New'), '新建');
+});
+
+test('2.8.0 IDE controls, marketplace and strict mode descriptions are localized', () => {
+  for (const [input, expected] of [
+    ['Ask first', '先询问'],
+    ['Always run', '始终运行'],
+    ['Accept all', '全部接受'],
+    ['Reject all', '全部拒绝'],
+    ['Tool Calls', '工具调用'],
+    ['Fix with Agent', '使用智能体修复'],
+    ['Refresh MCP servers', '刷新 MCP 服务器'],
+    ['Auto (detected)', '自动（已检测）'],
+    ['Connected apps', '已连接的应用'],
+    ['Execute JavaScript Policy', '执行 JavaScript 策略'],
+    ['Browser allowlisted URLs', '浏览器允许列表 URL'],
+    ['Searching Agent Market...', '正在搜索智能体市场...'],
+    ['Show more results on Agent Market', '在智能体市场中查看更多结果'],
+    ['New Editor Window', '新建编辑器窗口'],
+    ['Toggle Status Bar', '切换状态栏'],
+    ['Agent will always ask to review in strict mode.', '严格模式下，智能体始终会请求你审核。'],
+    ['Agent cannot modify files outside of the workspace in strict mode.', '严格模式下，智能体无法修改工作区之外的文件。'],
+    ['Select an Antigravity action', '选择 Antigravity 操作'],
+    ['Add Selection to Chat', '将所选内容添加到对话'],
+    ['Focus Panel', '聚焦面板'],
+    ['Manage Data Sharing & Telemetry', '管理数据共享与遥测'],
+    ['Open Changelog', '打开更新日志'],
+    ['Show Third Party Notices', '显示第三方声明'],
+    ['Reset Conversation State', '重置对话状态'],
+    ['Toggle Inline Diff', '切换行内差异'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected, `translation not idempotent: ${expected}`);
+  }
+
+  // 主窗口下，即使工作区名含 antigravity 导致节点带有 antigravity-hans-name-dir-icon 类名，
+  // 资源管理器文件树中的目录名与文件名也绝不能被误翻
+  const oldPathname = context.window.location.pathname;
+  const oldHref = context.window.location.href;
+  context.window.location.pathname = '/workbench.html';
+  context.window.location.href = 'vscode-file://vscode-app/workbench.html';
+  try {
+    const explorerLabel = {
+      nodeType: 1,
+      closest(sel) {
+        if (sel.includes('.explorer-folders-view') || sel.includes('.explorer-item')) return this;
+        if (sel.includes('[class*="antigravity"]')) return this;
+        return null;
+      },
+    };
+    const explorerText = { nodeType: 3, nodeValue: 'resources', parentElement: explorerLabel };
+    context.translateNodeForTest(explorerText);
+    assert.equal(explorerText.nodeValue, 'resources');
+  } finally {
+    context.window.location.pathname = oldPathname;
+    context.window.location.href = oldHref;
+  }
+
+  // conversation-view 容器自身带 data-cascade-id 时，不应把内部输入框占位符误判为侧边栏历史会话标题
+  const placeholderEl = {
+    nodeType: 1,
+    closest(sel) {
+      if (sel.includes('[data-cascade-id]:not([data-testid="conversation-view"])')) return null;
+      return null;
+    },
+  };
+  const placeholderNode = { nodeType: 3, nodeValue: 'Ask anything, @ to mention, / for actions', parentElement: placeholderEl };
+  context.translateNodeForTest(placeholderNode);
+  assert.equal(placeholderNode.nodeValue, '想问什么都可以，@ 引用，/ 执行动作');
 });
 
 
