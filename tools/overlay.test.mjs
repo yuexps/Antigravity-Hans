@@ -1980,3 +1980,29 @@ test('2.8.0 IDE controls, marketplace and strict mode descriptions are localized
   context.translateNodeForTest(placeholderNode);
   assert.equal(placeholderNode.nodeValue, '想问什么都可以，@ 引用，/ 执行动作');
 });
+
+
+test('2.34.0 model picker New badges are distinct from create actions', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+  const badgeSelector = '[data-testid="model-selector-panel"] .bg-secondary.rounded-full';
+
+  for (const [inModelBadge, input, expected] of [
+    [true, ' New ', ' 新 '],
+    [true, 'New', '新'],
+    [true, 'Notice', '提示'],
+    [false, 'New', '新建'],
+    [false, 'New Conversation', '新建对话'],
+  ]) {
+    const label = {
+      nodeType: 1,
+      closest(selector) { return inModelBadge && selector === badgeSelector ? this : null; },
+      getAttribute() { return null; },
+    };
+    const text = { nodeType: 3, nodeValue: input, parentElement: label };
+    context.translateNodeForTest(text);
+    assert.equal(text.nodeValue, expected);
+    text.__zh_patched = false;
+    context.translateNodeForTest(text);
+    assert.equal(text.nodeValue, expected, 'reprocessing changed the translation');
+  }
+});

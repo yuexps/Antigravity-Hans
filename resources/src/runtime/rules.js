@@ -1028,8 +1028,10 @@
     if (value.trim() === 'Next' && node.parentElement?.nextElementSibling?.matches('[data-testid="automation-next-run"]')) {
       return value.replace('Next', '下次');
     }
-    // 模型菜单与选项行中的 “New” 徽章表示新模型/新功能，而非“新建”操作按钮。
-    if (value.trim() === 'New' && node.parentElement?.closest('[role="menuitem"], [role="option"]')) {
+    // 模型选择器与选项行中的 “New” 徽标表示新模型/新功能，而非“新建”操作按钮。
+    if (value.trim() === 'New' &&
+        (node.parentElement?.closest('[data-testid="model-selector-panel"] .bg-secondary.rounded-full') ||
+         node.parentElement?.closest('[role="menuitem"], [role="option"]'))) {
       return value.replace('New', '新');
     }
     const navigation = node.parentElement ? translateScopedNavigation(node.parentElement, value) : null;
