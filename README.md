@@ -74,4 +74,8 @@ pwsh -File .\tools\build-windows.ps1      # 仅构建 Windows 本地测试版
 
 ## 致谢
 
-- 感谢所有[贡献者](https://github.com/yuexps/Antigravity-Hans/graphs/contributors)。
+- 感谢所有为本项目提交代码、文档、测试、Issue 的贡献者。
+
+<a href="https://github.com/yuexps/Antigravity-Hans/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=yuexps/Antigravity-Hans" alt="contributors" />
+</a>
