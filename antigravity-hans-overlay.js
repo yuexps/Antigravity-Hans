@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.31.0-20261111-r19';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.34.0-20261123-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -60,7 +60,7 @@
     // 对话权限预设菜单
     'This Conversation', 'Request Review', 'Default', 'Auto', 'Turbo',
     // 模型推理强度档位
-    'High', 'Medium', 'Low',
+    'Extra High', 'High', 'Medium', 'Low',
   ].map((item) => item.toLowerCase()));
   let englishLabels = loadPref(ENGLISH_LABELS_KEY) === '1';
 
@@ -1331,6 +1331,7 @@
     ["Build applications with the Gemini Interactions API and Live API, including text, image, video, and speech generation, managed agents, and real-time multimodal streaming.", "使用 Gemini Interactions API 和 Live API 构建应用，支持文本、图像、视频和语音生成、托管智能体及实时多模态流。"],
     ["Permanently delete your remote conversations, projects, scheduled tasks, connected plugins and settings. Data in the desktop app and your Google account are not affected.", "永久删除你的远程会话、项目、定时任务、已连接的插件及设置。桌面客户端本地数据及你的 Google 账号不受影响。"],
     ["When Turbo mode is on, the agent will automatically capture screenshots in the Browser without explicit user input. You can toggle this setting in Antigravity's settings.", "开启 Turbo 模式后，智能体将在浏览器中自动截图，无需用户明确操作。你可以在 Antigravity 设置中调整此项。"],
+    ["Plans the work, makes design decisions, and reviews the result. Pick a top-tier model. You can also pick one per conversation from the Orchestrator row in the model menu.", "负责规划工作、做出设计决策并审查结果。请选择顶级模型。您也可以在模型菜单的协调器行中为每个对话单独选择。"],
     ["The agent never asks for review. This maximizes the autonomy of the agent, but also has the highest risk of the agent operating over unsafe or injected artifact content.", "智能体从不请求审核。这能最大限度提高自主性，但智能体处理不安全或被注入恶意内容的产物时执行操作的风险也最高。"],
     ["The breakdown below shows token usage from customizations like skills, rules, and MCP. If the budget is exceeded, large customizations will be truncated automatically.", "下面的明细展示技能、规则和 MCP 等自定义内容的 Token 使用量。如果超出预算，较大的自定义内容会被自动截断。"],
     ["Agent never asks for review. This maximizes the autonomy of the Agent, but also has the highest risk of the Agent operating over unsafe or injected Artifact content.", "智能体从不请求审核。这能最大限度提高自主性，但智能体处理不安全或被注入恶意内容的产物时执行操作的风险也最高。"],
@@ -1361,6 +1362,7 @@
     ["Build and deploy Base44 full-stack apps: CLI project management, JavaScript/TypeScript SDK development, and production troubleshooting skills.", "构建和部署 Base44 全栈应用，包括命令行项目管理、JavaScript/TypeScript SDK 开发和生产环境排查技能。"],
     ["Specifies the agent's behavior when asking for review on artifacts, which are documents it creates to enable a richer conversation experience.", "指定智能体请求审核产物时的行为。产物是智能体创建的文档，用于提供更丰富的对话体验。"],
     ["You should not enter any sensitive information on this site (for example, passwords or credit cards), because it could be stolen by attackers.", "你不应在此网站上输入任何敏感信息（例如密码或信用卡号），因为这些信息可能被攻击者窃取。"],
+    ["Choose the models Orchestrator uses. A larger, smarter orchestrator model with a faster, cheaper executor gives high quality for fewer tokens.", "选择协调器使用的模型。以更强大、更智能的协调器模型搭配更快、更经济的执行器模型，可用更少的 Token 获得高质量结果。"],
     ["Guidelines for interacting with GitHub and request permissions from the user when commands fail due to restrictions in the agent environment.", "与 GitHub 交互的指南；当命令因智能体运行环境的限制而失败时，向用户请求权限。"],
     ["Git-on-Borg repository used when creating a new Cog workspace from your initial prompt (e.g., chromium/src or android/platform/superproject).", "用于根据你的初始提示创建 Cog 工作区的 Git-on-Borg 仓库（例如 chromium/src 或 android/platform/superproject）。"],
     ["Give your agent a real browser: navigate, click, type, screenshot, and extract data from any site, locally or on Browserbase cloud browsers.", "为智能体提供真实浏览器，在本地或 Browserbase 云浏览器中导航、点击、输入、截图并提取网站数据。"],
@@ -1474,6 +1476,7 @@
     ["You are logged in using environment credentials and cannot sign out from the application.", "你使用环境凭据登录，无法在应用中退出登录。"],
     ["You can prompt the model to try again or start a new conversation if the error persists.", "你可以提示模型重试；如果错误仍然存在，请开始新对话。"],
     ["A label for this computer when you connect from another device. Changing it reconnects.", "从其他设备连接时用于标识这台电脑的名称。更改该名称将重新建立连接。"],
+    ["Carries out the plan: searches, edits, builds, and tests. Pick a faster, cheaper model.", "负责执行计划：搜索、编辑、构建和测试。请选择更快、更经济的模型。"],
     ["Choose whether to be notified when the agent needs your attention or completes a task.", "选择是否在智能体需要您关注或完成任务时收到通知。"],
     ["Create, edit, review, resize, and brand-check Canva designs with the Canva MCP server.", "使用 Canva MCP 服务器创建、编辑、审阅和调整 Canva 设计，并检查品牌一致性。"],
     ["When enabled, Antigravity will play a sound when Agent finishes generating a response.", "启用后，Antigravity 会在智能体完成回复生成时播放提示音。"],
@@ -1485,6 +1488,7 @@
     ["The browser subagent can be invoked by typing /browser in the conversation input box.", "你可以在对话输入框中输入 /browser 来调用浏览器子智能体。"],
     ["Receive product updates, tips, and promotions from Google Antigravity IDE via email.", "通过电子邮件接收来自 Google Antigravity IDE 的产品更新、技巧和促销活动。"],
     ["Customization token budget exceeded. Large customizations are excluded from context.", "自定义项的 Token 预算已超出。较大的自定义项将从上下文中排除。"],
+    ["You can upgrade to a higher Google AI Ultra plan to receive the highest rate limits.", "您可以升级到更高级别的 Google AI Ultra 套餐以获得最高速率限制。"],
     ["Allow Gemini to notify you when the agent needs your attention or completes a task.", "允许 Gemini 在智能体需要您关注或完成任务时向您发送通知。"],
     ["Predict the location of your next edit and navigates you there with a tab keypress.", "预测您下一次编辑的位置，并在按下 Tab 键时导航至该处。"],
     ["This skill came from the marketplace, so you can add it again whenever you need it.", "此技能来自市场，你可以在需要时再次添加。"],
@@ -2170,6 +2174,7 @@
     ["Reset post-onboarding state.", "重置入门后的状态。"],
     ["Welcome to Cider with Jetski", "欢迎使用 Cider with Jetski"],
     ["Review pending conversations", "审核待处理的对话"],
+    ["Edits the conversation title", "编辑对话标题"],
     ["Allow running this command?", "允许运行此命令？"],
     ["Automatic Check for Updates", "自动检查更新"],
     ["Clearer writing & artifacts", "表述与产物更清晰"],
@@ -2524,6 +2529,7 @@
     ["Resize terminal panes", "调整终端窗格大小"],
     ["Chief of Staff canvas", "统筹助手画布"],
     ["Delete ABFS Workspace", "删除 ABFS 工作区"],
+    ["Orchestrator Settings", "协调器设置"],
     ["[Dev] GCP Project ID", "[开发] GCP 项目 ID"],
     ["Advanced File Access", "高级文件访问"],
     ["Agent Auto-Fix Lints", "智能体自动修复 Lint 错误"],
@@ -2799,6 +2805,7 @@
     ["Added to allowlist", "已添加到允许列表"],
     ["Review permissions", "审查权限"],
     ["Remote Permissions", "远程权限"],
+    ["Orchestrator Model", "协调器模型"],
     ["Add to Chat/Quote", "添加到聊天/引用"],
     ["Advanced Settings", "高级设置"],
     ["Analyzed Task Log", "已分析任务日志"],
@@ -3062,6 +3069,7 @@
     ["New CL Uploaded", "已上传新的更改列表"],
     ["Took Screenshot", "已截图"],
     ["Generated media", "生成的媒体"],
+    ["Thinking effort", "推理强度"],
     [", or copy link", "，或复制链接"],
     ["Add automation", "添加自动化"],
     ["Add MCP Server", "添加 MCP 服务器"],
@@ -3164,6 +3172,7 @@
     ["Workspace Name", "工作区名称"],
     ["Confirm & Save", "确认并保存"],
     ["Site Allowlist", "网站允许列表"],
+    ["Executor Model", "执行器模型"],
     ["Access grants", "访问授权"],
     ["Agent Decides", "由智能体决定"],
     ["Agent options", "智能体选项"],
@@ -3270,6 +3279,7 @@
     ["Browser steps", "浏览器步骤"],
     ["Using browser", "正在使用浏览器"],
     ["Used MCP tool", "已使用 MCP 工具"],
+    ["Agent working", "智能体工作中"],
     ["Add Shortcut", "添加快捷键"],
     ["AI Shortcuts", "AI 快捷方式"],
     ["Always Allow", "始终允许"],
@@ -3365,6 +3375,7 @@
     ["Branch / Ref", "分支 / 引用"],
     ["Limited time", "限时提供"],
     ["Searched web", "已搜索网页"],
+    ["Orchestrator", "协调器"],
     ["Accept Step", "接受此步骤"],
     ["Add context", "添加上下文"],
     ["Add Handler", "添加处理程序"],
@@ -3529,6 +3540,9 @@
     ["Reload app", "重新加载应用"],
     ["Match case", "区分大小写"],
     ["Extensions", "扩展"],
+    ["Extra High", "超高"],
+    ["Agent said", "智能体说"],
+    ["Breadcrumb", "面包屑导航"],
     ["Actuation", "操作"],
     ["Add Model", "添加模型"],
     ["Artifacts", "产物列表"],
@@ -3666,6 +3680,7 @@
     ["Optional", "可选"],
     ["Voice on", "语音已开启"],
     ["Read URL", "已读取 URL"],
+    ["You said", "你说"],
     ["Account", "账户"],
     ["Actions", "操作"],
     ["Add MCP", "添加 MCP"],
@@ -4190,7 +4205,7 @@
     [/^Install (.+)$/g, '安装 $1'],
     [/^More actions for (.+)$/g, '$1 的更多操作'],
     [/Select (Next|Previous) (Conversation|对话)/g, (_m, dir) => `选择${dir === 'Next' ? '下一个' : '上一个'}对话`],
-    [/^Select model, current: (.+)$/g, (_m, name) => '选择模型，当前：' + name.replace(/\b(High|Medium|Low)\b/g, (label) => phrases.get(label) ?? label)],
+    [/^Select model, current: (.+)$/g, (_m, name) => '选择模型，当前：' + name.replace(/\b(Extra High|High|Medium|Low)\b/g, (label) => (englishLabels ? label : (phrases.get(label) ?? label)))],
     [/^Select project, current: (.+)$/g, (_m, name) => '选择项目，当前：' + (matchExactPhrase(name) ?? name)],
     [/^Agent permissions preset selector, current: (.+)$/g, (_m, name) => '智能体权限预设选择器，当前：' + (matchExactPhrase(name) ?? name)],
     [/^Inherits your (?:Global Permissions|全局权限) when working in these conversations\.$/g, '在这些对话中工作时继承您的全局权限。'],
@@ -4198,9 +4213,15 @@
     [/Your Plan:\s*(.+)/g, '你的套餐：$1'],
     [/Autocomplete Speed:\s*(.+)/g, '补全速度: $1'],
     [/Send feedback as (.+)/g, '以 $1 发送反馈'],
-    [/Gemini ([^(]+) \((High|Medium|Low)\)/g, (_match, model, effort) => {
-      const efforts = { High: '高', Medium: '中', Low: '低' };
-      return 'Gemini ' + model.trim() + ' (' + (efforts[effort] ?? effort) + ')';
+    [/\b(Gemini|GPT-OSS) ([^(]+?) \((Extra High|High|Medium|Low)\)/g, (_match, family, model, effort) => {
+      if (englishLabels) return _match;
+      const efforts = { 'Extra High': '超高', High: '高', Medium: '中', Low: '低' };
+      return `${family} ${model.trim()} (${efforts[effort] ?? effort})`;
+    }],
+    [/^(Gemini \d+(?:\.\d+)?(?: (?!Extra High$|High$|Medium$|Low$)[A-Za-z]+){1,3}) (Extra High|High|Medium|Low)$/g, (_match, model, effort) => {
+      if (englishLabels) return _match;
+      const efforts = { 'Extra High': '超高', High: '高', Medium: '中', Low: '低' };
+      return `${model} ${efforts[effort] ?? effort}`;
     }],
     [/^(Learn more|了解更多) about\s*(.+)$/g, '了解更多关于 $2'],
   ];
@@ -4253,14 +4274,20 @@
     if (activity !== null) return activity;
     const trimmed = value.trim();
 
-    // 文件夹路径和产品名称是变量，先处理已确认的完整控件模板。
-    if (/^(?:无法定位文件夹：[\s\S]*|请在 .+ 面板中登录。|登录后即可使用 .+！)$/.test(trimmed)) return value;
+    // 文件夹路径、项目名、会话 ID 和产品名称是变量，先处理已确认的完整控件模板。
+    if (/^(?:无法定位文件夹：[\s\S]*|请在 .+ 面板中登录。|登录后即可使用 .+！|项目：[\s\S]*|打开对话 [0-9a-f-]+|更新于 \d{1,2}:\d{2}(?:\s*[AP]M)?)$/i.test(trimmed)) return value;
     const folderFailure = trimmed.match(/^Failed to resolve folder: ([\s\S]+)$/);
     if (folderFailure) return value.replace(trimmed, () => '无法定位文件夹：' + folderFailure[1]);
     const panelSignIn = trimmed.match(/^Sign in from the ([^\r\n]{1,100}) panel\.$/);
     if (panelSignIn) return value.replace(trimmed, () => `请在 ${panelSignIn[1]} 面板中登录。`);
     const productSignIn = trimmed.match(/^Sign in to use ([^\r\n]{1,100})!$/);
     if (productSignIn) return value.replace(trimmed, () => `登录后即可使用 ${productSignIn[1]}！`);
+    const projectLabel = trimmed.match(/^Project: ([^\r\n]+)$/);
+    if (projectLabel) return value.replace(trimmed, () => `项目：${projectLabel[1]}`);
+    const openConversation = trimmed.match(/^Open conversation ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i);
+    if (openConversation) return value.replace(trimmed, () => `打开对话 ${openConversation[1]}`);
+    const updatedClock = trimmed.match(/^Updated (\d{1,2}:\d{2}(?:\s*[AP]M)?)$/);
+    if (updatedClock) return value.replace(trimmed, () => `更新于 ${updatedClock[1]}`);
 
     // 项目摘要中的数量由应用生成；只匹配已确认的完整模板。
     const conversationCounts = trimmed.match(/^(\d+) (active|archived) conversations?(?: and (\d+) archived conversations?)?$/);
