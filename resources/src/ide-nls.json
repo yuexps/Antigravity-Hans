@@ -1,0 +1,5557 @@
+[
+  [
+    147,
+    "Extensions",
+    "扩展"
+  ],
+  [
+    148,
+    "Integrated Terminal",
+    "集成终端"
+  ],
+  [
+    149,
+    "Chat",
+    "聊天"
+  ],
+  [
+    150,
+    "Telemetry",
+    "遥测"
+  ],
+  [
+    151,
+    "Update",
+    "更新"
+  ],
+  [
+    366,
+    "Hover is enabled.",
+    "悬停已启用。"
+  ],
+  [
+    367,
+    "Hover is disabled.",
+    "悬停已禁用。"
+  ],
+  [
+    368,
+    "Hover is shown when holding `{0}` or `Alt` (the opposite modifier of `#editor.multiCursorModifier#`)",
+    "按住 `{0}` 或 `Alt` (`#editor.multiCursorModifier#` 的相反修饰键)时显示悬停"
+  ],
+  [
+    459,
+    "Controls whether inline suggestions are suppressed when in snippet mode.",
+    "控制在代码片段模式下是否抑制内联建议。"
+  ],
+  [
+    462,
+    "Controls whether to send request information from the inline suggestion provider.",
+    "控制是否从内联建议提供者处发送请求信息。"
+  ],
+  [
+    467,
+    "Controls whether long distance inline suggestions are shown.",
+    "控制是否显示长距离内联建议。"
+  ],
+  [
+    731,
+    "Background color for the highlight of line at the cursor position when the editor is not focused.",
+    "编辑器未聚焦时，光标所在行的高亮背景色。"
+  ],
+  [
+    808,
+    "Whether the context is a multi diff editor",
+    "上下文是否为多个差异编辑器"
+  ],
+  [
+    946,
+    "Go to Offset...",
+    "转到偏移量..."
+  ],
+  [
+    1176,
+    "Explain and Fix Problem",
+    "解释并修复问题"
+  ],
+  [
+    1294,
+    "Copy",
+    "复制"
+  ],
+  [
+    1295,
+    "Copied to clipboard",
+    "已复制到剪贴板"
+  ],
+  [
+    1305,
+    "Explain and Fix",
+    "解释并修复"
+  ],
+  [
+    1339,
+    "Triggers an inline suggestion in the editor.",
+    "在编辑器中触发内联建议。"
+  ],
+  [
+    1340,
+    "Options for triggering inline suggestions.",
+    "触发内联建议的选项。"
+  ],
+  [
+    1341,
+    "No inline suggestion is available.",
+    "无内联建议可用。"
+  ],
+  [
+    1356,
+    "Accept Inline Suggestion Alternative Action",
+    "接受内联建议的替代操作"
+  ],
+  [
+    1361,
+    "Whether an alternative action for the inline suggestion is visible.",
+    "内联建议的替代操作是否可见。"
+  ],
+  [
+    1370,
+    "Whether debounce should be disabled for inline suggestions",
+    "是否禁用内联建议的防抖"
+  ],
+  [
+    1374,
+    "Whether any custom {0} completion UI is currently shown",
+    "当前是否显示任何自定义 {0} 补全界面"
+  ],
+  [
+    1390,
+    "Snooze",
+    "推迟"
+  ],
+  [
+    1392,
+    "Inline Suggestion",
+    "内联建议"
+  ],
+  [
+    1393,
+    "{0} 1 occurrence",
+    "{0}（出现 1 次）"
+  ],
+  [
+    1394,
+    "{0} {1} occurrences",
+    "{0}（出现 {1} 次）"
+  ],
+  [
+    1395,
+    "{0} show occurrences",
+    "按 {0} 显示出现位置"
+  ],
+  [
+    1511,
+    "Open a text editor first to go to a line or an offset.",
+    "先打开文本编辑器然后跳转到行或偏移量。"
+  ],
+  [
+    1512,
+    "Current position: line {0}, column {1}. {2}",
+    "当前位置: 第 {0} 行，第 {1} 列。{2}"
+  ],
+  [
+    1513,
+    "Use Zero-Based Offset",
+    "使用从零开始的偏移量"
+  ],
+  [
+    1514,
+    "Open a text editor first to go to a line or an offset.",
+    "先打开文本编辑器然后跳转到行或偏移量。"
+  ],
+  [
+    1515,
+    "Type a character position to go to (from 0 to {0}).",
+    "键入要转到的字符位置(从 0 到 {0})。"
+  ],
+  [
+    1516,
+    "Type a character position to go to (from 1 to {0}).",
+    "键入要转到的字符位置(从 1 到 {0})。"
+  ],
+  [
+    1517,
+    "Press 'Enter' to go to line {0} at column {1}.",
+    "按 \"Enter\" 键转到第 {0} 行，第 {1} 列。"
+  ],
+  [
+    1518,
+    "Type a line number to go to (from 1 to {0}).",
+    "键入要转到的行号(从 1 到 {0})。"
+  ],
+  [
+    1519,
+    "Press 'Enter' to go to line {0} or enter colon : to add a column number.",
+    "按 \"Enter\" 键转到第 {0} 行，或输入冒号 : 以添加列号。"
+  ],
+  [
+    1520,
+    "Press 'Enter' to go to line {0} or enter a column number (from 1 to {1}).",
+    "按 \"Enter\" 键跳转到第 {0} 行，或输入列号(从 1 到 {1})。"
+  ],
+  [
+    1521,
+    "Press 'Enter' to go to line {0} at column {1}.",
+    "按 \"Enter\" 键转到第 {0} 行，第 {1} 列。"
+  ],
+  [
+    1640,
+    "True when focus is in the debug console, false otherwise.",
+    "焦点位于调试控制台时为 true，否则为 false。"
+  ],
+  [
+    1672,
+    "Accept suggestion",
+    "接受建议"
+  ],
+  [
+    1848,
+    "Send Analytics",
+    "发送分析数据"
+  ],
+  [
+    1849,
+    "Upload Error",
+    "上传错误"
+  ],
+  [
+    1850,
+    "Log Observability Data",
+    "记录可观测性数据"
+  ],
+  [
+    1851,
+    "Login with Redirect",
+    "使用重定向登录"
+  ],
+  [
+    1901,
+    "&&Select folder",
+    "选择文件夹(&S)"
+  ],
+  [
+    2142,
+    "Hold {0} key to mouse over",
+    "按住 {0} 键将鼠标悬停"
+  ],
+  [
+    2143,
+    "Loading...",
+    "正在加载..."
+  ],
+  [
+    2144,
+    "Agent Window",
+    "智能体窗口"
+  ],
+  [
+    2145,
+    "When enabled, will open a special window on startup which is a special, non-code-editor window for interfacing with {0}'s agent-first experience.",
+    "启用后，启动时会打开一个专用的非代码编辑器窗口，用于使用 {0} 的智能体优先体验。"
+  ],
+  [
+    2148,
+    "{0} Version: {1}\nVSCode OSS Version: {2}\nCommit: {3}\nDate: {4}\nElectron: {5}\nChromium: {6}\nNode.js: {7}\nV8: {8}\nOS: {9}\nLanguage Server CL: {10}",
+    "{0} 版本：{1}\nVSCode OSS 版本：{2}\n提交：{3}\n日期：{4}\nElectron：{5}\nChromium：{6}\nNode.js：{7}\nV8：{8}\n操作系统：{9}\n语言服务器 CL：{10}"
+  ],
+  [
+    2150,
+    "Automatically show hidden windows after 10 seconds",
+    "10 秒后自动显示隐藏的窗口"
+  ],
+  [
+    2208,
+    "&&Workspace",
+    "&&工作区"
+  ],
+  [
+    2250,
+    "Unable to install the shell command '{0}'.",
+    "无法安装 Shell 命令 '{0}'。"
+  ],
+  [
+    2255,
+    "Unable to uninstall the shell command '{0}'.",
+    "无法卸载 Shell 命令 '{0}'。"
+  ],
+  [
+    2256,
+    "Unable to find shell script at '{0}'",
+    "找不到位于 '{0}' 的 Shell 脚本"
+  ],
+  [
+    2275,
+    "Remove from Recently Used",
+    "从最近使用中移除"
+  ],
+  [
+    2329,
+    "Controls whether system certificates should be loaded using Node.js built-in support. Reload the window after changing this setting. When during [remote development](https://aka.ms/vscode-remote) the {0} setting is disabled this setting can be configured in the local and the remote settings separately.",
+    "控制是否应使用 Node.js 内置支持加载系统证书。更改此设置后请重新加载窗口。在[远程开发](https://aka.ms/vscode-remote)期间禁用 {0} 设置时，可在本地设置和远程设置中分别配置此设置。"
+  ],
+  [
+    2332,
+    "Controls the interval in seconds for checking network interface changes to invalidate the proxy cache. Set to -1 to disable. When during [remote development](https://aka.ms/vscode-remote) the {0} setting is disabled this setting can be configured in the local and the remote settings separately.",
+    "控制检查网络接口更改以使代理缓存失效的时间间隔(秒)。设置为 -1 可禁用。在[远程开发](https://aka.ms/vscode-remote)期间禁用 {0} 设置时，可在本地设置和远程设置中分别配置此设置。"
+  ],
+  [
+    2337,
+    "To manage how {0} stores code snippet telemetry, visit your [IDE Account Settings]({1}).\n",
+    "要管理 {0} 存储代码片段遥测数据的方式，请访问 [IDE 账号设置]({1})。\n"
+  ],
+  [
+    2402,
+    "The background color used in stark buttons.",
+    "醒目按钮使用的背景色。"
+  ],
+  [
+    2403,
+    "The foreground color used in stark buttons.",
+    "醒目按钮使用的前景色。"
+  ],
+  [
+    2404,
+    "The background color used in stark buttons when hovered.",
+    "鼠标悬停在醒目按钮上时使用的背景色。"
+  ],
+  [
+    2405,
+    "A subtler version of list hover background.",
+    "较柔和的列表悬停背景色。"
+  ],
+  [
+    2406,
+    "Lighter background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本较浅的背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2407,
+    "Darker background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本较深的背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2408,
+    "Fallback background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本的备用背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2409,
+    "Lighter background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本较浅的背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2410,
+    "Darker background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本较深的背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2411,
+    "Fallback background color for text that got inserted. The color must not be opaque so as not to hide underlying decorations.",
+    "插入文本的备用背景色。该颜色不能不透明，以免遮盖底层装饰。"
+  ],
+  [
+    2644,
+    "Scrollbar track background color.",
+    "滚动条轨道背景色。"
+  ],
+  [
+    2747,
+    "A new version of Jetski is available.\n\nCurrent version: {0}\nNewest version: {1}\n\nWe recommend using go/jetski-linux-installer.\n\nNote: If you already updated but still see this message, you may have stale Jetski processes running. Kill them with: pkill jetski.",
+    "有可用的 Jetski 新版本。\n\n当前版本：{0}\n最新版本：{1}\n\n建议使用 go/jetski-linux-installer。\n\n注意：如果更新后仍看到此消息，可能有旧的 Jetski 进程正在运行。可使用以下命令结束它们：pkill jetski。"
+  ],
+  [
+    2750,
+    "Instructions to update...",
+    "更新说明..."
+  ],
+  [
+    2751,
+    "Update is available",
+    "有可用更新"
+  ],
+  [
+    2752,
+    "A new version of the IDE is available ({0}).\n\nIf you originally installed the IDE via your system's package manager (eg. apt), you can get the new version through your standard system update process.\n\nIf you originally installed Antigravity with the tarball, you can manually download the new tarball from the instructions below.",
+    "有可用的 IDE 新版本（{0}）。\n\n如果最初通过系统的软件包管理器（如 apt）安装 IDE，可以通过常规系统更新获取新版本。\n\n如果最初使用 tar 包安装 Antigravity，可以按照以下说明手动下载新的 tar 包。"
+  ],
+  [
+    2828,
+    "Override the reconnection grace time window in seconds. Defaults to 10800 (3 hours).",
+    "替代重新连接宽限期窗口(秒)。默认值为 10800 秒(3 小时)。"
+  ],
+  [
+    2846,
+    "Copy URIs & Proceed",
+    "复制 URI 并继续"
+  ],
+  [
+    2847,
+    "Failed to copy redirect URIs to clipboard.",
+    "未能将重定向 URI 复制到剪贴板。"
+  ],
+  [
+    2899,
+    "Authentication session for {0} removed, stopping server",
+    "已移除 {0} 的身份验证会话，正在停止服务器"
+  ],
+  [
+    2941,
+    "Contribute views containers to Secondary Activity Bar",
+    "将视图容器添加到辅助活动栏"
+  ],
+  [
+    2956,
+    "The view will expanded even if the container forces it to be collapsed.",
+    "即使容器强制折叠，该视图也会展开。"
+  ],
+  [
+    2970,
+    "Contributes views to Agent Sessions container in the Activity bar. To contribute to this container, the 'chatSessionsProvider' API proposal must be enabled.",
+    "向活动栏中的 Agent Sessions 容器提供视图。要提供给此容器，必须启用 \"chatSessionsProvider\" API 建议。"
+  ],
+  [
+    2979,
+    "View container '{0}' requires 'enabledApiProposals: [\"chatSessionsProvider\"]'.",
+    "视图容器 \"{0}\" 需要 \"enabledApiProposals: [\"chatSessionsProvider\"]\"。"
+  ],
+  [
+    3022,
+    "Accessibility settings",
+    "辅助功能设置"
+  ],
+  [
+    3023,
+    "Advanced settings are hidden by default in the Settings editor unless the user chooses to show advanced settings.",
+    "高级设置在设置编辑器中默认隐藏，除非用户选择显示高级设置。"
+  ],
+  [
+    3024,
+    "Experimental settings are subject to change and may be removed in future releases.",
+    "实验性设置可能会发生变更，且可能在未来版本中移除。"
+  ],
+  [
+    3025,
+    "Preview settings can be used to try out new features before they are finalized.",
+    "预览设置可在新功能最终确定前用于试用这些功能。"
+  ],
+  [
+    3026,
+    "Telemetry settings",
+    "遥测设置"
+  ],
+  [
+    3027,
+    "Settings that use online services",
+    "使用联机服务的设置"
+  ],
+  [
+    3140,
+    "Provide &&Feedback",
+    "提供&&反馈"
+  ],
+  [
+    3176,
+    "Move Secondary Side Bar Left",
+    "将辅助侧边栏移至左侧"
+  ],
+  [
+    3177,
+    "Move Secondary Side Bar Right",
+    "将辅助侧边栏移至右侧"
+  ],
+  [
+    3192,
+    "Show Primary Side Bar",
+    "显示主侧边栏"
+  ],
+  [
+    3228,
+    "Secondary Activity Bar",
+    "辅助活动栏"
+  ],
+  [
+    3322,
+    "Folder Opened in a Window",
+    "已在窗口中打开文件夹"
+  ],
+  [
+    3323,
+    "Workspace Opened in a Window",
+    "已在窗口中打开工作区"
+  ],
+  [
+    3324,
+    "Folder Opened in Active Window",
+    "已在活动窗口中打开文件夹"
+  ],
+  [
+    3325,
+    "Workspace Opened in Active Window",
+    "已在活动窗口中打开工作区"
+  ],
+  [
+    3404,
+    "Hide Menu",
+    "隐藏菜单"
+  ],
+  [
+    3405,
+    "Secondary Activity Bar Position",
+    "辅助活动栏位置"
+  ],
+  [
+    3406,
+    "&&Default",
+    "&&默认"
+  ],
+  [
+    3408,
+    "&&Top",
+    "&&顶部"
+  ],
+  [
+    3410,
+    "&&Bottom",
+    "&&底部"
+  ],
+  [
+    3411,
+    "Bottom",
+    "底部"
+  ],
+  [
+    3412,
+    "&&Hidden",
+    "&&隐藏"
+  ],
+  [
+    3413,
+    "Hidden",
+    "隐藏"
+  ],
+  [
+    3414,
+    "Secondary Activity Bar Position",
+    "辅助活动栏位置"
+  ],
+  [
+    3415,
+    "Secondary Activity Bar Position",
+    "辅助活动栏位置"
+  ],
+  [
+    3416,
+    "Secondary Activity Bar Position",
+    "辅助活动栏位置"
+  ],
+  [
+    3417,
+    "Move Secondary Activity Bar to Side",
+    "将辅助活动栏移至侧面"
+  ],
+  [
+    3418,
+    "Move Secondary Activity Bar to Top",
+    "将辅助活动栏移至顶部"
+  ],
+  [
+    3419,
+    "Move Secondary Activity Bar to Bottom",
+    "将辅助活动栏移至底部"
+  ],
+  [
+    3420,
+    "Hide Secondary Activity Bar",
+    "隐藏辅助活动栏"
+  ],
+  [
+    3427,
+    "Hide Secondary Side Bar",
+    "隐藏辅助侧边栏"
+  ],
+  [
+    3428,
+    "Show Secondary Side Bar",
+    "显示辅助侧边栏"
+  ],
+  [
+    3874,
+    "Show All Recent Folders {0}",
+    "显示所有最近的文件夹 {0}"
+  ],
+  [
+    3882,
+    "Installing {0}...",
+    "正在安装 {0}..."
+  ],
+  [
+    3883,
+    "{0} installed successfully!",
+    "{0} 安装成功！"
+  ],
+  [
+    3884,
+    "Failed to install {0}: {1}",
+    "安装 {0} 失败：{1}"
+  ],
+  [
+    3989,
+    "Add to .gitignore",
+    "添加到 .gitignore"
+  ],
+  [
+    3990,
+    "No .gitignore file exists in the workspace",
+    "工作区中不存在 .gitignore 文件"
+  ],
+  [
+    3991,
+    "Cannot read .gitignore",
+    "无法读取 .gitignore"
+  ],
+  [
+    3992,
+    "File is already in .gitignore",
+    "文件已在 .gitignore 中"
+  ],
+  [
+    3993,
+    "Failed to add file to .gitignore: {0}",
+    "无法将文件添加到 .gitignore：{0}"
+  ],
+  [
+    4020,
+    "You are not signed in to any accounts",
+    "你尚未登录任何账号"
+  ],
+  [
+    4031,
+    "You are not signed in to any accounts",
+    "你尚未登录任何账号"
+  ],
+  [
+    4161,
+    "&&Workspace",
+    "&&工作区"
+  ],
+  [
+    4327,
+    "Navigate between open files using three-finger swipe horizontally. Note that System Preferences > Trackpad > More Gestures must be set to 'Swipe with two or three fingers'.",
+    "通过使用三指水平滑动来切换打开的文件。请注意，“系统首选项”>“触控板”>“更多手势”必须设置为“用两指或三指滑动”。"
+  ],
+  [
+    4359,
+    "Controls whether the command palette shows 'Ask in Chat' option at the bottom.",
+    "控制命令面板底部是否显示“在聊天中询问”选项。"
+  ],
+  [
+    4386,
+    "Controls the location of the Secondary Activity Bar relative to the Secondary Side Bar.",
+    "控制辅助活动栏相对于辅助侧边栏的位置。"
+  ],
+  [
+    4387,
+    "Show the Secondary Activity Bar on the side of the Secondary Side Bar.",
+    "在辅助侧边栏的侧面显示辅助活动栏。"
+  ],
+  [
+    4388,
+    "Show the Secondary Activity Bar on top of the Secondary Side Bar.",
+    "在辅助侧边栏的顶部显示辅助活动栏。"
+  ],
+  [
+    4389,
+    "Show the Secondary Activity Bar at the bottom of the Secondary Side Bar.",
+    "在辅助侧边栏的底部显示辅助活动栏。"
+  ],
+  [
+    4390,
+    "Hide the Secondary Activity Bar in the Secondary Side Bar.",
+    "在辅助侧边栏中隐藏辅助活动栏。"
+  ],
+  [
+    4749,
+    "Provide information about how to open the chat terminal output in the Accessible View.",
+    "介绍如何在辅助视图中打开聊天终端输出。"
+  ],
+  [
+    4956,
+    "{0}: Explain and Fix Problem",
+    "{0}：解释并修复问题"
+  ],
+  [
+    4957,
+    "{0}: Send Prompt to Agent Panel",
+    "{0}：将提示发送到智能体面板"
+  ],
+  [
+    4972,
+    "{0} Plugin Page",
+    "{0} 插件页面"
+  ],
+  [
+    4973,
+    "{0} Configure MCP Page",
+    "{0} MCP 配置页面"
+  ],
+  [
+    4974,
+    "{0}: Manage MCP Servers",
+    "{0}：管理 MCP 服务器"
+  ],
+  [
+    4975,
+    "MCP icon used in Antigravity MCP editor pages.",
+    "Antigravity MCP 编辑器页面中使用的 MCP 图标。"
+  ],
+  [
+    4983,
+    "Reset Manager Onboarding",
+    "重置管理器入门设置"
+  ],
+  [
+    4985,
+    "Reset Manager Onboarding state.",
+    "重置管理器入门设置的状态。"
+  ],
+  [
+    4987,
+    "Welcome to {0}",
+    "欢迎使用 {0}"
+  ],
+  [
+    4988,
+    "Extension '{0}' cannot register plugin with invalid name '{1}'.",
+    "扩展“{0}”无法注册名称无效的插件“{1}”。"
+  ],
+  [
+    4989,
+    "Extension '{0}' cannot register plugin '{1}' without path.",
+    "扩展“{0}”无法注册缺少路径的插件“{1}”。"
+  ],
+  [
+    4990,
+    "Extension '{0}' plugin '{1}' path resolves outside the extension.",
+    "扩展“{0}”的插件“{1}”路径解析后位于扩展目录之外。"
+  ],
+  [
+    4991,
+    "Extension '{0}' plugin '{1}' path is not a directory.",
+    "扩展“{0}”的插件“{1}”路径不是目录。"
+  ],
+  [
+    4992,
+    "Failed to install plugin '{0}' from extension '{1}': {2}",
+    "无法从扩展“{1}”安装插件“{0}”：{2}"
+  ],
+  [
+    4993,
+    "Contributes plugins for Antigravity agent. Plugins are copied to ~/.gemini/<ideName>/plugins/ when the extension is installed.",
+    "为 Antigravity 智能体提供插件。安装扩展时，插件会复制到 ~/.gemini/<ideName>/plugins/。"
+  ],
+  [
+    4994,
+    "Unique identifier for the plugin. Must be unique within this extension. Will be prefixed with extension ID when stored.",
+    "插件的唯一标识符，必须在此扩展内唯一。存储时会加上扩展 ID 前缀。"
+  ],
+  [
+    4995,
+    "Relative path to the plugin folder within the extension.",
+    "插件文件夹在扩展内的相对路径。"
+  ],
+  [
+    4996,
+    "(Optional) Human-readable description of what the plugin does.",
+    "（可选）供人阅读的插件功能说明。"
+  ],
+  [
+    4997,
+    "Contributes plugins for Antigravity agent. Each plugin folder is copied to `~/.gemini/<ideName>/plugins/<extensionId>.<pluginName>/` when the extension is installed.\\n\\n**Expected plugin folder structure:**\\n\\n```\\nplugins/my-plugin/\\n  skills/             # Agent skills\\n    my-skill/\\n      SKILL.md\\n  mcp_config.json     # MCP server definitions (optional)\\n```\\n\\nWhen the extension is uninstalled, the plugin folder is automatically removed.",
+    "为 Antigravity 智能体提供插件。安装扩展时，每个插件文件夹都会复制到 `~/.gemini/<ideName>/plugins/<extensionId>.<pluginName>/`。\\n\\n**预期的插件文件夹结构：**\\n\\n```\\nplugins/my-plugin/\\n  skills/             # Agent skills\\n    my-skill/\\n      SKILL.md\\n  mcp_config.json     # MCP server definitions (optional)\\n```\\n\\n卸载扩展时，插件文件夹会自动移除。"
+  ],
+  [
+    5000,
+    "Failed to open Antigravity settings: {0}",
+    "无法打开 Antigravity 设置：{0}"
+  ],
+  [
+    5001,
+    "Open {0} Settings Page With Setting ID",
+    "使用设置 ID 打开 {0} 设置页面"
+  ],
+  [
+    5003,
+    "Open {0} User Settings",
+    "打开 {0} 用户设置"
+  ],
+  [
+    5011,
+    "Open the {0} quick settings panel.",
+    "打开 {0} 快捷设置面板。"
+  ],
+  [
+    5014,
+    "Open the {0} quick settings panel.",
+    "打开 {0} 快捷设置面板。"
+  ],
+  [
+    5039,
+    "Select an account to manage",
+    "选择要管理的帐户"
+  ],
+  [
+    5040,
+    "There are no active accounts.",
+    "没有活动帐户。"
+  ],
+  [
+    5041,
+    "Manage '{0}'",
+    "管理 \"{0}\""
+  ],
+  [
+    5042,
+    "Select an action",
+    "选择操作"
+  ],
+  [
+    5043,
+    "Manage Trusted Extensions",
+    "管理受信任扩展"
+  ],
+  [
+    5044,
+    "Sign Out",
+    "退出登录"
+  ],
+  [
+    5045,
+    "Manage Accounts",
+    "管理帐户"
+  ],
+  [
+    5046,
+    "Accounts",
+    "帐户"
+  ],
+  [
+    5057,
+    "View extension details",
+    "查看扩展详细信息"
+  ],
+  [
+    5174,
+    "To remove attached contexts, focus an attachment and press Delete or Backspace.",
+    "若要移除附加的上下文，请聚焦附件并按 Delete 或 Backspace。"
+  ],
+  [
+    5177,
+    "To return to the last chat response you focused, invoke the Focus Last Focused Chat Response command{0}.",
+    "若要返回到聚焦的上一个聊天响应，请调用“聚焦上个聚焦的聊天响应”命令 {0}。"
+  ],
+  [
+    5182,
+    "To navigate to the next user prompt in the conversation, invoke the Next User Prompt command{0}.",
+    "若要导航到对话中的下一个用户提示，请调用“下一个用户提示”命令 {0}。"
+  ],
+  [
+    5183,
+    "To navigate to the previous user prompt in the conversation, invoke the Previous User Prompt command{0}.",
+    "若要导航到对话中的上一个用户提示，请调用“上一个用户提示”命令 {0}。"
+  ],
+  [
+    5185,
+    "If there are any hidden chat terminals, you can view them by invoking the View Hidden Chat Terminals command{0}.",
+    "如果有任何隐藏的聊天终端，可以通过调用“查看隐藏聊天终端”命令 {0} 来查看它们。"
+  ],
+  [
+    5186,
+    "To focus the last chat terminal that ran a tool, invoke the Focus Most Recent Chat Terminal command{0}.",
+    "若要聚焦运行工具的上一个聊天终端，请调用“聚焦最近聊天终端”命令{0}。"
+  ],
+  [
+    5187,
+    "To focus the output from the last chat terminal tool, invoke the Focus Most Recent Chat Terminal Output command{0}.",
+    "若要聚焦上一个聊天终端工具的输出，请调用“聚焦最近聊天终端输出”命令 {0}。"
+  ],
+  [
+    5265,
+    "Sessions Orientation",
+    "会话排列方向"
+  ],
+  [
+    5279,
+    "Focus Last Focused Chat List Item",
+    "聚焦上次聚焦的聊天列表项"
+  ],
+  [
+    5291,
+    "Edit/manage the tool approval and confirmation preferences for AI chat agents.",
+    "编辑/管理 AI 聊天智能体的工具审批和确认首选项。"
+  ],
+  [
+    5292,
+    "Show Sessions",
+    "显示会话"
+  ],
+  [
+    5293,
+    "Show Chat Title",
+    "显示聊天标题"
+  ],
+  [
+    5295,
+    "Stacked",
+    "上下排列"
+  ],
+  [
+    5296,
+    "Side by Side",
+    "并排"
+  ],
+  [
+    5297,
+    "Show Welcome",
+    "显示欢迎界面"
+  ],
+  [
+    5298,
+    "New {0}",
+    "新建 {0}"
+  ],
+  [
+    5299,
+    "A chat session is in progress. It will continue running in the background.",
+    "有一个聊天会话正在进行，它将继续在后台运行。"
+  ],
+  [
+    5300,
+    "Open Agent Sessions",
+    "打开智能体会话"
+  ],
+  [
+    5319,
+    "Terminal",
+    "终端"
+  ],
+  [
+    5329,
+    "Continue Chat in...",
+    "继续聊天..."
+  ],
+  [
+    5332,
+    "Continue in {0}",
+    "在 {0} 后继续"
+  ],
+  [
+    5333,
+    "Continue In",
+    "继续于"
+  ],
+  [
+    5334,
+    "Continue in {0}",
+    "在 {0} 后继续"
+  ],
+  [
+    5335,
+    "Continue In",
+    "继续于"
+  ],
+  [
+    5336,
+    "Continue in...",
+    "继续于..."
+  ],
+  [
+    5337,
+    "Continue Chat in...",
+    "继续聊天..."
+  ],
+  [
+    5340,
+    "Copy Math Source",
+    "复制数学源代码"
+  ],
+  [
+    5343,
+    "Accept Request",
+    "接受请求"
+  ],
+  [
+    5352,
+    "Send to Agent",
+    "发送给智能体"
+  ],
+  [
+    5361,
+    "Open Picker",
+    "打开选取器"
+  ],
+  [
+    5392,
+    "New Chat",
+    "新建聊天"
+  ],
+  [
+    5393,
+    "New Chat",
+    "新建聊天"
+  ],
+  [
+    5394,
+    "New Chat",
+    "新建聊天"
+  ],
+  [
+    5396,
+    "Undo Last Request",
+    "撤消上一个请求"
+  ],
+  [
+    5397,
+    "Redo Last Request",
+    "恢复上一个请求"
+  ],
+  [
+    5398,
+    "Redo",
+    "恢复"
+  ],
+  [
+    5399,
+    "Reapply discarded workspace changes and chat",
+    "重新应用放弃的工作区更改和聊天"
+  ],
+  [
+    5400,
+    "Next User Prompt",
+    "下一个用户提示"
+  ],
+  [
+    5401,
+    "Previous User Prompt",
+    "上一个用户提示"
+  ],
+  [
+    5421,
+    "Combined Sessions View",
+    "合并的会话视图"
+  ],
+  [
+    5440,
+    "Select tools for this custom agent",
+    "为此自定义智能体选择工具"
+  ],
+  [
+    5441,
+    "The selected tools are configured by the '{0}' custom agent. Changes to the tools will be applied to the custom agent file as well.",
+    "所选工具由“{0}”自定义智能体配置。对工具的更改也将应用于自定义智能体文件。"
+  ],
+  [
+    5442,
+    "Select tools for this custom agent",
+    "为此自定义智能体选择工具"
+  ],
+  [
+    5443,
+    "The selected tools are configured by the '{0}' custom agent. Changes to the tools will only be used for this session and will not change the '{0}' custom agent.",
+    "所选工具由“{0}”自定义智能体配置。对工具的更改将仅应用于本会话，并且不会更改 \"{0}\" 自定义智能体。"
+  ],
+  [
+    5445,
+    "The selected tools will be applied globally for all chat sessions that use the default agent.",
+    "所选工具将全局应用于使用默认智能体的所有聊天会话。"
+  ],
+  [
+    5448,
+    "Skip",
+    "跳过"
+  ],
+  [
+    5481,
+    "Filter Agent Sessions",
+    "筛选智能体会话"
+  ],
+  [
+    5482,
+    "Filter Agent Sessions",
+    "筛选智能体会话"
+  ],
+  [
+    5483,
+    "Local",
+    "本地"
+  ],
+  [
+    5484,
+    "Background",
+    "背景"
+  ],
+  [
+    5485,
+    "Cloud",
+    "云"
+  ],
+  [
+    5486,
+    "Foreground color for the read indicator in an agent session.",
+    "智能体会话中已读指示器的前景色。"
+  ],
+  [
+    5487,
+    "Archive chat with pending edits?",
+    "归档包含待处理编辑的聊天吗？"
+  ],
+  [
+    5488,
+    "You have pending changes in this chat session.",
+    "此聊天会话中有待处理的更改。"
+  ],
+  [
+    5489,
+    "Open as Editor",
+    "作为编辑器打开"
+  ],
+  [
+    5490,
+    "Open to the Side",
+    "在侧边打开"
+  ],
+  [
+    5493,
+    "Unarchive",
+    "取消归档"
+  ],
+  [
+    5496,
+    "Refresh Agent Sessions",
+    "刷新智能体会话"
+  ],
+  [
+    5497,
+    "Find Agent Session",
+    "查找智能体会话"
+  ],
+  [
+    5498,
+    "Refresh Agent Sessions",
+    "刷新智能体会话"
+  ],
+  [
+    5499,
+    "Find Agent Session",
+    "查找智能体会话"
+  ],
+  [
+    5500,
+    "Show Agent Sessions Sidebar",
+    "显示智能体会话侧边栏"
+  ],
+  [
+    5501,
+    "Hide Agent Sessions Sidebar",
+    "隐藏智能体会话侧边栏"
+  ],
+  [
+    5504,
+    "Failed",
+    "失败"
+  ],
+  [
+    5508,
+    "Refreshing agent sessions...",
+    "正在刷新智能体会话..."
+  ],
+  [
+    5509,
+    "New Session",
+    "新建会话"
+  ],
+  [
+    5510,
+    "New Session",
+    "新建会话"
+  ],
+  [
+    5511,
+    "New Session",
+    "新建会话"
+  ],
+  [
+    5512,
+    "New Local Session",
+    "新建本地会话"
+  ],
+  [
+    5513,
+    "New Background Session",
+    "新建后台会话"
+  ],
+  [
+    5514,
+    "New Cloud Session",
+    "新建云会话"
+  ],
+  [
+    5515,
+    "New {0}",
+    "新建 {0}"
+  ],
+  [
+    5517,
+    "{0} files",
+    "{0} 个文件"
+  ],
+  [
+    5518,
+    "Working...",
+    "正在运行..."
+  ],
+  [
+    5519,
+    "Failed after {0}.",
+    "{0} 后失败。"
+  ],
+  [
+    5520,
+    "Finished in {0}.",
+    "在 {0} 后完成。"
+  ],
+  [
+    5521,
+    "Failed",
+    "失败"
+  ],
+  [
+    5522,
+    "Finished",
+    "已完成"
+  ],
+  [
+    5523,
+    "Agent Sessions",
+    "智能体会话"
+  ],
+  [
+    5524,
+    "{0} agent sessions",
+    "{0} 个智能体会话"
+  ],
+  [
+    5530,
+    "Current file context",
+    "当前文件上下文"
+  ],
+  [
+    5562,
+    "Controls which URLs are automatically approved when requested by chat tools. Keys are URL patterns and values can be `true` to approve both requests and responses, `false` to deny, or an object with `approveRequest` and `approveResponse` properties for granular control.\n\nExamples:\n- `\"https://example.com\": true` - Approve all requests to example.com\n- `\"https://*.example.com\": true` - Approve all requests to any subdomain of example.com\n- `\"https://example.com/api/*\": { \"approveRequest\": true, \"approveResponse\": false }` - Approve requests but not responses for example.com/api paths",
+    "控制在聊天工具请求时哪些 URL 会得到自动批准。键是 URL 模式，值可以是 `true` 以表示批准请求和响应，可以是 `false` 以表示拒绝，还可以是包含 `approveRequest` 和 `approveResponse` 属性的对象，以用于进行细粒度控制。\r\n\r\n示例:\r\n- `\"https://example.com\": true` - 批准对 example.com 的所有请求\r\n- `\"https://*.example.com\": true` - 批准对 example.com 任意子域的所有请求\r\n- `\"https://example.com/api/*\": { \"approveRequest\": true, \"approveResponse\": false }` - 批准对 example.com/api 路径的请求，但不批准响应"
+  ],
+  [
+    5563,
+    "Controls which tools are eligible for automatic approval. Tools set to 'false' will always present a confirmation and will never offer the option to auto-approve. The default behavior (or setting a tool to 'true') may result in the tool offering auto-approval options.",
+    "控制哪些工具有资格获得自动批准。设置为 `false` 的工具将始终提出确认，且从不提供自动批准选项。默认行为(或将工具设置为 `true`)可能使工具提供自动批准选项。"
+  ],
+  [
+    5564,
+    "Controls which tools are eligible for automatic approval. Tools set to 'false' will always present a confirmation and will never offer the option to auto-approve. The default behavior (or setting a tool to 'true') may result in the tool offering auto-approval options.",
+    "控制哪些工具有资格获得自动批准。设置为 `false` 的工具将始终提出确认，且从不提供自动批准选项。默认行为(或将工具设置为 `true`)可能使工具提供自动批准选项。"
+  ],
+  [
+    5565,
+    "Controls whether background throttling is suspended when a chat request is in progress, allowing the chat session to continue even when the window is not in focus.",
+    "控制进行聊天请求时是否暂停后台限流，让聊天会话在窗口未聚焦时也能继续。"
+  ],
+  [
+    5571,
+    "Show welcome banner when chat is empty.",
+    "聊天为空时显示欢迎横幅。"
+  ],
+  [
+    5572,
+    "Show chat agent sessions when chat is empty or to the side when chat view is wide enough.",
+    "聊天为空时显示聊天智能体会话；聊天视图足够宽时在侧边显示。"
+  ],
+  [
+    5573,
+    "Automatically determine the orientation based on available space.",
+    "根据可用空间自动确定排列方向。"
+  ],
+  [
+    5574,
+    "Display sessions vertically stacked unless a chat session is visible.",
+    "除非有聊天会话可见，否则垂直堆叠显示会话。"
+  ],
+  [
+    5575,
+    "Display sessions side by side if space is sufficient.",
+    "空间足够时并排显示会话。"
+  ],
+  [
+    5576,
+    "Controls the orientation of the chat agent sessions view when it is shown alongside the chat.",
+    "控制聊天智能体会话视图与聊天并排显示时的排列方向。"
+  ],
+  [
+    5577,
+    "Show the title of the chat above the chat in the chat view.",
+    "在聊天视图的聊天内容上方显示聊天标题。"
+  ],
+  [
+    5578,
+    "Controls whether a chat session should present the user with an OS notification when a response is received while the window is not in focus. This includes a window badge as well as notification toast.",
+    "控制在窗口未处于焦点且接收到响应时，聊天会话是否应向用户呈现 OS 通知。这包括窗口徽章和通知横幅。"
+  ],
+  [
+    5605,
+    "When applying edits, show a progress animation in the code block pill. If disabled, shows the progress percentage instead.",
+    "应用编辑时，在代码块药丸形状中显示进度动画。如果禁用，则改为显示进度百分比。"
+  ],
+  [
+    5606,
+    "Show status widget for free tier users.",
+    "向免费层级用户显示状态小组件。"
+  ],
+  [
+    5607,
+    "Show status widget for anonymous users.",
+    "向匿名用户显示状态小组件。"
+  ],
+  [
+    5608,
+    "Controls which user type should see the status widget in new chat sessions when quota is exceeded.",
+    "控制额度超出时，哪些用户类型会在新聊天会话中看到状态小组件。"
+  ],
+  [
+    5611,
+    "Enables the default Marketplace for Model Context Protocol (MCP) servers.",
+    "为模型上下文协议(MCP)服务器启用默认商城。"
+  ],
+  [
+    5620,
+    "This setting is deprecated and will be removed in future releases. Chat modes are now called custom agents and are located in `.github/agents`",
+    "此设置已弃用，将在未来的版本中移除。聊天模式现称为自定义智能体，位于 `.github/agents` 中"
+  ],
+  [
+    5623,
+    "Use nested AGENTS.MD files",
+    "使用嵌套的 AGENTS.MD 文件"
+  ],
+  [
+    5624,
+    "Controls whether instructions from nested `AGENTS.MD` files found in the workspace are listed in all chat requests. The language model can load these skills on-demand if the `read` tool is available.",
+    "控制是否在所有聊天请求中列出在工作区中找到的嵌套 `AGENTS.MD` 文件中的指令。如果 `read` 工具可用，语言模型可以按需加载这些技能。"
+  ],
+  [
+    5625,
+    "Use Claude skills",
+    "使用 Claude 技能"
+  ],
+  [
+    5626,
+    "Controls whether Claude skills found in the workspace and user home directories under `.claude/skills` are listed in all chat requests. The language model can load these skills on-demand if the `read` tool is available.",
+    "控制是否在所有聊天请求中列出在 `.claude/skills` 下的工作区和用户主目录中找到的 Claude 技能。如果 `read` 工具可用，语言模型可以按需加载这些技能。"
+  ],
+  [
+    5629,
+    "Controls whether to show the todo list widget above the chat input. When enabled, the widget displays todo items created by the agent and updates as progress is made.",
+    "控制是否在聊天输入上方显示待办事项列表小组件。启用后，小组件显示智能体创建的待办事项，并随进度更新。"
+  ],
+  [
+    5631,
+    "When enabled, todo items include detailed descriptions for implementation context. This provides more information but uses additional tokens and may slow down responses.",
+    "启用后，待办事项包含实现上下文的详细描述。这会提供更多信息，但同时会使用额外的令牌，可能导致响应变慢。"
+  ],
+  [
+    5636,
+    "Controls whether to use an LLM to generate summary titles for thinking sections.",
+    "控制是否使用大语言模型为思考部分生成摘要标题。"
+  ],
+  [
+    5637,
+    "Tool calls are shown separately, not collapsed into thinking.",
+    "工具调用单独显示，不折叠到思考内容中。"
+  ],
+  [
+    5638,
+    "Tool calls are collapsed into thinking sections when thinking is present.",
+    "有思考内容时，将工具调用折叠到思考部分。"
+  ],
+  [
+    5639,
+    "Tool calls are always collapsed, even without thinking.",
+    "始终折叠工具调用，即使没有思考内容也是如此。"
+  ],
+  [
+    5640,
+    "Controls how tool calls are displayed in relation to thinking sections.",
+    "启用后，可折叠的思考部分将根据所选模式添加工具调用。"
+  ],
+  [
+    5644,
+    "Controls whether the last session is restored in panel after restart.",
+    "控制重启后是否在面板中恢复上一次会话。"
+  ],
+  [
+    5645,
+    "Controls whether the chat panel automatically exits after delegating a request to another session.",
+    "控制将请求委派给另一个会话后，聊天面板是否自动退出。"
+  ],
+  [
+    5646,
+    "Enables the unification of GitHub Copilot extensions. When enabled, all GitHub Copilot functionality is served from the GitHub Copilot Chat extension. When disabled, the GitHub Copilot and GitHub Copilot Chat extensions operate independently.",
+    "启用统一 GitHub Copilot 扩展。启用后，所有 GitHub Copilot 功能均通过 GitHub Copilot 聊天助手扩展提供。禁用时，GitHub Copilot 和 GitHub Copilot 聊天助手扩展独立运行。"
+  ],
+  [
+    5647,
+    "Whether the runSubagent tool is able to use custom agents. When enabled, the tool can take the name of a custom agent, but it must be given the exact name of the agent.",
+    "runSubagent 工具是否能使用自定义智能体。启用后，工具可获取自定义智能体的名称，但必须获得智能体的准确名称。"
+  ],
+  [
+    5654,
+    "Approve results of tool",
+    "审批工具的结果"
+  ],
+  [
+    5657,
+    "Details: {0}",
+    "详细信息: {0}"
+  ],
+  [
+    5669,
+    "Chat: {0}",
+    "聊天: {0}"
+  ],
+  [
+    5670,
+    "Untitled Chat",
+    "无标题聊天"
+  ],
+  [
+    5671,
+    "New chat response.",
+    "新建聊天响应。"
+  ],
+  [
+    5681,
+    "Terminal command, {0}",
+    "终端命令，{0}"
+  ],
+  [
+    5682,
+    "Command: {0}, exit code: {1}",
+    "命令: {0}，退出代码: {1}"
+  ],
+  [
+    5683,
+    "Command",
+    "命令"
+  ],
+  [
+    5684,
+    "Output:",
+    "输出:"
+  ],
+  [
+    5685,
+    "Click to focus this command in the terminal.",
+    "单击聚焦终端中的此命令。"
+  ],
+  [
+    5712,
+    "Enable more AI features",
+    "启用更多 AI 功能"
+  ],
+  [
+    5720,
+    "Chat: {0}",
+    "聊天: {0}"
+  ],
+  [
+    5721,
+    "Untitled Chat",
+    "无标题聊天"
+  ],
+  [
+    5725,
+    "Applying edits",
+    "正在应用编辑"
+  ],
+  [
+    5728,
+    "Edited",
+    "已编辑"
+  ],
+  [
+    5734,
+    "Skip?",
+    "是否跳过?"
+  ],
+  [
+    5735,
+    "Activating MCP extensions...",
+    "正在激活 MCP 扩展..."
+  ],
+  [
+    5736,
+    "Starting MCP servers {0}...",
+    "正在启动 MCP 服务器 {0}..."
+  ],
+  [
+    5742,
+    "Open Changes",
+    "打开更改"
+  ],
+  [
+    5745,
+    "Auto approved by {0}",
+    "已由 {0} 自动审批"
+  ],
+  [
+    5746,
+    "Auto approved for this session",
+    "已对此会话自动审批"
+  ],
+  [
+    5747,
+    "Auto approved for this workspace",
+    "已对此工作区自动审批"
+  ],
+  [
+    5748,
+    "Auto approved for this profile",
+    "已对此配置文件自动审批"
+  ],
+  [
+    5749,
+    "Edit",
+    "编辑"
+  ],
+  [
+    5751,
+    "Waiting for tool '{0}' to respond...",
+    "等待工具 \"{0}\" 响应..."
+  ],
+  [
+    5753,
+    "Manage Paid Premium Requests",
+    "管理付费高级请求"
+  ],
+  [
+    5756,
+    "Click to Retry",
+    "单击以重试"
+  ],
+  [
+    5764,
+    "current mode",
+    "当前模式"
+  ],
+  [
+    5765,
+    "Proceed from {0}",
+    "从 {0} 继续"
+  ],
+  [
+    5767,
+    "More options for {0}",
+    "{0} 的更多选项"
+  ],
+  [
+    5768,
+    "Continue in {0}",
+    "在 {0} 中继续"
+  ],
+  [
+    5772,
+    "Finished thinking and invoked {0} tool{1}",
+    "已完成思考并调用 {0} 个工具"
+  ],
+  [
+    5773,
+    "Finished Thinking",
+    "思考完成"
+  ],
+  [
+    5782,
+    "Chat Todo List",
+    "聊天待办事项列表"
+  ],
+  [
+    5783,
+    "Cannot clear todos while a task is in progress",
+    "任务正在进行时，无法清除待办事项"
+  ],
+  [
+    5785,
+    "Collapse Todos",
+    "折叠待办事项"
+  ],
+  [
+    5786,
+    "Expand Todos",
+    "展开待办事项"
+  ],
+  [
+    5787,
+    "Todos ({0}/{1})",
+    "待办事项({0}/{1})"
+  ],
+  [
+    5790,
+    "Todos ({0}/{1})",
+    "待办事项({0}/{1})"
+  ],
+  [
+    5796,
+    "Failed to save {0}: {1}",
+    "未能保存 {0}: {1}"
+  ],
+  [
+    5797,
+    "Saving resources...",
+    "正在保存资源..."
+  ],
+  [
+    5798,
+    "Saved resources to {0}",
+    "已将资源保存到 {0}"
+  ],
+  [
+    5799,
+    "Pick folder to save resources",
+    "选取文件夹以保存资源"
+  ],
+  [
+    5800,
+    "Save As...",
+    "另存为..."
+  ],
+  [
+    5802,
+    "Skip",
+    "跳过"
+  ],
+  [
+    5807,
+    "Auto approved by {0}",
+    "已由 {0} 自动审批"
+  ],
+  [
+    5808,
+    "Auto approved for this session",
+    "已对此会话自动审批"
+  ],
+  [
+    5809,
+    "Auto approved for this workspace",
+    "已对此工作区自动审批"
+  ],
+  [
+    5810,
+    "Auto approved for this profile",
+    "已对此配置文件自动审批"
+  ],
+  [
+    5811,
+    "Edit",
+    "编辑"
+  ],
+  [
+    5816,
+    "All commands will be auto approved for this session",
+    "此会话的所有命令将得到自动批准"
+  ],
+  [
+    5817,
+    "Disable",
+    "禁用"
+  ],
+  [
+    5818,
+    "Allow",
+    "允许"
+  ],
+  [
+    5819,
+    "Skip",
+    "跳过"
+  ],
+  [
+    5826,
+    "Terminal output for {0}",
+    "{0} 的终端输出"
+  ],
+  [
+    5827,
+    "Command: {0}",
+    "命令: {0}"
+  ],
+  [
+    5828,
+    "No output was produced by the command.",
+    "命令未生成任何输出。"
+  ],
+  [
+    5829,
+    "Command output is no longer available.",
+    "命令输出不再可用。"
+  ],
+  [
+    5830,
+    "No output was produced by the command.",
+    "命令未生成任何输出。"
+  ],
+  [
+    5831,
+    "Output truncated.",
+    "输出已截断。"
+  ],
+  [
+    5832,
+    "No output was produced by the command.",
+    "命令未生成任何输出。"
+  ],
+  [
+    5833,
+    "No output was produced by the command.",
+    "命令未生成任何输出。"
+  ],
+  [
+    5834,
+    "Terminal is no longer available.",
+    "终端不再可用。"
+  ],
+  [
+    5835,
+    "Command information is not available.",
+    "命令信息不可用。"
+  ],
+  [
+    5836,
+    "Show Output",
+    "显示输出"
+  ],
+  [
+    5837,
+    "Hide Output",
+    "隐藏输出"
+  ],
+  [
+    5838,
+    "Show Output",
+    "显示输出"
+  ],
+  [
+    5839,
+    "Show and Focus Terminal",
+    "显示并聚焦终端"
+  ],
+  [
+    5840,
+    "Focus Terminal",
+    "聚焦终端"
+  ],
+  [
+    5841,
+    "Focus Terminal",
+    "聚焦终端"
+  ],
+  [
+    5842,
+    "Allow and Review",
+    "允许和审阅"
+  ],
+  [
+    5845,
+    "Allow and Skip Reviewing Result",
+    "允许并跳过审阅结果"
+  ],
+  [
+    5851,
+    "Allow",
+    "允许"
+  ],
+  [
+    5852,
+    "Skip Results",
+    "跳过结果"
+  ],
+  [
+    5853,
+    "Approve Tool Result",
+    "审批工具结果"
+  ],
+  [
+    5854,
+    "No results to display",
+    "没有可显示的结果"
+  ],
+  [
+    5855,
+    "No displayable results",
+    "无可显示结果"
+  ],
+  [
+    5856,
+    "Contributes chat context integrations to the chat widget.",
+    "向聊天小组件提供聊天上下文集成。"
+  ],
+  [
+    5857,
+    "A unique identifier for this item.",
+    "此项的唯一标识符。"
+  ],
+  [
+    5858,
+    "The icon associated with this chat context item.",
+    "与此聊天上下文项关联的图标。"
+  ],
+  [
+    5859,
+    "A user-friendly name for this item which is used for display in menus.",
+    "此项的用户友好名称，用于在菜单中显示。"
+  ],
+  [
+    5880,
+    "All Session Changes",
+    "所有会话更改"
+  ],
+  [
+    5896,
+    "View All Changes",
+    "查看所有更改"
+  ],
+  [
+    5917,
+    "Keep",
+    "保留"
+  ],
+  [
+    5918,
+    "Undo",
+    "撤消"
+  ],
+  [
+    5926,
+    "The current editor is currently being modified",
+    "当前编辑器正在被修改"
+  ],
+  [
+    5930,
+    "The cursor is inside a change range made by chat editing.",
+    "光标位于聊天编辑所做的更改范围内。"
+  ],
+  [
+    5971,
+    "Loading...",
+    "正在加载..."
+  ],
+  [
+    5982,
+    "{0} line {1}",
+    "{0} 第 {1} 行"
+  ],
+  [
+    5983,
+    "{0} lines {1} to {2}",
+    "{0} 第 {1} 至 {2} 行"
+  ],
+  [
+    6007,
+    "1 file ready to merge",
+    "1 个文件可合并"
+  ],
+  [
+    6008,
+    "{0} files ready to merge",
+    "{0} 个文件可合并"
+  ],
+  [
+    6010,
+    "Worktree Changes",
+    "工作树更改"
+  ],
+  [
+    6030,
+    "Chat Management Editor",
+    "聊天管理编辑器"
+  ],
+  [
+    6031,
+    "Models Management Editor",
+    "模型管理编辑器"
+  ],
+  [
+    6032,
+    "Manage Language Models",
+    "管理语言模型"
+  ],
+  [
+    6033,
+    "Clear Models Search Results",
+    "清除模型搜索结果"
+  ],
+  [
+    6034,
+    "The color of the Chat Management editor splitview sash border.",
+    "聊天管理编辑器拆分视图窗体边框的颜色。"
+  ],
+  [
+    6035,
+    "Usage",
+    "使用情况"
+  ],
+  [
+    6036,
+    "Models",
+    "模型"
+  ],
+  [
+    6037,
+    "Sections",
+    "部分"
+  ],
+  [
+    6039,
+    "Free",
+    "免费"
+  ],
+  [
+    6040,
+    "Upgrade to Copilot Pro+",
+    "升级到 Copilot Pro+"
+  ],
+  [
+    6041,
+    "Upgrade to Copilot Pro",
+    "升级到 Copilot Pro"
+  ],
+  [
+    6042,
+    "Upgrade to Copilot Pro",
+    "升级到 Copilot Pro"
+  ],
+  [
+    6043,
+    "Use AI Features",
+    "使用 AI 功能"
+  ],
+  [
+    6044,
+    "Enable more AI Features",
+    "启用更多 AI 功能"
+  ],
+  [
+    6045,
+    "Enable AI Features",
+    "启用 AI 功能"
+  ],
+  [
+    6046,
+    "Sign in to use AI Features",
+    "登录以使用 AI 功能"
+  ],
+  [
+    6052,
+    "Icon of the AI Management editor label.",
+    "AI 管理编辑器标签的图标。"
+  ],
+  [
+    6053,
+    "Icon of the Models Management editor label.",
+    "模型管理编辑器标签的图标。"
+  ],
+  [
+    6054,
+    "Manage Copilot",
+    "管理 Copilot"
+  ],
+  [
+    6055,
+    "Language Models",
+    "语言模型"
+  ],
+  [
+    6056,
+    "Visible",
+    "可见"
+  ],
+  [
+    6057,
+    "Hidden",
+    "隐藏"
+  ],
+  [
+    6058,
+    "Multiplier",
+    "乘数"
+  ],
+  [
+    6059,
+    "Context Size",
+    "上下文大小"
+  ],
+  [
+    6060,
+    "Input",
+    "输入"
+  ],
+  [
+    6061,
+    "Output",
+    "输出"
+  ],
+  [
+    6062,
+    "Capabilities",
+    "功能"
+  ],
+  [
+    6063,
+    "Tools",
+    "工具"
+  ],
+  [
+    6064,
+    "Vision",
+    "视觉"
+  ],
+  [
+    6065,
+    "Agent Mode",
+    "智能体模式"
+  ],
+  [
+    6066,
+    "Filter",
+    "筛选器"
+  ],
+  [
+    6067,
+    "Group by {0}",
+    "按 {0} 分组"
+  ],
+  [
+    6068,
+    "Filter by {0}",
+    "按 {0} 筛选"
+  ],
+  [
+    6069,
+    "Filter by {0}",
+    "按 {0} 筛选"
+  ],
+  [
+    6070,
+    "Filter by {0}",
+    "按 {0} 筛选"
+  ],
+  [
+    6071,
+    "Visible",
+    "可见"
+  ],
+  [
+    6072,
+    "Hidden",
+    "已隐藏"
+  ],
+  [
+    6073,
+    "Tools",
+    "工具"
+  ],
+  [
+    6074,
+    "Vision",
+    "视觉"
+  ],
+  [
+    6075,
+    "Agent Mode",
+    "智能体模式"
+  ],
+  [
+    6076,
+    "Provider",
+    "提供商"
+  ],
+  [
+    6077,
+    "Visibility",
+    "可见性"
+  ],
+  [
+    6079,
+    "Expand",
+    "展开"
+  ],
+  [
+    6080,
+    "Collapse",
+    "折叠"
+  ],
+  [
+    6081,
+    "Hide",
+    "隐藏"
+  ],
+  [
+    6082,
+    "Show",
+    "显示"
+  ],
+  [
+    6083,
+    "Hide in the chat model picker",
+    "在聊天模型选取器中隐藏"
+  ],
+  [
+    6084,
+    "Show in the chat model picker",
+    "在聊天模型选取器中显示"
+  ],
+  [
+    6085,
+    "This model is hidden in the chat model picker",
+    "此模型在聊天模型选取器中隐藏"
+  ],
+  [
+    6086,
+    "Every chat message counts {0} towards your premium model request quota",
+    "每条聊天消息计入你的高级模型请求额度 {0}"
+  ],
+  [
+    6087,
+    "Context Size",
+    "上下文大小"
+  ],
+  [
+    6088,
+    "Input",
+    "输入"
+  ],
+  [
+    6089,
+    "Output",
+    "输出"
+  ],
+  [
+    6090,
+    "Tools",
+    "工具"
+  ],
+  [
+    6091,
+    "Vision",
+    "视觉"
+  ],
+  [
+    6092,
+    "Manage {0}...",
+    "管理 {0}..."
+  ],
+  [
+    6093,
+    "Type to search...",
+    "键入以搜索..."
+  ],
+  [
+    6094,
+    "Clear Search",
+    "清除搜索"
+  ],
+  [
+    6096,
+    "Add Models...",
+    "添加模型..."
+  ],
+  [
+    6097,
+    "Name",
+    "名称"
+  ],
+  [
+    6098,
+    "Provider",
+    "提供商"
+  ],
+  [
+    6099,
+    "Context Size",
+    "上下文大小"
+  ],
+  [
+    6100,
+    "Capabilities",
+    "功能"
+  ],
+  [
+    6101,
+    "Multiplier",
+    "乘数"
+  ],
+  [
+    6102,
+    "{0} Models",
+    "{0} 提供程序"
+  ],
+  [
+    6103,
+    "Visible Models",
+    "可见模型"
+  ],
+  [
+    6104,
+    "Hidden Models",
+    "隐藏的模型"
+  ],
+  [
+    6105,
+    "{0} from {1}",
+    "{0}，来自 {1}"
+  ],
+  [
+    6106,
+    "Context size: {0} input tokens and {1} output tokens",
+    "上下文大小：{0} 个输入 Token，{1} 个输出 Token"
+  ],
+  [
+    6107,
+    "Capabilities: {0}",
+    "功能：{0}"
+  ],
+  [
+    6108,
+    "Every chat message counts {0} towards your premium model request quota",
+    "每条聊天消息计入你的高级模型请求额度 {0}"
+  ],
+  [
+    6109,
+    "This model is visible in the chat model picker",
+    "此模型在聊天模型选择器中可见"
+  ],
+  [
+    6110,
+    "This model is hidden in the chat model picker",
+    "此模型在聊天模型选择器中隐藏"
+  ],
+  [
+    6111,
+    "Language Models",
+    "语言模型"
+  ],
+  [
+    6112,
+    "Manage {0}...",
+    "管理 {0}..."
+  ],
+  [
+    6113,
+    "Inline Suggestions",
+    "内联建议"
+  ],
+  [
+    6114,
+    "Chat messages",
+    "聊天消息"
+  ],
+  [
+    6115,
+    "Inline Suggestions",
+    "内联建议"
+  ],
+  [
+    6116,
+    "Chat messages",
+    "聊天消息"
+  ],
+  [
+    6117,
+    "Premium requests",
+    "高级请求"
+  ],
+  [
+    6118,
+    "Additional paid premium requests enabled.",
+    "已启用其他付费高级请求。"
+  ],
+  [
+    6119,
+    "Allowance resets {0}.",
+    "限额重置为 {0}。"
+  ],
+  [
+    6120,
+    "Included",
+    "已包含"
+  ],
+  [
+    6121,
+    "Included",
+    "已包含"
+  ],
+  [
+    6122,
+    "Limited",
+    "受限"
+  ],
+  [
+    6165,
+    "By continuing with {0} Copilot, you agree to {1}'s [Terms]({2}) and [Privacy Statement]({3})",
+    "继续使用 {0} Copilot 即表示你同意 {1} 的[条款]({2})和[隐私声明]({3})"
+  ],
+  [
+    6166,
+    "Approve results of {0}? Result: ",
+    "是否批准 {0} 的结果?结果:"
+  ],
+  [
+    6173,
+    "Icon identifier (codicon ID) for the chat session editor tab. For example, \"$(github)\" or \"$(cloud)\".",
+    "聊天会话编辑器选项卡的图标标识符(codicon ID)。例如 \"$(github)\" 或 \"$(cloud)\"。"
+  ],
+  [
+    6174,
+    "Icon path when a light theme is used",
+    "使用浅色主题时的图标路径"
+  ],
+  [
+    6175,
+    "Icon path when a dark theme is used",
+    "使用深色主题时的图标路径"
+  ],
+  [
+    6176,
+    "Order in which this item should be displayed.",
+    "此项的显示顺序。"
+  ],
+  [
+    6177,
+    "Alternative identifiers for backward compatibility.",
+    "用于向后兼容的备用标识符。"
+  ],
+  [
+    6178,
+    "Title text to display in the chat welcome view for this session type.",
+    "要在此会话类型的聊天欢迎视图中显示的标题文本。"
+  ],
+  [
+    6179,
+    "Message text (supports markdown) to display in the chat welcome view for this session type.",
+    "要在此会话类型的聊天欢迎视图中显示的消息文本(支持 Markdown)。"
+  ],
+  [
+    6180,
+    "Tips text (supports markdown and theme icons) to display in the chat welcome view for this session type.",
+    "要在此会话类型的聊天欢迎视图中显示的提示文本(支持 Markdown 和主题图标)。"
+  ],
+  [
+    6181,
+    "Placeholder text to display in the chat input box for this session type.",
+    "要在此会话类型的聊天输入框中显示的占位符文本。"
+  ],
+  [
+    6185,
+    "Whether this chat session supports attaching MCP resources.",
+    "此聊天会话是否支持附加 MCP 资源。"
+  ],
+  [
+    6186,
+    "Whether this chat session supports attaching images.",
+    "此聊天会话是否支持附加图像。"
+  ],
+  [
+    6187,
+    "Whether this chat session supports attaching search results.",
+    "此聊天会话是否支持附加搜索结果。"
+  ],
+  [
+    6188,
+    "Whether this chat session supports attaching instructions.",
+    "此聊天会话是否支持附加指令。"
+  ],
+  [
+    6189,
+    "Whether this chat session supports attaching source control changes.",
+    "此聊天会话是否支持附加源代码管理更改。"
+  ],
+  [
+    6190,
+    "Whether this chat session supports attaching problems.",
+    "此聊天会话是否支持附加问题。"
+  ],
+  [
+    6191,
+    "Whether this chat session supports attaching symbols.",
+    "此聊天会话是否支持附加符号。"
+  ],
+  [
+    6192,
+    "Commands available for this chat session, which the user can invoke with a `/`.",
+    "可用于此聊天会话的命令，用户可使用 `/` 进行调用。"
+  ],
+  [
+    6193,
+    "A short name by which this command is referred to in the UI, e.g. `fix` or `explain` for commands that fix an issue or explain code. The name should be unique among the commands provided by this participant.",
+    "在 UI 中引用此命令时使用的短名称，例如使用 `fix` 或 `explain` 引用可修复问题或解释代码的命令。名称在此参与者提供的命令中应是唯一的。"
+  ],
+  [
+    6194,
+    "A description of this command.",
+    "此命令的说明。"
+  ],
+  [
+    6195,
+    "A condition which must be true to enable this command.",
+    "启用命令时必须为 true 的条件。"
+  ],
+  [
+    6196,
+    "Whether delegation is supported. Default is false. Note that enabling this is experimental and may not be respected at all times.",
+    "是否支持委派。默认值为 true。"
+  ],
+  [
+    6197,
+    "Create chat session",
+    "创建聊天会话"
+  ],
+  [
+    6200,
+    "Waiting for confirmation: {0}",
+    "正在等待确认：{0}"
+  ],
+  [
+    6202,
+    "New {0} with Prompt",
+    "新建带提示的 {0}"
+  ],
+  [
+    6204,
+    "New {0}",
+    "新建 {0}"
+  ],
+  [
+    6205,
+    "Pick Option",
+    "选择选项"
+  ],
+  [
+    6208,
+    "Agent Sessions",
+    "智能体会话"
+  ],
+  [
+    6209,
+    "Agent Sessions",
+    "智能体会话"
+  ],
+  [
+    6210,
+    "1 session",
+    "1 个会话"
+  ],
+  [
+    6211,
+    "{0} sessions",
+    "{0} 个会话"
+  ],
+  [
+    6212,
+    "Last Activity: {0}",
+    "上一个活动: {0}"
+  ],
+  [
+    6214,
+    "History",
+    "历史记录"
+  ],
+  [
+    6216,
+    "More...",
+    "更多..."
+  ],
+  [
+    6222,
+    "Chat setup failed. Would you like to try again?",
+    "聊天设置失败。要重试吗？"
+  ],
+  [
+    6224,
+    "Explain",
+    "解释"
+  ],
+  [
+    6226,
+    "Code Review",
+    "代码审查"
+  ],
+  [
+    6227,
+    "Generate Docs",
+    "生成文档"
+  ],
+  [
+    6228,
+    "Generate Tests",
+    "生成测试"
+  ],
+  [
+    6229,
+    "Enabling AI features",
+    "正在启用 AI 功能"
+  ],
+  [
+    6230,
+    "Disabling AI features",
+    "正在禁用 AI 功能"
+  ],
+  [
+    6231,
+    "Use AI Features with Copilot for free...",
+    "通过 Copilot 免费使用 AI 功能..."
+  ],
+  [
+    6232,
+    "Sign in to use AI features",
+    "登录以使用 AI 功能"
+  ],
+  [
+    6233,
+    "Sign in to use AI features...",
+    "登录以使用 AI 功能..."
+  ],
+  [
+    6234,
+    "Upgrade to GitHub Copilot Pro",
+    "升级到 GitHub Copilot Pro"
+  ],
+  [
+    6236,
+    "Manage GitHub Copilot Overages",
+    "管理 GitHub Copilot 超额用量"
+  ],
+  [
+    6238,
+    "Learn How to Hide AI Features",
+    "了解如何隐藏 AI 功能"
+  ],
+  [
+    6239,
+    "Getting chat ready...",
+    "正在准备聊天..."
+  ],
+  [
+    6240,
+    "Failed to sign in to {0}. Would you like to try again?",
+    "登录 {0} 失败。要重试吗？"
+  ],
+  [
+    6241,
+    "You must be signed in to use AI features.",
+    "必须登录才能使用 AI 功能。"
+  ],
+  [
+    6243,
+    "An error occurred while setting up chat. Would you like to try again?",
+    "设置聊天时发生错误。要重试吗？"
+  ],
+  [
+    6245,
+    "What is your {0} instance?",
+    "你的 {0} 实例是什么？"
+  ],
+  [
+    6246,
+    "i.e. \"octocat\" or \"https://octocat.ghe.com\"...",
+    "例如 \"octocat\" 或 \"https://octocat.ghe.com\"..."
+  ],
+  [
+    6247,
+    "Will resolve to {0}",
+    "将解析为 {0}"
+  ],
+  [
+    6248,
+    "You must enter a valid {0} instance (i.e. \"octocat\" or \"https://octocat.ghe.com\")",
+    "必须输入有效的 {0} 实例（例如 \"octocat\" 或 \"https://octocat.ghe.com\"）"
+  ],
+  [
+    6250,
+    "Scaffold a new workspace in VS Code",
+    "在 VS Code 中搭建新工作区"
+  ],
+  [
+    6251,
+    "You need to set up GitHub Copilot and be signed in to use Chat.",
+    "需要设置 GitHub Copilot 并登录才能使用聊天。"
+  ],
+  [
+    6252,
+    "You need to trust this workspace to use Chat.",
+    "需要信任此工作区才能使用聊天。"
+  ],
+  [
+    6253,
+    "Getting chat ready...",
+    "正在准备聊天..."
+  ],
+  [
+    6254,
+    "Failed to get a response. Please try again.",
+    "获取回复失败。请重试。"
+  ],
+  [
+    6255,
+    "Chat is almost ready...",
+    "聊天即将准备就绪..."
+  ],
+  [
+    6256,
+    "Chat took too long to get ready. Please ensure that the extension `{0}` is installed and enabled.",
+    "准备聊天耗时过长。请确保已安装并启用扩展 `{0}`。"
+  ],
+  [
+    6257,
+    "Chat took too long to get ready. Please ensure you are signed in to {0} and that the extension `{1}` is installed and enabled.",
+    "准备聊天耗时过长。请确保已登录 {0}，并已安装和启用扩展 `{1}`。"
+  ],
+  [
+    6258,
+    "Signing in to {0}...",
+    "正在登录 {0}..."
+  ],
+  [
+    6259,
+    "Getting chat ready...",
+    "正在准备聊天..."
+  ],
+  [
+    6260,
+    "Chat setup failed.",
+    "聊天设置失败。"
+  ],
+  [
+    6261,
+    "Generate",
+    "生成"
+  ],
+  [
+    6262,
+    "Modify",
+    "修改"
+  ],
+  [
+    6264,
+    "Explain",
+    "解释"
+  ],
+  [
+    6265,
+    "Modify",
+    "修改"
+  ],
+  [
+    6266,
+    "Generate",
+    "生成"
+  ],
+  [
+    6267,
+    "Explain",
+    "解释"
+  ],
+  [
+    6269,
+    "Ask questions about VS Code",
+    "询问有关 VS Code 的问题"
+  ],
+  [
+    6270,
+    "Ask about your workspace",
+    "询问有关工作区的问题"
+  ],
+  [
+    6271,
+    "Ask how to do something in the terminal",
+    "询问如何在终端中执行操作"
+  ],
+  [
+    6272,
+    "AI features are currently only supported in trusted workspaces.",
+    "AI 功能目前仅在受信任的工作区中受支持。"
+  ],
+  [
+    6273,
+    "Continue with {0}",
+    "使用 {0} 继续"
+  ],
+  [
+    6274,
+    "Continue with {0}",
+    "使用 {0} 继续"
+  ],
+  [
+    6275,
+    "Continue with {0}",
+    "使用 {0} 继续"
+  ],
+  [
+    6276,
+    "Continue with {0}",
+    "使用 {0} 继续"
+  ],
+  [
+    6277,
+    "Use AI Features",
+    "使用 AI 功能"
+  ],
+  [
+    6278,
+    "Skip for now",
+    "暂时跳过"
+  ],
+  [
+    6279,
+    "Start using AI Features",
+    "开始使用 AI 功能"
+  ],
+  [
+    6280,
+    "Enable more AI features",
+    "启用更多 AI 功能"
+  ],
+  [
+    6281,
+    "Sign in to use AI Features",
+    "登录以使用 AI 功能"
+  ],
+  [
+    6282,
+    "Start using AI Features",
+    "开始使用 AI 功能"
+  ],
+  [
+    6283,
+    "By continuing, you agree to {0}'s [Terms]({1}) and [Privacy Statement]({2}).",
+    "继续操作即表示你同意 {0} 的[条款]({1})和[隐私声明]({2})。"
+  ],
+  [
+    6284,
+    "By continuing, you agree to {0}'s [Terms]({1}) and [Privacy Statement]({2}). {3} Copilot may show [public code]({4}) suggestions and use your data to improve the product. You can change these [settings]({5}) anytime.",
+    "继续操作即表示你同意 {0} 的[条款]({1})和[隐私声明]({2})。{3} Copilot 可能显示[公共代码]({4})建议，并使用你的数据改进产品。你可以随时更改这些[设置]({5})。"
+  ],
+  [
+    6285,
+    "Gauge foreground color.",
+    "仪表前景色。"
+  ],
+  [
+    6286,
+    "Gauge background color.",
+    "仪表背景色。"
+  ],
+  [
+    6287,
+    "Gauge border color.",
+    "仪表边框颜色。"
+  ],
+  [
+    6288,
+    "Gauge warning foreground color.",
+    "仪表警告前景色。"
+  ],
+  [
+    6289,
+    "Gauge warning background color.",
+    "仪表警告背景色。"
+  ],
+  [
+    6290,
+    "Gauge error foreground color.",
+    "仪表错误前景色。"
+  ],
+  [
+    6291,
+    "Gauge error background color.",
+    "仪表错误背景色。"
+  ],
+  [
+    6292,
+    "Copilot Usage",
+    "Copilot 用量"
+  ],
+  [
+    6293,
+    "Manage Chat",
+    "管理聊天"
+  ],
+  [
+    6294,
+    "Manage Chat",
+    "管理聊天"
+  ],
+  [
+    6295,
+    "Inline Suggestions",
+    "内联建议"
+  ],
+  [
+    6296,
+    "Chat messages",
+    "聊天消息"
+  ],
+  [
+    6297,
+    "Premium requests",
+    "高级请求"
+  ],
+  [
+    6298,
+    "Allowance resets {0}.",
+    "额度将于 {0} 重置。"
+  ],
+  [
+    6299,
+    "Upgrade to GitHub Copilot Pro",
+    "升级到 GitHub Copilot Pro"
+  ],
+  [
+    6300,
+    "Copilot Usage",
+    "Copilot 用量"
+  ],
+  [
+    6301,
+    "Limited",
+    "有限"
+  ],
+  [
+    6302,
+    "Inline Suggestions",
+    "内联建议"
+  ],
+  [
+    6303,
+    "Limited",
+    "有限"
+  ],
+  [
+    6304,
+    "Chat messages",
+    "聊天消息"
+  ],
+  [
+    6305,
+    "Agent Sessions",
+    "智能体会话"
+  ],
+  [
+    6306,
+    "View Agent Sessions",
+    "查看智能体会话"
+  ],
+  [
+    6307,
+    "View Agent Sessions",
+    "查看智能体会话"
+  ],
+  [
+    6308,
+    "$(loading~spin) {0} in progress",
+    "$(loading~spin) {0} 正在进行"
+  ],
+  [
+    6309,
+    "Inline Suggestions",
+    "内联建议"
+  ],
+  [
+    6312,
+    "Model: {0}",
+    "模型：{0}"
+  ],
+  [
+    6316,
+    "By continuing with {0} Copilot, you agree to {1}'s [Terms]({2}) and [Privacy Statement]({3})",
+    "继续使用 {0} Copilot 即表示你同意 {1} 的[条款]({2})和[隐私声明]({3})"
+  ],
+  [
+    6317,
+    "Set up Copilot to use AI features.",
+    "设置 Copilot 以使用 AI 功能。"
+  ],
+  [
+    6318,
+    "Sign in to enable more Copilot AI features.",
+    "登录以启用更多 Copilot AI 功能。"
+  ],
+  [
+    6319,
+    "Enable Copilot to use AI features.",
+    "启用 Copilot 以使用 AI 功能。"
+  ],
+  [
+    6320,
+    "Sign in to use Copilot AI features.",
+    "登录以使用 Copilot AI 功能。"
+  ],
+  [
+    6321,
+    "Use AI Features",
+    "使用 AI 功能"
+  ],
+  [
+    6322,
+    "Enable more AI Features",
+    "启用更多 AI 功能"
+  ],
+  [
+    6323,
+    "Enable AI Features",
+    "启用 AI 功能"
+  ],
+  [
+    6324,
+    "Sign in to use AI Features",
+    "登录以使用 AI 功能"
+  ],
+  [
+    6327,
+    "Manage paid premium requests",
+    "管理付费高级请求"
+  ],
+  [
+    6328,
+    "Included",
+    "已包含"
+  ],
+  [
+    6329,
+    "+{0} requests",
+    "+{0} 次请求"
+  ],
+  [
+    6331,
+    "Additional paid premium requests enabled.",
+    "已启用额外的付费高级请求。"
+  ],
+  [
+    6332,
+    "Additional paid premium requests disabled.",
+    "已禁用额外的付费高级请求。"
+  ],
+  [
+    6333,
+    "All files",
+    "所有文件"
+  ],
+  [
+    6335,
+    "Next edit suggestions",
+    "下一处编辑建议"
+  ],
+  [
+    6336,
+    "Cancel Snooze",
+    "取消暂时隐藏"
+  ],
+  [
+    6337,
+    "Hide suggestions for 5 min",
+    "隐藏建议 5 分钟"
+  ],
+  [
+    6338,
+    "Hide inline suggestions for 5 min",
+    "隐藏内联建议 5 分钟"
+  ],
+  [
+    6340,
+    "Inline suggestions are hidden for the remaining duration",
+    "在剩余时间内隐藏内联建议"
+  ],
+  [
+    6341,
+    "+5 min",
+    "+5 分钟"
+  ],
+  [
+    6342,
+    "Snooze additional 5 min",
+    "再暂时隐藏 5 分钟"
+  ],
+  [
+    6343,
+    "Currently selected",
+    "当前已选择"
+  ],
+  [
+    6344,
+    "Select a model for {0}",
+    "为 {0} 选择模型"
+  ],
+  [
+    6345,
+    "Copilot status",
+    "Copilot 状态"
+  ],
+  [
+    6346,
+    "Finish Setup",
+    "完成设置"
+  ],
+  [
+    6347,
+    "Copilot disabled",
+    "Copilot 已禁用"
+  ],
+  [
+    6348,
+    "{0} agent sessions in progress",
+    "{0} 个智能体会话正在进行"
+  ],
+  [
+    6349,
+    "1 agent session in progress",
+    "1 个智能体会话正在进行"
+  ],
+  [
+    6350,
+    "Signed out",
+    "已退出登录"
+  ],
+  [
+    6351,
+    "Chat quota reached",
+    "已达到聊天额度上限"
+  ],
+  [
+    6352,
+    "Inline suggestions quota reached",
+    "已达到内联建议额度上限"
+  ],
+  [
+    6353,
+    "Quota reached",
+    "已达到额度上限"
+  ],
+  [
+    6354,
+    "Inline suggestions disabled",
+    "内联建议已禁用"
+  ],
+  [
+    6355,
+    "Inline suggestions snoozed",
+    "内联建议已暂时隐藏"
+  ],
+  [
+    6356,
+    "Copilot Status",
+    "Copilot 状态"
+  ],
+  [
+    6357,
+    "You've reached the limit for chat messages. Try Copilot Pro for free.",
+    "你已达到聊天消息上限。免费试用 Copilot Pro。"
+  ],
+  [
+    6360,
+    "You've reached the limit for chat messages.",
+    "你已达到聊天消息上限。"
+  ],
+  [
+    6363,
+    "Recent Sessions",
+    "最近的会话"
+  ],
+  [
+    6364,
+    "All Sessions",
+    "所有会话"
+  ],
+  [
+    6365,
+    "Show All Sessions",
+    "显示所有会话"
+  ],
+  [
+    6366,
+    "Show Recent Sessions",
+    "显示最近的会话"
+  ],
+  [
+    6367,
+    "Recent Sessions",
+    "最近的会话"
+  ],
+  [
+    6368,
+    "All Sessions",
+    "所有会话"
+  ],
+  [
+    6369,
+    "Show All Sessions",
+    "显示所有会话"
+  ],
+  [
+    6370,
+    "Show Recent Sessions",
+    "显示最近的会话"
+  ],
+  [
+    6372,
+    "{0} Agent Session",
+    "{0} 智能体会话"
+  ],
+  [
+    6373,
+    "Chat: {0}",
+    "聊天：{0}"
+  ],
+  [
+    6420,
+    "without approval",
+    "未经审批"
+  ],
+  [
+    6421,
+    "without reviewing result",
+    "不查看结果"
+  ],
+  [
+    6422,
+    "Allow in this Session",
+    "在此会话中允许"
+  ],
+  [
+    6423,
+    "Allow this tool to run in this session without confirmation.",
+    "允许此工具在此会话中运行而无需确认。"
+  ],
+  [
+    6424,
+    "Allow in this Workspace",
+    "此工作区中允许"
+  ],
+  [
+    6425,
+    "Allow this tool to run in this workspace without confirmation.",
+    "允许此工具在此工作区中运行而无需确认。"
+  ],
+  [
+    6426,
+    "Always Allow",
+    "始终允许"
+  ],
+  [
+    6427,
+    "Always allow this tool to run without confirmation.",
+    "始终允许此工具运行而无需确认。"
+  ],
+  [
+    6428,
+    "Allow Tools from {0} in this Session",
+    "允许此会话中来自 {0} 的工具"
+  ],
+  [
+    6429,
+    "Allow all tools from this server to run in this session without confirmation.",
+    "允许此服务器中的所有工具在此会话中运行，无需确认。"
+  ],
+  [
+    6430,
+    "Allow Tools from {0} in this Workspace",
+    "允许此工作区中来自 {0} 的工具"
+  ],
+  [
+    6431,
+    "Allow all tools from this server to run in this workspace without confirmation.",
+    "允许此服务器中的所有工具在此工作区中运行，无需确认。"
+  ],
+  [
+    6432,
+    "Always Allow Tools from {0}",
+    "始终允许来自 {0} 的工具"
+  ],
+  [
+    6433,
+    "Always allow all tools from this server to run without confirmation.",
+    "始终允许此服务器中的所有工具运行，无需确认。"
+  ],
+  [
+    6434,
+    "Allow Without Review in this Session",
+    "在此会话中允许，无需审核"
+  ],
+  [
+    6435,
+    "Allow results from this tool to be sent without confirmation in this session.",
+    "允许在此会话中发送此工具的结果，无需确认。"
+  ],
+  [
+    6436,
+    "Allow Without Review in this Workspace",
+    "在此工作区中允许，无需审核"
+  ],
+  [
+    6437,
+    "Allow results from this tool to be sent without confirmation in this workspace.",
+    "允许在此工作区中发送此工具的结果，无需确认。"
+  ],
+  [
+    6438,
+    "Always Allow Without Review",
+    "始终允许，无需审核"
+  ],
+  [
+    6439,
+    "Always allow results from this tool to be sent without confirmation.",
+    "始终允许发送此工具的结果，无需确认。"
+  ],
+  [
+    6440,
+    "Allow Tools from {0} Without Review in this Session",
+    "允许此会话中来自 {0} 的工具，无需审核"
+  ],
+  [
+    6441,
+    "Allow results from all tools from this server to be sent without confirmation in this session.",
+    "允许在此会话中发送来自此服务器的所有工具的结果，无需确认。"
+  ],
+  [
+    6442,
+    "Allow Tools from {0} Without Review in this Workspace",
+    "允许此工作区中来自 {0} 的工具，无需审核"
+  ],
+  [
+    6443,
+    "Allow results from all tools from this server to be sent without confirmation in this workspace.",
+    "允许在此工作区中发送来自此服务器的所有工具的结果，无需确认。"
+  ],
+  [
+    6444,
+    "Always Allow Tools from {0} Without Review",
+    "始终允许来自 {0} 的工具，无需审核"
+  ],
+  [
+    6445,
+    "Always allow results from all tools from this server to be sent without confirmation.",
+    "始终允许发送来自此服务器的所有工具的结果，无需确认。"
+  ],
+  [
+    6446,
+    "Continue without reviewing any tool results",
+    "继续，无需审核任何工具结果"
+  ],
+  [
+    6447,
+    "Run any tool without approval",
+    "在未经批准的情况下运行任何工具"
+  ],
+  [
+    6448,
+    "Configure for this workspace only",
+    "仅为此工作区配置"
+  ],
+  [
+    6449,
+    "Configure session tool approvals",
+    "配置会话工具审批"
+  ],
+  [
+    6450,
+    "Configure workspace tool approvals",
+    "配置工作区工具审批"
+  ],
+  [
+    6451,
+    "Configure global tool approvals",
+    "配置全局工具审批"
+  ],
+  [
+    6452,
+    "Use VS Code features",
+    "使用 VS Code 功能"
+  ],
+  [
+    6453,
+    "Execute code and applications on your machine",
+    "在你的计算机上执行代码和应用程序"
+  ],
+  [
+    6454,
+    "Read files in your workspace",
+    "读取工作区中的文件"
+  ],
+  [
+    6455,
+    "Allow tool to execute?",
+    "允许工具执行吗?"
+  ],
+  [
+    6456,
+    "Run the '{0}' tool?",
+    "是否运行 \"{0}\" 工具?"
+  ],
+  [
+    6457,
+    "Auto approval for '{0}' is restricted via {1}.",
+    "“{0}”的自动审批通过“{1}”受到限制。"
+  ],
+  [
+    6458,
+    "Auto approval for '{0}' is restricted via {1}.",
+    "“{0}”的自动审批通过“{1}”受到限制。"
+  ],
+  [
+    6468,
+    "Add Premium Models",
+    "添加高级模型"
+  ],
+  [
+    6470,
+    "Add Premium Models",
+    "添加高级模型"
+  ],
+  [
+    6483,
+    "Select the custom agents to open and configure visibility in the agent picker",
+    "在智能体选取器中选择要打开并配置可见性的自定义智能体"
+  ],
+  [
+    6485,
+    "Custom Agents",
+    "自定义智能体"
+  ],
+  [
+    6487,
+    "Configure Custom Agents...",
+    "配置自定义智能体..."
+  ],
+  [
+    6488,
+    "Configure Custom Agents...",
+    "配置自定义智能体..."
+  ],
+  [
+    6494,
+    "New Custom Agent...",
+    "新建自定义智能体..."
+  ],
+  [
+    6501,
+    "Enter the name of the agent file",
+    "输入智能体文件的名称"
+  ],
+  [
+    6504,
+    "Enter a new name of the agent file",
+    "输入智能体文件的新名称"
+  ],
+  [
+    6509,
+    "Select a location to create the agent file in...",
+    "选择创建智能体文件的位置..."
+  ],
+  [
+    6512,
+    "Select a location to move the agent file to...",
+    "选择要将智能体文件移动到的位置..."
+  ],
+  [
+    6515,
+    "Select a location to copy the agent file to...",
+    "选择要将智能体文件复制到的位置..."
+  ],
+  [
+    6518,
+    "Learn how to configure custom agents",
+    "了解如何配置自定义智能体"
+  ],
+  [
+    6521,
+    "No agent source folders found.",
+    "找不到智能体来源文件夹。"
+  ],
+  [
+    6522,
+    "Show help on prompt files",
+    "显示有关提示文件的帮助"
+  ],
+  [
+    6523,
+    "Show help on instruction files",
+    "显示有关指令文件的帮助"
+  ],
+  [
+    6524,
+    "Show help on custom agent files",
+    "显示有关自定义智能体文件的帮助"
+  ],
+  [
+    6528,
+    "Create new custom agent...",
+    "创建新的自定义智能体..."
+  ],
+  [
+    6533,
+    "Hidden from chat view agent picker. Click to show.",
+    "对聊天视图的智能体选取器隐藏。单击以显示。"
+  ],
+  [
+    6534,
+    "Hide from agent picker",
+    "在智能体选取器中隐藏"
+  ],
+  [
+    6536,
+    "Workspace",
+    "工作区"
+  ],
+  [
+    6537,
+    "Agent Instructions",
+    "智能体指令"
+  ],
+  [
+    6538,
+    "Extensions",
+    "扩展"
+  ],
+  [
+    6539,
+    "User Data",
+    "用户数据"
+  ],
+  [
+    6540,
+    "{0} (hidden)",
+    "{0} (隐藏)"
+  ],
+  [
+    6541,
+    "Hidden from chat view agent picker",
+    "对聊天视图的智能体选取器隐藏"
+  ],
+  [
+    6552,
+    "An external application wants to create a custom agent with content from a URL. Do you want to continue by selecting a destination folder and name?",
+    "外部应用程序想要创建包含 URL 内容的自定义智能体。是否要通过选择目标文件夹和名称继续操作?"
+  ],
+  [
+    6562,
+    "Save As Prompt File",
+    "另存为提示文件"
+  ],
+  [
+    6563,
+    "Save as prompt file",
+    "另存为提示文件"
+  ],
+  [
+    6564,
+    "Save As Agent File",
+    "另存为智能体文件"
+  ],
+  [
+    6565,
+    "Save as agent file",
+    "另存为智能体文件"
+  ],
+  [
+    6566,
+    "Save As Instructions File",
+    "另存为指令文件"
+  ],
+  [
+    6567,
+    "Save as instructions file",
+    "另存为指令文件"
+  ],
+  [
+    6586,
+    "Suggested Actions",
+    "建议的操作"
+  ],
+  [
+    6587,
+    "Suggested prompt: {0}, {1}",
+    "建议的提示: {0}，{1}"
+  ],
+  [
+    6590,
+    "Edit Prompt File",
+    "编辑提示文件"
+  ],
+  [
+    6622,
+    "True when focus is in the chat terminal output region.",
+    "当焦点位于聊天终端输出区域时为 True。"
+  ],
+  [
+    6623,
+    "The 'kind' of the current agent.",
+    "当前智能体的“类型”。"
+  ],
+  [
+    6628,
+    "True when the chat agent supports attachments.",
+    "当聊天智能体支持附件时为 true。"
+  ],
+  [
+    6636,
+    "True when the chat is in a contributed chat session that has available 'models' to display.",
+    "当聊天处于参与的聊天会话中且该会话有可用的“模型”显示时为 True。"
+  ],
+  [
+    6640,
+    "True when the current chat session has no requests.",
+    "当前聊天会话没有请求时为 true。"
+  ],
+  [
+    6646,
+    "True when a chat elicitation request is pending.",
+    "当聊天诱导请求挂起时为 true。"
+  ],
+  [
+    6648,
+    "True when the chat has custom agents available.",
+    "如果聊天具有可用的自定义智能体，则为 True。"
+  ],
+  [
+    6649,
+    "True when agent mode is disabled by organization policy.",
+    "组织策略禁用智能体模式时为 true。"
+  ],
+  [
+    6651,
+    "True when the chat session viewer uses the new combined style.",
+    "聊天会话查看器使用新的合并样式时为 true。"
+  ],
+  [
+    6652,
+    "If the agent sessions view in the chat view is limited to show recent sessions only.",
+    "聊天视图中的智能体会话视图是否仅显示最近的会话。"
+  ],
+  [
+    6653,
+    "Orientation of the agent sessions view in the chat view.",
+    "聊天视图中智能体会话视图的排列方向。"
+  ],
+  [
+    6654,
+    "Position of the agent sessions view in the chat view.",
+    "聊天视图中智能体会话视图的位置。"
+  ],
+  [
+    6655,
+    "The type of the current agent session item.",
+    "当前智能体会话项的类型。"
+  ],
+  [
+    6656,
+    "True when the current agent session item has changes.",
+    "当前智能体会话项有更改时为 true。"
+  ],
+  [
+    6657,
+    "True when the agent session item is archived.",
+    "智能体会话项已归档时为 true。"
+  ],
+  [
+    6658,
+    "True when the agent session item is read.",
+    "智能体会话项已读时为 true。"
+  ],
+  [
+    6659,
+    "True when the agent session is currently active (not deletable).",
+    "智能体会话当前处于活动状态（不可删除）时为 true。"
+  ],
+  [
+    6660,
+    "True when focusing a KaTeX math element.",
+    "聚焦 KaTeX 数学元素时为 true。"
+  ],
+  [
+    6661,
+    "Changes to {0} files",
+    "对 {0} 个文件的更改"
+  ],
+  [
+    6676,
+    "New Chat",
+    "新建聊天"
+  ],
+  [
+    6677,
+    "Delete",
+    "删除"
+  ],
+  [
+    6678,
+    "Allow requests to {0}",
+    "允许请求 {0}"
+  ],
+  [
+    6679,
+    "Allow responses from {0}",
+    "允许来自 {0} 的响应"
+  ],
+  [
+    6680,
+    "Allow requests to...",
+    "允许请求..."
+  ],
+  [
+    6681,
+    "Configure URL Approvals...",
+    "配置 URL 审批..."
+  ],
+  [
+    6682,
+    "Select URL pattern to approve",
+    "选择要批准的 URL 模式"
+  ],
+  [
+    6683,
+    "Make requests without confirmation",
+    "无需确认即发出请求"
+  ],
+  [
+    6684,
+    "Allow responses without confirmation",
+    "无需确认即允许响应"
+  ],
+  [
+    6685,
+    "Approve all",
+    "全部批准"
+  ],
+  [
+    6686,
+    "Deny all",
+    "全部拒绝"
+  ],
+  [
+    6687,
+    "requests",
+    "请求"
+  ],
+  [
+    6688,
+    "responses",
+    "回复"
+  ],
+  [
+    6689,
+    "Approves {0}",
+    "批准 {0}"
+  ],
+  [
+    6690,
+    "No approvals",
+    "无审批"
+  ],
+  [
+    6691,
+    "More Options...",
+    "更多选项..."
+  ],
+  [
+    6692,
+    "Open settings",
+    "打开设置"
+  ],
+  [
+    6698,
+    "Condition which must be true to show this language model chat provider in the Manage Models list.",
+    "必须为 true 才能在“管理模型”列表中显示此语言模型聊天提供程序的条件。"
+  ],
+  [
+    6708,
+    "{0} of {1} binary data",
+    "{0} 二进制数据(共 {1})"
+  ],
+  [
+    6710,
+    "Contributes {0} for chat prompts.",
+    "为聊天提示提供 {0}。"
+  ],
+  [
+    6711,
+    "Identifier for this file. Must be unique within this extension for this contribution point.",
+    "此文件的标识符。对于此贡献点，在此扩展中必须唯一。"
+  ],
+  [
+    6712,
+    "Path to the file relative to the extension root.",
+    "文件相对于扩展根目录的路径。"
+  ],
+  [
+    6713,
+    "(Optional) Description of the file.",
+    "(可选)文件说明。"
+  ],
+  [
+    6714,
+    "Extension '{0}' cannot register {1} entry with invalid name '{2}'.",
+    "扩展 \"{0}\" 无法注册具有无效名称 \"{2}\" 的 {1} 项。"
+  ],
+  [
+    6715,
+    "Extension '{0}' cannot register {1} entry '{2}' without path.",
+    "扩展 \"{0}\" 无法注册没有路径的 {1} 项 \"{2}\"。"
+  ],
+  [
+    6716,
+    "Extension '{0}' cannot register {1} entry '{2}' without description.",
+    "扩展 \"{0}\" 无法注册没有描述的 {1} 项 \"{2}\"。"
+  ],
+  [
+    6717,
+    "Extension '{0}' {1} entry '{2}' path resolves outside the extension.",
+    "扩展 \"{0}\" 的 {1} 项 \"{2}\" 路径解析在扩展之外。"
+  ],
+  [
+    6718,
+    "Failed to register {0} entry '{1}': {2}",
+    "未能注册 {0} 项 \"{1}\": {2}"
+  ],
+  [
+    6723,
+    "Instructions for the workspace",
+    "针对工作区的指令"
+  ],
+  [
+    6724,
+    "Instructions for folder '{0}'",
+    "针对文件夹 \"{0}\" 的指令"
+  ],
+  [
+    6726,
+    "Rename to 'agent'",
+    "重命名为 \"agent\""
+  ],
+  [
+    6727,
+    "Migrate to custom agent file",
+    "迁移到自定义智能体文件"
+  ],
+  [
+    6728,
+    "Update to '{0}'",
+    "更新到 \"{0}\""
+  ],
+  [
+    6729,
+    "Expand to {0} tools",
+    "展开为 {0} 个工具"
+  ],
+  [
+    6730,
+    "Update all tool names",
+    "更新所有工具名称"
+  ],
+  [
+    6731,
+    "Add Prompt Header",
+    "添加提示标头"
+  ],
+  [
+    6732,
+    "Handoff Example",
+    "转接"
+  ],
+  [
+    6733,
+    "The name of the instruction file as shown in the UI. If not set, the name is derived from the file name.",
+    "UI 中显示的指令文件的名称。如果未设置，则名称从文件名派生。"
+  ],
+  [
+    6734,
+    "The description of the instruction file. It can be used to provide additional context or information about the instructions and is passed to the language model as part of the prompt.",
+    "指令文件的说明。它可用于提供有关指令的其他上下文或信息，并传递到语言模型作为提示的一部分。"
+  ],
+  [
+    6735,
+    "One or more glob pattern (separated by comma) that describe for which files the instructions apply to. Based on these patterns, the file is automatically included in the prompt, when the context contains a file that matches one or more of these patterns. Use `**` when you want this file to always be added.\nExample: `**/*.ts`, `**/*.js`, `client/**`",
+    "一个或多个 glob 模式(用逗号分隔)，用于描述指令应用于哪些文件。根据这些模式，当上下文包含与其中一个或多个模式匹配的文件时，该文件会自动包含在提示中。如果希望始终添加此文件，请使用 `**`。\r\n示例: `**/*.ts`、`**/*.js`、`client/**`"
+  ],
+  [
+    6736,
+    "The name of the agent as shown in the UI.",
+    "智能体在 UI 中显示的名称。"
+  ],
+  [
+    6737,
+    "The description of the custom agent, what it does and when to use it.",
+    "有关自定义智能体及其作用和使用时机的说明。"
+  ],
+  [
+    6738,
+    "The argument-hint describes what inputs the custom agent expects or supports.",
+    "参数提示描述自定义智能体期望或支持的输入。"
+  ],
+  [
+    6739,
+    "Specify the model that runs this custom agent.",
+    "指定运行此自定义智能体的模型。"
+  ],
+  [
+    6740,
+    "The set of tools that the custom agent has access to.",
+    "自定义智能体可访问的工具集。"
+  ],
+  [
+    6741,
+    "The target to which the header attributes like tools apply to. Possible values are `github-copilot` and `vscode`.",
+    "标头属性(如工具)应用的目标。可能的值为 `github-copilot` 和 `vscode`。"
+  ],
+  [
+    6742,
+    "Whether the agent can be used as a subagent.",
+    "该智能体是否可用作子智能体。"
+  ],
+  [
+    6743,
+    "The name of the prompt. This is also the name of the slash command that will run this prompt.",
+    "提示的名称。这也是将运行此提示的 / 命令的名称。"
+  ],
+  [
+    6744,
+    "The description of the reusable prompt, what it does and when to use it.",
+    "有关可重用提示及其作用和使用时机的说明。"
+  ],
+  [
+    6745,
+    "The argument-hint describes what inputs the prompt expects or supports.",
+    "参数提示描述提示期望或支持的输入。"
+  ],
+  [
+    6746,
+    "The model to use in this prompt.",
+    "要在此提示中使用的模型。"
+  ],
+  [
+    6747,
+    "The tools to use in this prompt.",
+    "要在此提示中使用的工具。"
+  ],
+  [
+    6748,
+    "ToolSet: {0}\n\n",
+    "工具集: {0}\r\n\r\n"
+  ],
+  [
+    6749,
+    "Note: This attribute is not used when target is github-copilot.",
+    "注意: 当目标是 github-copilot 时，不使用此属性。"
+  ],
+  [
+    6750,
+    "- Name: {0}",
+    "- 名称: {0}"
+  ],
+  [
+    6751,
+    "- Family: {0}",
+    "- 系列: {0}"
+  ],
+  [
+    6752,
+    "- Vendor: {0}",
+    "- 供应商: {0}"
+  ],
+  [
+    6753,
+    "Built-in agent",
+    "内置智能体"
+  ],
+  [
+    6754,
+    "Custom agent",
+    "自定义智能体"
+  ],
+  [
+    6755,
+    "The agent to use when running this prompt.",
+    "运行此提示时要使用的智能体。"
+  ],
+  [
+    6756,
+    "**Built-in agents:**",
+    "**内置智能体:**"
+  ],
+  [
+    6757,
+    "**Custom agents:**",
+    "**自定义智能体:**"
+  ],
+  [
+    6758,
+    "Custom agent",
+    "自定义智能体"
+  ],
+  [
+    6759,
+    "Possible handoff actions when the agent has completed its task.",
+    "智能体完成任务后可能的转接操作。"
+  ],
+  [
+    6760,
+    "Note: This attribute is not used when target is github-copilot.",
+    "注意: 当目标是 github-copilot 时，不使用此属性。"
+  ],
+  [
+    6761,
+    "Chat modes have been renamed to agents. Please move this file to {0}",
+    "聊天模式已重命名为智能体。请将此文件移动到 {0}"
+  ],
+  [
+    6762,
+    "Chat modes have been renamed to agents. Please move the file to {0}",
+    "聊天模式已重命名为智能体。请将该文件移动到 {0}"
+  ],
+  [
+    6763,
+    "Invalid file reference '{0}'.",
+    "无效的文件引用“{0}”。"
+  ],
+  [
+    6764,
+    "File '{0}' not found at '{1}'.",
+    "在“{1}”中找不到文件“{0}”。"
+  ],
+  [
+    6765,
+    "Tool or toolset '{0}' has been renamed, use '{1}' instead.",
+    "工具或工具集 \"{0}\" 已重命名，请改用 \"{1}\"。"
+  ],
+  [
+    6766,
+    "Tool or toolset '{0}' has been renamed, use the following tools instead: {1}",
+    "工具或工具集 '{0}' 已重命名，请改用以下工具：{1}"
+  ],
+  [
+    6767,
+    "Unknown tool or toolset '{0}'.",
+    "未知工具或工具集“{0}”。"
+  ],
+  [
+    6768,
+    "Tool or toolset '{0}' also needs to be enabled in the header.",
+    "工具或工具集 \"{0}\" 也需要在标头中启用。"
+  ],
+  [
+    6769,
+    "Attribute '{0}' is not supported in prompt files. Supported: {1}.",
+    "提示文件中不支持属性“{0}”。受支持: {1}。"
+  ],
+  [
+    6770,
+    "Attribute '{0}' is not supported in custom GitHub Copilot agent files. Supported: {1}.",
+    "自定义 GitHub Copilot 智能体文件中不支持属性 \"{0}\"。受支持: {1}。"
+  ],
+  [
+    6771,
+    "Attribute '{0}' is ignored when running locally in VS Code.",
+    "在 VS Code 本地运行时忽略属性 \"{0}\"。"
+  ],
+  [
+    6772,
+    "Attribute '{0}' is not supported in VS Code agent files. Supported: {1}.",
+    "VS Code 智能体文件中不支持属性 \"{0}\"。受支持: {1}。"
+  ],
+  [
+    6773,
+    "Attribute '{0}' is not supported in instructions files. Supported: {1}.",
+    "指令文件中不支持属性“{0}”。受支持: {1}。"
+  ],
+  [
+    6774,
+    "The 'name' attribute must be a string.",
+    "\"name\" 属性必须是字符串。"
+  ],
+  [
+    6775,
+    "The 'name' attribute must not be empty.",
+    "\"name\" 属性不得为空。"
+  ],
+  [
+    6776,
+    "The 'description' attribute must be a string.",
+    "\"description\" 属性必须是字符串。"
+  ],
+  [
+    6777,
+    "The 'description' attribute should not be empty.",
+    "\"description\" 属性不得为空。"
+  ],
+  [
+    6778,
+    "The 'argument-hint' attribute must be a string.",
+    "\"argument-hint\" 属性必须是字符串。"
+  ],
+  [
+    6779,
+    "The 'argument-hint' attribute should not be empty.",
+    "\"argument-hint\" 属性不得为空。"
+  ],
+  [
+    6780,
+    "The 'model' attribute must be a string.",
+    "\"model\" 属性必须是字符串。"
+  ],
+  [
+    6781,
+    "The 'model' attribute must be a non-empty string.",
+    "\"model\" 属性必须是非空字符串。"
+  ],
+  [
+    6782,
+    "Unknown model '{0}'.",
+    "未知模型 \"{0}\"。"
+  ],
+  [
+    6783,
+    "Model '{0}' is not suited for agent mode.",
+    "模型“{0}”不适用于代理模式。"
+  ],
+  [
+    6784,
+    "The 'mode' attribute has been deprecated. The 'agent' attribute is used instead.",
+    "\"mode\" 属性已弃用。改用 \"agent\" 属性。"
+  ],
+  [
+    6785,
+    "The 'mode' attribute has been deprecated. Please rename it to 'agent'.",
+    "\"mode\" 属性已弃用。请将其重命名为 \"agent\"。"
+  ],
+  [
+    6786,
+    "The '{0}' attribute must be a string.",
+    "\"{0}\" 属性必须是字符串。"
+  ],
+  [
+    6787,
+    "The '{0}' attribute must be a non-empty string.",
+    "\"{0}\" 属性必须是非空字符串。"
+  ],
+  [
+    6788,
+    "Unknown agent '{0}'. Available agents: {1}.",
+    "未知智能体 \"{0}\"。可用智能体: {1}。"
+  ],
+  [
+    6789,
+    "The 'tools' attribute is only supported when using agents. Attribute will be ignored.",
+    "在使用智能体时仅支持 \"tools\" 属性。将忽略属性。"
+  ],
+  [
+    6790,
+    "The 'tools' attribute must be an array.",
+    "\"tools\" 属性必须是数组。"
+  ],
+  [
+    6791,
+    "Each tool name in the 'tools' attribute must be a string.",
+    "\"tools\" 属性中的每个工具名称都必须是字符串。"
+  ],
+  [
+    6792,
+    "Tool or toolset '{0}' has been renamed, use '{1}' instead.",
+    "工具或工具集 \"{0}\" 已重命名，请改用 \"{1}\"。"
+  ],
+  [
+    6793,
+    "Tool or toolset '{0}' has been renamed, use the following tools instead: {1}",
+    "工具或工具集 '{0}' 已重命名，请改用以下工具：{1}"
+  ],
+  [
+    6794,
+    "Unknown tool '{0}'.",
+    "未知工具 \"{0}\"。"
+  ],
+  [
+    6795,
+    "The 'applyTo' attribute must be a string.",
+    "\"applyTo\" 属性必须是字符串。"
+  ],
+  [
+    6796,
+    "The 'applyTo' attribute must be a valid glob pattern.",
+    "\"applyTo\" 属性必须是有效的 glob 模式。"
+  ],
+  [
+    6797,
+    "The 'applyTo' attribute must be a valid glob pattern.",
+    "\"applyTo\" 属性必须是有效的 glob 模式。"
+  ],
+  [
+    6798,
+    "The 'applyTo' attribute must be a valid glob pattern.",
+    "\"applyTo\" 属性必须是有效的 glob 模式。"
+  ],
+  [
+    6799,
+    "The 'excludeAgent' attribute must be an array.",
+    "\"excludeAgent\" 属性必须是数组。"
+  ],
+  [
+    6800,
+    "The 'handoffs' attribute must be an array.",
+    "\"handoffs\" 属性必须是数组。"
+  ],
+  [
+    6801,
+    "Each handoff in the 'handoffs' attribute must be an object with 'label', 'agent', 'prompt' and optional 'send'.",
+    "\"handoffs\" 属性中的每个转接必须是包含 \"label\"、\"agent\"、\"prompt\" 和(可选) \"send\" 的对象。"
+  ],
+  [
+    6802,
+    "The 'label' property in a handoff must be a non-empty string.",
+    "转接中的 \"label\" 属性必须是非空字符串。"
+  ],
+  [
+    6803,
+    "The 'agent' property in a handoff must be a non-empty string.",
+    "转接中的 \"agent\" 属性必须是非空字符串。"
+  ],
+  [
+    6804,
+    "The 'prompt' property in a handoff must be a string.",
+    "转接中的 \"prompt\" 属性必须是字符串。"
+  ],
+  [
+    6805,
+    "The 'send' property in a handoff must be a boolean.",
+    "转接中的 \"send\" 属性必须是布尔值。"
+  ],
+  [
+    6806,
+    "The 'showContinueOn' property in a handoff must be a boolean.",
+    "移交中的 'showContinueOn' 属性必须是布尔值。"
+  ],
+  [
+    6807,
+    "Unknown property '{0}' in handoff object. Supported properties are 'label', 'agent', 'prompt' and optional 'send', 'showContinueOn'.",
+    "转接对象中的未知属性 \"{0}\"。支持的属性为 \"label\"、\"agent\"、\"prompt\" 和(可选) \"send\"。"
+  ],
+  [
+    6808,
+    "Missing required properties {0} in handoff object.",
+    "转接对象中缺少的必需属性 {0}。"
+  ],
+  [
+    6809,
+    "The 'infer' attribute must be a boolean.",
+    "'infer' 属性必须是布尔值。"
+  ],
+  [
+    6810,
+    "The 'target' attribute must be a string.",
+    "\"target\" 属性必须是字符串。"
+  ],
+  [
+    6811,
+    "The 'target' attribute must be a non-empty string.",
+    "\"target\" 属性必须是非空字符串。"
+  ],
+  [
+    6812,
+    "The 'target' attribute must be one of: {0}.",
+    "\"target\" 属性必须是以下项之一: {0}。"
+  ],
+  [
+    6813,
+    "User Data",
+    "用户数据"
+  ],
+  [
+    6814,
+    "Extension: {0}",
+    "扩展: {0}"
+  ],
+  [
+    6853,
+    "Run Subagent",
+    "运行子智能体"
+  ],
+  [
+    6854,
+    "Run a task within an isolated subagent context to enable efficient organization of tasks and context window management.",
+    "在隔离的子智能体上下文中运行任务，以便高效组织任务并管理上下文窗口。"
+  ],
+  [
+    6855,
+    "Delegate tasks to other agents",
+    "将任务委派给其他智能体"
+  ],
+  [
+    6942,
+    "Write your global rules for Agent here",
+    "在此编写智能体的全局规则"
+  ],
+  [
+    6943,
+    "[[Click]] to add this file to .gitignore",
+    "[[点击]]将此文件添加到 .gitignore"
+  ],
+  [
+    6944,
+    "This file should contain a JSON object specifying your MCP config.",
+    "此文件应包含一个指定 MCP 配置的 JSON 对象。"
+  ],
+  [
+    6971,
+    "Go to Offset",
+    "转到偏移"
+  ],
+  [
+    6973,
+    "Go to Offset...",
+    "转到偏移..."
+  ],
+  [
+    7086,
+    "Editor overview ruler decoration color for comment threads with draft comments. This color should be opaque.",
+    "编辑器概述标尺修饰颜色，用于草稿评论的评论线程。此颜色应不透明。"
+  ],
+  [
+    7089,
+    "Editor gutter decoration color for commenting glyphs for comment threads with draft comments.",
+    "编辑器装订线修饰颜色，用于草稿评论的评论线程的评论字形。"
+  ],
+  [
+    7342,
+    "End ({1}) should be greater than Start ({0})",
+    "结束位置 ({1}) 应大于起始位置 ({0})"
+  ],
+  [
+    7537,
+    "Debug Session...",
+    "调试会话..."
+  ],
+  [
+    7538,
+    "Select debug data to attach",
+    "选择要附加的调试数据"
+  ],
+  [
+    7539,
+    "Expression Value...",
+    "表达式值..."
+  ],
+  [
+    7540,
+    "Watch Expressions",
+    "监视表达式"
+  ],
+  [
+    7541,
+    "All variables in {0}",
+    "{0} 中的所有变量"
+  ],
+  [
+    7542,
+    "Type an expression to evaluate...",
+    "输入要计算的表达式..."
+  ],
+  [
+    7543,
+    "No active debug session",
+    "没有活动的调试会话"
+  ],
+  [
+    7544,
+    "No result",
+    "无结果"
+  ],
+  [
+    7545,
+    "Evaluation error",
+    "求值错误"
+  ],
+  [
+    7613,
+    "&&ToggleSource",
+    "&&切换源"
+  ],
+  [
+    7898,
+    "To customize Run and Debug [create a launch.json file]({0}).",
+    "要自定义运行和调试，请[创建一个 launch.json 文件]({0})。"
+  ],
+  [
+    7899,
+    "To customize Run and Debug, [open a folder]({0}) and create a launch.json file.",
+    "要自定义运行和调试，请[打开文件夹]({0})并创建一个 launch.json 文件。"
+  ],
+  [
+    8039,
+    "Search loaded scripts by name",
+    "按名称搜索已加载的脚本"
+  ],
+  [
+    8283,
+    "Controls the timeout in milliseconds for HTTP requests made when fetching extensions from the Marketplace",
+    "控制从商城获取扩展时发出 HTTP 请求的超时时间(毫秒)"
+  ],
+  [
+    8405,
+    "{0} for the Web",
+    "用于 Web 的 {0}"
+  ],
+  [
+    8535,
+    "All GitHub Copilot functionality is now being served from the GitHub Copilot Chat extension. To temporarily opt out of this extension unification, toggle the {0} setting.",
+    "所有 GitHub Copilot 功能现在均通过 GitHub Copilot 对话助手扩展提供。若要暂时选择退出统一此扩展，请切换 {0} 设置。"
+  ],
+  [
+    8722,
+    "Some extensions are disabled because they are not allowed by your system administrator.",
+    "由于系统管理员不允许，部分扩展已被禁用。"
+  ],
+  [
+    8723,
+    "Some extensions are disabled because they are configured not to be allowed.",
+    "由于配置不允许，部分扩展已被禁用。"
+  ],
+  [
+    8759,
+    "This extension is not compatible with {0}.",
+    "此扩展与 {0} 不兼容。"
+  ],
+  [
+    9338,
+    "Response was empty",
+    "响应为空"
+  ],
+  [
+    9342,
+    "Generate code",
+    "编辑、重构和生成代码"
+  ],
+  [
+    9343,
+    "Modify selected code",
+    "修改所选代码"
+  ],
+  [
+    9344,
+    "Working...",
+    "正在运行..."
+  ],
+  [
+    9345,
+    "Fix the attached problems",
+    "修复附加的问题"
+  ],
+  [
+    9346,
+    "Fix the attached problem",
+    "修复附加的问题"
+  ],
+  [
+    9347,
+    "Inline Chat to Panel Chat",
+    "从内联聊天到面板聊天"
+  ],
+  [
+    9348,
+    "Do you want to continue in Chat view?",
+    "是否要在“聊天”视图中继续操作?"
+  ],
+  [
+    9349,
+    "Do you want to continue in Chat view?",
+    "是否要在“聊天”视图中继续操作?"
+  ],
+  [
+    9350,
+    "Inline chat is designed for making single-file code changes. Continue your request in the Chat view or rephrase it for inline chat.",
+    "内联聊天旨在进行单文件代码更改。在“聊天”视图中继续你的请求，或重新表述请求来进行内联聊天。"
+  ],
+  [
+    9351,
+    "Continue in Chat view",
+    "在“聊天”视图中继续"
+  ],
+  [
+    9352,
+    "Cancel",
+    "取消"
+  ],
+  [
+    9353,
+    "Don't ask again",
+    "不再询问"
+  ],
+  [
+    9354,
+    "Reset Choice for 'Move Inline Chat to Panel Chat'",
+    "“将内联聊天移至面板聊天”的重置选择"
+  ],
+  [
+    9355,
+    "Thank you for your feedback!",
+    "感谢提供反馈！"
+  ],
+  [
+    9358,
+    "By continuing with {0} Copilot, you agree to {1}'s [Terms]({2}) and [Privacy Statement]({3})",
+    "继续使用 {0} Copilot 即表示你同意 {1} 的[条款]({2})和[隐私声明]({3})"
+  ],
+  [
+    9372,
+    "Whether an agent for notebook cells exists",
+    "是否存在适用于笔记本单元格的智能体"
+  ],
+  [
+    9373,
+    "Whether an agent for notebook cells exists",
+    "是否存在适用于笔记本单元格的智能体"
+  ],
+  [
+    9456,
+    "{0} handles feedback outside of Github.",
+    "{0} 在 Github 以外处理反馈。"
+  ],
+  [
+    9457,
+    "Thanks you for helping us improve {0}! To open the issue/feedback reporter for {0}, click the button below.",
+    "感谢你帮助我们改进 {0}！要打开 {0} 的问题或反馈报告工具，请点击下方按钮。"
+  ],
+  [
+    9544,
+    "{0} Artifacts View",
+    "{0} 产物视图"
+  ],
+  [
+    9545,
+    "{0} Artifacts View",
+    "{0} 产物视图"
+  ],
+  [
+    9548,
+    "&&Reload",
+    "&&重新加载"
+  ],
+  [
+    9549,
+    "{0} Review Changes",
+    "{0} 审核更改"
+  ],
+  [
+    9550,
+    "Clear and Disable Workbench Tracing",
+    "清除并禁用工作台跟踪"
+  ],
+  [
+    9551,
+    "(Re)Enable Workbench Tracing",
+    "（重新）启用工作台跟踪"
+  ],
+  [
+    9631,
+    "Language Packs",
+    "语言包"
+  ],
+  [
+    9662,
+    "Download {0} Diagnostics",
+    "下载 {0} 诊断信息"
+  ],
+  [
+    9664,
+    "Get {0} Diagnostics",
+    "获取 {0} 诊断信息"
+  ],
+  [
+    9666,
+    "Open {0} Extension Logs Folder",
+    "打开 {0} 扩展日志文件夹"
+  ],
+  [
+    9683,
+    "Foreground color for note alerts in markdown.",
+    "Markdown 中“备注”提示的前景色。"
+  ],
+  [
+    9684,
+    "Foreground color for tip alerts in markdown.",
+    "Markdown 中“使用技巧”提示的前景色。"
+  ],
+  [
+    9685,
+    "Foreground color for important alerts in markdown.",
+    "Markdown 中“重要信息”提示的前景色。"
+  ],
+  [
+    9686,
+    "Foreground color for warning alerts in markdown.",
+    "Markdown 中“警告”提示的前景色。"
+  ],
+  [
+    9687,
+    "Foreground color for caution alerts in markdown.",
+    "Markdown 中“注意”提示的前景色。"
+  ],
+  [
+    9847,
+    "Browse MCP Servers",
+    "浏览 MCP 服务器"
+  ],
+  [
+    9858,
+    "Skip Current Autostart",
+    "跳过当前自动启动"
+  ],
+  [
+    9899,
+    "Select the configuration target",
+    "选择配置目标"
+  ],
+  [
+    9923,
+    "Authorization Required",
+    "需要授权"
+  ],
+  [
+    9924,
+    "Open this URL?",
+    "是否打开此 URL?"
+  ],
+  [
+    9926,
+    "Open {0}",
+    "打开 {0}"
+  ],
+  [
+    9928,
+    "This will open {0}",
+    "这将打开 {0}"
+  ],
+  [
+    9930,
+    "Open URL",
+    "打开 URL"
+  ],
+  [
+    9988,
+    "<Empty>",
+    "<空>"
+  ],
+  [
+    9990,
+    "Go back ↩",
+    "返回 ↩"
+  ],
+  [
+    9994,
+    "Install in Workspace",
+    "在工作区中安装"
+  ],
+  [
+    9996,
+    "Workspace Folder",
+    "工作区文件夹"
+  ],
+  [
+    9997,
+    "Workspace",
+    "工作区"
+  ],
+  [
+    9998,
+    "Choose where to install the MCP server",
+    "选择 MCP 服务器的安装位置"
+  ],
+  [
+    9999,
+    "Install (Remote)",
+    "安装(远程)"
+  ],
+  [
+    10000,
+    "Install in {0}",
+    "在 {0} 中安装"
+  ],
+  [
+    10072,
+    "Open Settings",
+    "打开“设置”"
+  ],
+  [
+    10074,
+    "This feature is currently in preview. You can disable it anytime using the setting {0}.",
+    "此功能目前为预览版。可以随时通过设置 {0} 将其禁用。"
+  ],
+  [
+    10075,
+    "Enable MCP Servers Marketplace",
+    "启用 MCP 服务器商城"
+  ],
+  [
+    10076,
+    "Enable MCP Servers Marketplace",
+    "启用 MCP 服务器商城"
+  ],
+  [
+    10077,
+    "Enable MCP Servers Marketplace?",
+    "是否启用 MCP 服务器商城?"
+  ],
+  [
+    10078,
+    "This feature is currently in preview. You can disable it anytime using the setting {0}.",
+    "此功能目前为预览版。可以随时通过设置 {0} 将其禁用。"
+  ],
+  [
+    10079,
+    "Enable",
+    "启用"
+  ],
+  [
+    10080,
+    "Cancel",
+    "取消"
+  ],
+  [
+    10081,
+    "No MCP Servers found.",
+    "找不到 MCP 服务器。"
+  ],
+  [
+    10097,
+    "This MCP Server is disabled because MCP servers are configured to be disabled in the Editor. Please check your [settings]({0}).",
+    "此 MCP 服务器处于禁用状态，因为在编辑器中已将 MCP 服务器配置为禁用。请检查你的 [设置]({0})。"
+  ],
+  [
+    10098,
+    "This MCP Server is disabled because it is configured to be disabled in the Editor. Please check your [settings]({0}).",
+    "此 MCP 服务器处于禁用状态，因为它在编辑器中配置为禁用。请检查你的 [设置]({0})。"
+  ],
+  [
+    10099,
+    "This MCP Server is disabled because it is configured to be disabled in the Editor. Please check your [settings]({0}).",
+    "此 MCP 服务器处于禁用状态，因为它在编辑器中配置为禁用。请检查你的 [设置]({0})。"
+  ],
+  [
+    10103,
+    "Expected 'when' to be a non-empty string.",
+    "\"when\" 应为非空字符串。"
+  ],
+  [
+    10110,
+    "Antigravity configurations (`~/.codeium/antigravity/mcp_config.json`)",
+    "Antigravity 配置 (`~/.codeium/antigravity/mcp_config.json`)"
+  ],
+  [
+    10133,
+    "Condition which must be true to enable this collection.",
+    "启用此集合时必须为 true 的条件。"
+  ],
+  [
+    10345,
+    "Go to Next Change",
+    "转到下一个更改"
+  ],
+  [
+    10346,
+    "Go to Previous Change",
+    "转到上一个更改"
+  ],
+  [
+    10410,
+    "Find Next",
+    "查找下一个"
+  ],
+  [
+    10411,
+    "Find Previous",
+    "查找上一个"
+  ],
+  [
+    10494,
+    "Save Image",
+    "保存图像"
+  ],
+  [
+    10495,
+    "Image Files",
+    "图像文件"
+  ],
+  [
+    10815,
+    "Mimetypes",
+    "MIME 类型"
+  ],
+  [
+    10843,
+    "Icon to save content to disk",
+    "用于将内容保存到磁盘的图标"
+  ],
+  [
+    11076,
+    "General editor, workbench, and feature preferences",
+    "常规编辑器、工作台和功能首选项"
+  ],
+  [
+    11078,
+    "Open Antigravity settings panel",
+    "打开 Antigravity 设置面板"
+  ],
+  [
+    11079,
+    "Select Settings to Open",
+    "选择要打开的设置"
+  ],
+  [
+    11169,
+    "{0} Settings",
+    "{0} 设置"
+  ],
+  [
+    11201,
+    "Advanced",
+    "高级"
+  ],
+  [
+    11229,
+    "Advanced",
+    "高级"
+  ],
+  [
+    11304,
+    "Stable",
+    "稳定"
+  ],
+  [
+    11305,
+    "Show stable settings",
+    "显示稳定版设置"
+  ],
+  [
+    11306,
+    "Preview",
+    "预览"
+  ],
+  [
+    11307,
+    "Show preview settings",
+    "显示预览设置"
+  ],
+  [
+    11308,
+    "Experimental",
+    "实验性"
+  ],
+  [
+    11309,
+    "Show experimental settings",
+    "显示实验版设置"
+  ],
+  [
+    11310,
+    "Advanced",
+    "高级"
+  ],
+  [
+    11311,
+    "Show advanced settings",
+    "显示高级设置"
+  ],
+  [
+    11380,
+    "Advanced setting: this setting is intended for advanced scenarios and configurations. Only modify this if you know what it does.",
+    "高级设置: 此设置适用于高级场景和配置。只有在了解其作用时才修改。"
+  ],
+  [
+    11426,
+    "Ask in Chat: {0}",
+    "在聊天中提问: {0}"
+  ],
+  [
+    11427,
+    "Configure visibility",
+    "配置可见性"
+  ],
+  [
+    11812,
+    "Multiple repositories can be selected at the same time.",
+    "可同时选择多个存储库。"
+  ],
+  [
+    11813,
+    "Only one repository can be selected at a time.",
+    "一次只能选择一个存储库。"
+  ],
+  [
+    11814,
+    "Controls the selection mode of the repositories in the Source Control Repositories view.",
+    "控制“源代码管理存储库”视图中存储库的选择模式。"
+  ],
+  [
+    11815,
+    "Controls whether to show repository artifacts in the Source Control Repositories view. This feature is experimental and only works when {0} is set to `{1}`.",
+    "控制是否在“源代码管理存储库”视图中显示存储库工件。此功能是试验性的，仅当 {0} 设置为 `{1}` 时生效。"
+  ],
+  [
+    11828,
+    "Controls whether to show incoming changes in the Source Control Graph view.",
+    "控制是否在“源代码管理图”视图中显示传入的更改。"
+  ],
+  [
+    11829,
+    "Controls whether to show outgoing changes in the Source Control Graph view.",
+    "控制是否在“源代码管理图”视图中显示传出的更改。"
+  ],
+  [
+    11838,
+    "Resolve Conflicts with AI",
+    "使用 AI 解决冲突"
+  ],
+  [
+    11880,
+    "Incoming Changes",
+    "传入的更改"
+  ],
+  [
+    11881,
+    "Outgoing Changes",
+    "传出的更改"
+  ],
+  [
+    11900,
+    "Incoming Changes",
+    "传入的更改"
+  ],
+  [
+    11901,
+    "Outgoing Changes",
+    "传出的更改"
+  ],
+  [
+    11913,
+    "Incoming Changes",
+    "传入的更改"
+  ],
+  [
+    11914,
+    "Outgoing Changes",
+    "传出的更改"
+  ],
+  [
+    11927,
+    "Select Single Repository",
+    "选择单个存储库"
+  ],
+  [
+    11928,
+    "Select Multiple Repositories",
+    "选择多个存储库"
+  ],
+  [
+    11984,
+    "{0} ↔ {1} (Replace Preview)",
+    "{0} ↔ {1}（替换预览）"
+  ],
+  [
+    12381,
+    "Task \"{0}\" finished in {1}.",
+    "任务 \"{0}\" 已在 {1} 中完成。"
+  ],
+  [
+    12382,
+    "Task finished in {0}.",
+    "任务已在 {0} 中完成。"
+  ],
+  [
+    12383,
+    "{0}m {1}s",
+    "{0} 分钟 {1} 秒"
+  ],
+  [
+    12384,
+    "{0}m",
+    "{0} 分钟"
+  ],
+  [
+    12385,
+    "{0}s",
+    "{0} 秒"
+  ],
+  [
+    12525,
+    "Controls the minimum task runtime in milliseconds before showing an OS notification when the task finishes while the window is not in focus. Set to -1 to disable notifications. Set to 0 to always show notifications. This includes a window badge as well as notification toast.",
+    "控制在任务已完成且窗口未聚焦的情况下，距离显示 OS 通知的最短任务运行时间(毫秒)。设置为 -1 可禁用通知。设置为 0 则始终显示通知。这包括窗口徽章和通知横幅。"
+  ],
+  [
+    12624,
+    "Controls whether to preserve the task name in the terminal after task completion.",
+    "控制在任务完成后是否在终端中保留任务名称。"
+  ],
+  [
+    12907,
+    "Copy Selection (No Warning)",
+    "复制所选内容（不显示警告）"
+  ],
+  [
+    13012,
+    "Show hidden chat terminals",
+    "显示隐藏的聊天终端"
+  ],
+  [
+    13013,
+    "{0} Hidden Terminal",
+    "{0} 个隐藏终端"
+  ],
+  [
+    13014,
+    "{0} Hidden Terminals",
+    "{0} 个隐藏终端"
+  ],
+  [
+    13015,
+    "Show 1 hidden chat terminal",
+    "显示 1 个隐藏的聊天终端"
+  ],
+  [
+    13016,
+    "Show {0} hidden chat terminals",
+    "显示 {0} 个隐藏的聊天终端"
+  ],
+  [
+    13048,
+    "Attach To Chat",
+    "附加到聊天"
+  ],
+  [
+    13059,
+    "Unknown",
+    "未知"
+  ],
+  [
+    13060,
+    "Running",
+    "正在运行"
+  ],
+  [
+    13066,
+    "Command executed {0} ",
+    "命令已执行 {0}"
+  ],
+  [
+    13075,
+    "Defines terminal completion providers that will be registered when the extension activates.",
+    "定义扩展激活时将注册的终端补全提供程序。"
+  ],
+  [
+    13076,
+    "A description of what the completion provider does. This will be shown in the settings UI.",
+    "对补全提供程序的作用的描述。该描述会显示在“设置”UI 中。"
+  ],
+  [
+    13091,
+    "Highlight below the word for which a hover is shown. The color must not be opaque so as not to hide underlying decorations.",
+    "在下面突出显示悬停的字词。颜色必须透明，以免隐藏下面的修饰效果。"
+  ],
+  [
+    13246,
+    "Configures the duration in milliseconds to wait for shell integration after launch before declaring it's not there. Set to {0} to wait the minimum time (500ms), the default value {1} means the wait time is variable based on whether shell integration injection is enabled and whether it's a remote window. Consider setting this to a small value if you intentionally disabled shell integration, or a large value if your shell starts very slowly.",
+    "配置启动后等待 shell 集成的时长(毫秒)，超过该时间则声明其不存在。设置为 {0} 以等待最短时间(500ms)，默认值 {1} 表示等待时间会根据是否启用 shell 集成注入及是否为远程窗口而变化。如果有意禁用 shell 集成，建议将其设置为较小的值；如果 shell 启动非常慢，建议将其设置为较大的值。"
+  ],
+  [
+    13247,
+    "When shell integration is enabled, enables quick fixes for terminal commands that appear as a lightbulb or sparkle icon to the left of the prompt.",
+    "启用 shell 集成后，会为提示符左侧显示为灯泡或闪光图标的终端命令启用快速修复。"
+  ],
+  [
+    13256,
+    "Simulated latency in milliseconds applied to all calls made to the pty host. This is useful for testing terminal behavior under high latency conditions.",
+    "对 pty 主机发出的所有调用都应用了模拟延迟(毫秒)。这有助于测试终端在高延迟情况下的行为。"
+  ],
+  [
+    13257,
+    "Simulated startup delay in milliseconds for the pty host process. This is useful for testing terminal initialization under slow startup conditions.",
+    "pty 主机进程的模拟启动延迟(毫秒)。这有助于测试终端在缓慢启动情况下的初始化表现。"
+  ],
+  [
+    13258,
+    "Enable developer mode for the terminal. This shows additional debug information and visualizations for shell integration sequences.",
+    "为终端启用开发人员模式。这会显示额外的调试信息和 shell 集成序列的可视化内容。"
+  ],
+  [
+    13261,
+    "Whether a terminal in the Agent panel is focused.",
+    "智能体面板中的终端是否已聚焦。"
+  ],
+  [
+    13289,
+    "Focus Terminal",
+    "聚焦终端"
+  ],
+  [
+    13307,
+    "Reveal Command in Terminal",
+    "在终端中显示命令"
+  ],
+  [
+    13351,
+    "Whether there are any chat terminals.",
+    "是否存在聊天终端。"
+  ],
+  [
+    13352,
+    "Whether there are any hidden chat terminals.",
+    "是否存在隐藏的聊天终端。"
+  ],
+  [
+    13369,
+    "Chat: Focus Most Recent Terminal",
+    "聊天：聚焦最近的终端"
+  ],
+  [
+    13370,
+    "Chat: Focus Most Recent Terminal Output",
+    "聊天：聚焦最近的终端输出"
+  ],
+  [
+    13384,
+    "View Hidden Chat Terminals",
+    "查看隐藏的聊天终端"
+  ],
+  [
+    13385,
+    "Terminal",
+    "终端"
+  ],
+  [
+    13386,
+    "Last: {0}",
+    "上次: {0}"
+  ],
+  [
+    13387,
+    "Select a chat terminal to show and focus",
+    "选择要显示并聚焦的聊天终端"
+  ],
+  [
+    13388,
+    "Chat Terminals",
+    "聊天终端"
+  ],
+  [
+    13394,
+    "Allow All Commands in this Session",
+    "允许此会话中的所有命令"
+  ],
+  [
+    13395,
+    "Allow this tool to run in this session without confirmation.",
+    "允许此工具在此会话中运行而无需确认。"
+  ],
+  [
+    13400,
+    "Auto approved for this session",
+    "已对此会话自动审批"
+  ],
+  [
+    13401,
+    "Disable",
+    "禁用"
+  ],
+  [
+    13402,
+    "Web content may contain malicious code or attempt prompt injection attacks.",
+    "Web 内容可能包含恶意代码或尝试提示注入攻击。"
+  ],
+  [
+    13403,
+    "View rule in settings",
+    "在设置中查看规则"
+  ],
+  [
+    13404,
+    "Auto approved by setting {0}",
+    "已通过设置 {0} 自动审批"
+  ],
+  [
+    13405,
+    "View settings",
+    "查看设置"
+  ],
+  [
+    13406,
+    "Auto approved by rule {0}",
+    "已通过规则 {0} 自动审批"
+  ],
+  [
+    13407,
+    "Auto approved by rule {0}",
+    "已通过规则 {0} 自动审批"
+  ],
+  [
+    13408,
+    "Auto approved by rules {0}",
+    "已通过规则 {0} 自动审批"
+  ],
+  [
+    13409,
+    "Auto approval denied by rule {0}",
+    "已通过规则 {0} 拒绝自动审批"
+  ],
+  [
+    13410,
+    "Auto approval denied by rule {0}",
+    "已通过规则 {0} 拒绝自动审批"
+  ],
+  [
+    13411,
+    "Auto approval denied by rules {0}",
+    "已通过规则 {0} 拒绝自动审批"
+  ],
+  [
+    13412,
+    "File write operations detected that cannot be auto approved: {0}",
+    "检测到无法自动批准的文件写入操作: {0}"
+  ],
+  [
+    13413,
+    "File write operations detected: {0}",
+    "检测到文件写入操作: {0}"
+  ],
+  [
+    13434,
+    "Confirm Terminal Command",
+    "确认终端命令"
+  ],
+  [
+    13435,
+    "Tool for confirming terminal commands",
+    "用于确认终端命令的工具"
+  ],
+  [
+    13451,
+    "A task `{0}` with command `{1}`{2} will be created.",
+    "将创建任务 `{0}`，命令为 `{1}`{2}。"
+  ],
+  [
+    13461,
+    "Task not found: `{0}`",
+    "找不到任务：`{0}`"
+  ],
+  [
+    13462,
+    "The task `{0}` is already running.",
+    "任务 `{0}` 已在运行。"
+  ],
+  [
+    13463,
+    "Task started but no terminal was found for: `{0}`",
+    "任务已启动，但未找到 `{0}` 对应的终端。"
+  ],
+  [
+    13464,
+    "Task started but no terminal was found for: `{0}`",
+    "任务已启动，但未找到 `{0}` 对应的终端。"
+  ],
+  [
+    13465,
+    "Task not found: `{0}`",
+    "找不到任务：`{0}`"
+  ],
+  [
+    13466,
+    "The task is already running.",
+    "任务已在运行。"
+  ],
+  [
+    13467,
+    "`{0}` is already running.",
+    "`{0}` 已在运行。"
+  ],
+  [
+    13468,
+    "`{0}` was already running.",
+    "`{0}` 原本已在运行。"
+  ],
+  [
+    13469,
+    "Running `{0}`",
+    "正在运行 `{0}`"
+  ],
+  [
+    13470,
+    "Started `{0}`",
+    "已启动 `{0}`"
+  ],
+  [
+    13471,
+    "Ran `{0}`",
+    "已运行 `{0}`"
+  ],
+  [
+    13472,
+    "Allow task run?",
+    "是否允许任务运行?"
+  ],
+  [
+    13473,
+    "Allow to run the task `{0}`?",
+    "是否允许运行任务 `{0}`?"
+  ],
+  [
+    13480,
+    "A path to a shell executable.",
+    "shell 可执行文件的路径。"
+  ],
+  [
+    13481,
+    "Controls whether to allow auto approval in the run in terminal tool.",
+    "控制在终端工具中的运行中是否允许自动审批。"
+  ],
+  [
+    13482,
+    "Controls whether to allow auto approval in the run in terminal tool.",
+    "控制在终端工具中的运行中是否允许自动审批。"
+  ],
+  [
+    13487,
+    "Note that there's a default set of rules to allow and also deny commands. Consider setting {0} to {1} to ignore all default rules to ensure there are no conflicts with your own rules. Do this at your own risk, the default denial rules are designed to protect you against running dangerous commands.",
+    "请注意，系统有一组默认规则用于允许和拒绝命令。建议将 {0} 设置为 {1} ，以忽略所有默认规则，确保不会与你自己的规则发生冲突。这样做需要自行承担风险，默认的拒绝规则旨在防止你运行危险命令。"
+  ],
+  [
+    13504,
+    "Whether to ignore the built-in default auto-approve rules used by the run in terminal tool as defined in {0}. When this setting is enabled, the run in terminal tool will ignore any rule that comes from the default set but still follow rules defined in the user, remote and workspace settings. Use this setting at your own risk; the default auto-approve rules are designed to protect you against running dangerous commands.",
+    "是否如 {0} 中所定义，忽略终端工具中的运行使用的内置默认自动批准规则。启用此设置后，终端工具中的运行将忽略默认规则集中的所有规则，但仍会遵循用户设置、远程设置和工作区设置中定义的规则。使用此设置需要自行承担风险，默认自动批准规则旨在防止你运行危险命令。"
+  ],
+  [
+    13505,
+    "Allow all detected file writes.",
+    "允许所有检测到的文件写入。"
+  ],
+  [
+    13506,
+    "Block file writes detected outside the workspace. This depends on the shell integration feature working correctly to determine the current working directory of the terminal.",
+    "阻止在工作区外检测到的文件写入。这依赖于 shell 集成功能正常工作，以确定终端的当前工作目录。"
+  ],
+  [
+    13507,
+    "Block all detected file writes.",
+    "阻止所有检测到的文件写入。"
+  ],
+  [
+    13508,
+    "Controls whether detected file write operations are blocked in the run in terminal tool. When detected, this will require explicit approval regardless of whether the command would normally be auto approved. Note that this cannot detect all possible methods of writing files, this is what is currently detected:\n\n- File redirection (detected via the bash or PowerShell tree sitter grammar)",
+    "控制是否在终端工具的运行过程中阻止检测到的文件写入操作。此类操作在被检测到时，无论命令是否通常会自动批准，都需要获得明确批准。请注意，这无法检测所有可能的文件写入方式，目前检测到的方式包括:\r\n\r\n- 文件重定向(通过 bash 或 PowerShell 的 tree sitter 语法检测)"
+  ],
+  [
+    13510,
+    "Use {0} instead",
+    "请改用 {0}"
+  ],
+  [
+    13511,
+    "The terminal profile to use on Linux for chat agent's run in terminal tool.",
+    "在 Linux 上的聊天智能体在终端工具中运行所使用的终端配置文件。"
+  ],
+  [
+    13512,
+    "The terminal profile to use on macOS for chat agent's run in terminal tool.",
+    "在 macOS 上的聊天智能体在终端工具中运行所使用的终端配置文件。"
+  ],
+  [
+    13513,
+    "The terminal profile to use on Windows for chat agent's run in terminal tool.",
+    "在 Windows 上的聊天智能体在终端工具中运行所使用的终端配置文件。"
+  ],
+  [
+    13515,
+    "Where to show the output from the run in terminal tool session.",
+    "在终端工具会话中显示运行输出的位置。"
+  ],
+  [
+    13516,
+    "Reveal the terminal when running the command.",
+    "运行命令时显示终端。"
+  ],
+  [
+    13517,
+    "Do not reveal the terminal automatically.",
+    "不自动显示终端。"
+  ],
+  [
+    13640,
+    "Trigger Suggest",
+    "触发建议"
+  ],
+  [
+    13690,
+    "The foreground color for a plaintext suggestion. These icons will appear in the terminal suggest widget.",
+    "纯文本建议的前景色。这些图标将显示在终端建议小组件中。"
+  ],
+  [
+    13709,
+    "Icon for plain text suggestions in the terminal suggest widget.",
+    "终端建议小组件中纯文本建议的图标。"
+  ],
+  [
+    13737,
+    "Controls whether a space is automatically inserted after accepting a suggestion and re-trigger suggestions. Folders and symbolic link folders will never have a trailing space added.",
+    "控制在接受建议并重新触发建议后是否自动插入空格。文件夹和符号链接文件夹从不添加尾随空格。"
+  ],
+  [
+    13739,
+    "Show suggestions from {0}.",
+    "显示来自 {0} 的建议。"
+  ],
+  [
+    13741,
+    "Controls which suggestions automatically show up while typing. Suggestion providers are enabled by default.",
+    "控制在键入时自动显示哪些建议。建议提供程序默认启用。"
+  ],
+  [
+    13750,
+    "Would you like to enable the speech extension?",
+    "是否要启用语音扩展?"
+  ],
+  [
+    13751,
+    "Enable Extension",
+    "启用扩展"
+  ],
+  [
+    13752,
+    "Would you like to install 'VS Code Speech' extension from 'Microsoft'?",
+    "是否要从 \"Microsoft\" 安装 \"VS Code Speech\" 扩展?"
+  ],
+  [
+    13753,
+    "Install Extension",
+    "安装扩展"
+  ],
+  [
+    13754,
+    "Microphone support requires this extension.",
+    "麦克风支持需要此扩展。"
+  ],
+  [
+    13778,
+    "Go to Next Uncovered Line",
+    "转到未覆盖的下一行"
+  ],
+  [
+    13779,
+    "Go to Previous Uncovered Line",
+    "转到未覆盖的上一行"
+  ],
+  [
+    13786,
+    "Navigate to the next line that is not covered by tests.",
+    "导航到测试未覆盖的下一行。"
+  ],
+  [
+    13787,
+    "Navigate to the previous line that is not covered by tests.",
+    "导航到测试未覆盖的上一行。"
+  ],
+  [
+    13911,
+    "Toggle Tree Position",
+    "切换树位置"
+  ],
+  [
+    14075,
+    "Controls the layout of the Test Results view.",
+    "控制“测试结果”视图的布局。"
+  ],
+  [
+    14076,
+    "Show the test run tree on the right side with details on the left.",
+    "在右侧显示测试运行树，在左侧显示详细信息。"
+  ],
+  [
+    14077,
+    "Show the test run tree on the left side with details on the right.",
+    "在左侧显示测试运行树，在右侧显示详细信息。"
+  ],
+  [
+    14628,
+    "Onboarding",
+    "入门"
+  ],
+  [
+    14709,
+    "Accept an Autocomplete",
+    "接受自动补全"
+  ],
+  [
+    14710,
+    "Tab to accept an Autocomplete",
+    "按 Tab 接受自动补全"
+  ],
+  [
+    14711,
+    "Trigger Command",
+    "触发命令"
+  ],
+  [
+    14712,
+    "Trigger Command",
+    "触发命令"
+  ],
+  [
+    14715,
+    "Open Documentation",
+    "打开文档"
+  ],
+  [
+    14716,
+    "Open Documentation",
+    "打开文档"
+  ],
+  [
+    14717,
+    "Finish IDE Setup",
+    "完成 IDE 设置"
+  ],
+  [
+    14718,
+    "Finish IDE Setup",
+    "完成 IDE 设置"
+  ],
+  [
+    14719,
+    "Sign in to {0}",
+    "登录 {0}"
+  ],
+  [
+    14720,
+    "Sign in to {0}",
+    "登录 {0}"
+  ],
+  [
+    14721,
+    "Accept an Autocomplete",
+    "接受自动补全"
+  ],
+  [
+    14722,
+    "Tab to accept an Autocomplete",
+    "按 Tab 接受自动补全"
+  ],
+  [
+    14723,
+    "Trigger Command",
+    "触发命令"
+  ],
+  [
+    14724,
+    "Trigger Command",
+    "触发命令"
+  ],
+  [
+    14749,
+    "By continuing with {0} Copilot, you agree to {1}'s [Terms]({2}) and [Privacy Statement]({3})",
+    "继续使用 {0} Copilot 即表示你同意 {1} 的[条款]({2})和[隐私声明]({3})"
+  ],
+  [
+    14931,
+    "If you'd like to explore an untrusted workspace with the agent, we recommend enabling strict mode via the settings window. See the [strict mode docs](https://antigravity.google/docs/strict-mode) for details.",
+    "如果想让智能体探索不受信任的工作区，建议在设置窗口中启用严格模式。详情请参阅[严格模式文档](https://antigravity.google/docs/strict-mode)。"
+  ],
+  [
+    15070,
+    "Show Content Tracing",
+    "显示内容跟踪"
+  ],
+  [
+    15083,
+    "Close Active Window",
+    "关闭活动窗口"
+  ],
+  [
+    15092,
+    "Close Other Windows",
+    "关闭其他窗口"
+  ],
+  [
+    15176,
+    "Migrate Old Settings",
+    "迁移旧设置"
+  ],
+  [
+    15177,
+    "Migrate Old Conversations",
+    "迁移旧对话"
+  ],
+  [
+    15214,
+    "{0} on {1} will soon stop receiving updates. Consider upgrading your macOS version.",
+    "{1} 上的 {0} 将很快停止接收更新。请考虑升级 macOS 版本。"
+  ],
+  [
+    15248,
+    "The Source Control repository menu",
+    "源代码管理存储库菜单"
+  ],
+  [
+    15257,
+    "The Source Control artifact group context menu",
+    "源代码管理工件组上下文菜单"
+  ],
+  [
+    15258,
+    "The Source Control artifact context menu",
+    "源代码管理工件上下文菜单"
+  ],
+  [
+    15300,
+    "A prominent button overlaying the multi diff editor",
+    "覆盖在多差异编辑器上的醒目按钮"
+  ],
+  [
+    15306,
+    "The Chat Editing widget toolbar menu for session changes.",
+    "用于会话更改的聊天编辑小组件工具栏菜单。"
+  ],
+  [
+    15308,
+    "Menu for new chat sessions.",
+    "新建聊天会话菜单。"
+  ],
+  [
+    15536,
+    "Folder path",
+    "文件夹路径"
+  ],
+  [
+    15649,
+    "{0} for the Web",
+    "用于 Web 的 {0}"
+  ],
+  [
+    16329,
+    "Settings dropdown icon.",
+    "设置下拉菜单图标。"
+  ]
+]

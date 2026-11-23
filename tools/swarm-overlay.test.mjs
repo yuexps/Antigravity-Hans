@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
 
-const source = fs.readFileSync(new URL('../swarm-overlay.js', import.meta.url), 'utf8');
+const source = fs.readFileSync(new URL('../resources/swarm-overlay.js', import.meta.url), 'utf8');
 
 function fixture(hostname = 'swarm--swarm_board-ab12c', markers = true) {
   const elements = [];
@@ -135,7 +135,12 @@ test('Swarm controls translate without changing names, posts, commands or user o
   assert.equal(f.observer().disconnected, true);
 });
 
-test('Swarm overlay rejects other plugin pages and missing board markers', () => {
+test('Swarm overlay accepts variable-length board suffixes and rejects other plugin pages', () => {
+  const shortHost = fixture('swarm--swarm_board-7192');
+  assert.equal(shortHost.window.__antigravityZhPatchInstalled, true);
+  assert.equal(shortHost.board.nodes[0].nodeValue, '消息板');
+  shortHost.window.__antigravityZhPatchCleanup();
+
   for (const f of [fixture('other--swarm_board-ab12c'), fixture('swarm--swarm_board-ab12c', false)]) {
     assert.equal(f.board.nodes[0].nodeValue, 'Board');
     assert.notEqual(f.window.__antigravityZhPatchInstalled, true);

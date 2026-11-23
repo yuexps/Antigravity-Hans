@@ -51,11 +51,14 @@ jobs:
         if: runner.os != 'Windows'
         run: go test -race -count=1 ./...
 
+      - name: 词库源码与产物同步检查
+        run: node tools/build-overlay.mjs --check
+
       - name: 汉化行为回归测试
-        run: node --test tools/overlay.test.mjs
+        run: node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs
 
       - name: 词典体检
-        run: node tools/lint-overlay.mjs antigravity-hans-overlay.js
+        run: node tools/lint-overlay.mjs resources/antigravity-hans-overlay.js
 
       - name: 依赖漏洞扫描
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
