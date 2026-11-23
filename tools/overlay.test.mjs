@@ -1901,3 +1901,29 @@ test('2.34.0 normal app orchestrator settings, model effort levels and live cont
   assert.equal(ctx.t('Select model, current: Gemini 4 Neon Extra High'), '选择模型，当前：Gemini 4 Neon Extra High');
   assert.equal(ctx.t('Thinking effort'), '推理强度');
 });
+
+
+test('2.34.0 model picker New badges are distinct from create actions', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+  const badgeSelector = '[data-testid="model-selector-panel"] .bg-secondary.rounded-full';
+
+  for (const [inModelBadge, input, expected] of [
+    [true, ' New ', ' 新 '],
+    [true, 'New', '新'],
+    [true, 'Notice', '提示'],
+    [false, 'New', '新建'],
+    [false, 'New Conversation', '新建对话'],
+  ]) {
+    const label = {
+      nodeType: 1,
+      closest(selector) { return inModelBadge && selector === badgeSelector ? this : null; },
+      getAttribute() { return null; },
+    };
+    const text = { nodeType: 3, nodeValue: input, parentElement: label };
+    context.translateNodeForTest(text);
+    assert.equal(text.nodeValue, expected);
+    text.__zh_patched = false;
+    context.translateNodeForTest(text);
+    assert.equal(text.nodeValue, expected, 'reprocessing changed the translation');
+  }
+});

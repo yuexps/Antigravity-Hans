@@ -13,3 +13,9 @@
 - 在 macOS (Apple Silicon) 上实机核对了 Antigravity `2.34.0` 普通版的「模型与用量」设置页、模型选择下拉菜单及主对话界面。
 - 本次未对 Antigravity IDE `2.7.0` 的原生 NLS 索引与界面做完整核对，因此 README 中 IDE 适配版本保持 `2.6.0` 不变。
 - 已运行 `node tools/lint-overlay.mjs antigravity-hans-overlay.js`（0 错误、0 新增警告）、`node --test tools/overlay.test.mjs`（69/69 通过）、`go vet ./...`、`go test ./...`（本机因 Antigravity 运行中仅既有的 `TestInstallPatchUpdatesExistingScriptWithoutOverwritingOtherFiles` 受进程探测影响，其余全部通过）及本地 macOS ARM64 编译。
+
+
+## 模型选择器徽标勘误（#31）
+
+- Windows x64 普通版 2.34.0 的截图显示，模型和协调器旁的 `New` 是状态徽标。根据本机该版本的前端资源，将「新」限定在模型选择器的徽标内，其他界面中的新建操作保留原译。
+- 补充带说明图标和纯文本徽标对应的文本回归用例，并覆盖 `Notice`、普通 `New`、`New Conversation` 及二次处理。词库检查无新增问题；JavaScript 测试 70/70 通过。未将修改后的脚本部署到本机 Antigravity。
