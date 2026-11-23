@@ -125,6 +125,7 @@ Turbo = 快速模式
 
 ## 常见问题
 
+- **被杀毒软件报毒（火绒报 `HEUR:Backdoor/CobaltStrike.w`、Defender、360 等）**：未签名的 Go 单文件程序常被启发式误报。下载后先按 Release 页的 `SHA256SUMS` 核对哈希，一致则加信任即可；不放心可参照「源码编译」自行构建。
 - **macOS 双击「中文」图标后没有汉化**：监视进程日志位于 `~/Library/Logs/antigravity-hans.log`，先看该文件。
 - **Linux 桌面快捷方式与权限**：执行 `--shortcut` 会在 `~/.local/share/applications/` 及桌面目录生成 `.desktop` 启动器；若对系统级目录（如 `/usr/share/`、`/opt/`）下的 IDE 安装静态补丁遇到权限不足，请使用 `sudo` 运行 `--patch`，或改用零改动的动态汉化模式（`--ide`）。
 - **提示汉化监视器已在运行**：说明上一次的监视器仍在工作，可用 `antigravity-hans --stop` 结束它。
