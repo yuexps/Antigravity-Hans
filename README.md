@@ -2,7 +2,7 @@
 
 专为 **Google Antigravity** 及 **Antigravity IDE** 开发的中文汉化工具。
 
-> **适配版本**：**Antigravity `2.31.0`** 与 **Antigravity IDE `2.6.0`**。
+> **适配版本**：**Antigravity `2.34.0`** 与 **Antigravity IDE `2.6.0`**。
 
 ---
 
@@ -99,7 +99,7 @@ antigravity-hans --app --trust-custom-translations  # 显式信任同目录自�
 | 位置 | 默认（全中文） | 勾选后 |
 | --- | --- | --- |
 | 对话权限菜单 | 当前对话 / 请求审核 / 默认 / 自动 / 极速 | This Conversation / Request Review / Default / Auto / Turbo |
-| 模型推理强度 | 高 / 中 / 低 | High / Medium / Low |
+| 模型推理强度 | 超高 / 高 / 中 / 低 | Extra High / High / Medium / Low |
 
 预设内容内置在程序中，随版本更新自动同步，无需额外文件。
 

@@ -1842,3 +1842,62 @@ test('normal app shares preferences only with the recognized Swarm plugin frame'
   window.__antigravityZhPatchCleanup();
   assert.equal(listeners.has('message'), false);
 });
+
+test('2.34.0 normal app orchestrator settings, model effort levels and live controls are localized', () => {
+  for (const [input, expected] of [
+    ['You can upgrade to a higher Google AI Ultra plan to receive the highest rate limits.', '您可以升级到更高级别的 Google AI Ultra 套餐以获得最高速率限制。'],
+    ['Orchestrator Settings', '协调器设置'],
+    ['Choose the models Orchestrator uses. A larger, smarter orchestrator model with a faster, cheaper executor gives high quality for fewer tokens.', '选择协调器使用的模型。以更强大、更智能的协调器模型搭配更快、更经济的执行器模型，可用更少的 Token 获得高质量结果。'],
+    ['Orchestrator Model', '协调器模型'],
+    ['Plans the work, makes design decisions, and reviews the result. Pick a top-tier model. You can also pick one per conversation from the Orchestrator row in the model menu.', '负责规划工作、做出设计决策并审查结果。请选择顶级模型。您也可以在模型菜单的协调器行中为每个对话单独选择。'],
+    ['Executor Model', '执行器模型'],
+    ['Carries out the plan: searches, edits, builds, and tests. Pick a faster, cheaper model.', '负责执行计划：搜索、编辑、构建和测试。请选择更快、更经济的模型。'],
+    ['Orchestrator', '协调器'],
+    ['Thinking effort', '推理强度'],
+    ['Extra High', '超高'],
+    ['Gemini 4 Neon Extra High', 'Gemini 4 Neon 超高'],
+    ['Gemini 4 Hydrogen Extra High', 'Gemini 4 Hydrogen 超高'],
+    ['Gemini 4 Neon (Extra High)', 'Gemini 4 Neon (超高)'],
+    ['GPT-OSS 120B (Medium)', 'GPT-OSS 120B (中)'],
+    ['Select model, current: Gemini 4 Neon Extra High', '选择模型，当前：Gemini 4 Neon 超高'],
+    ['Select model, current: Gemini 4 Neon (Extra High)', '选择模型，当前：Gemini 4 Neon (超高)'],
+    ['Edits the conversation title', '编辑对话标题'],
+    ['You said', '你说'],
+    ['Agent said', '智能体说'],
+    ['Agent working', '智能体工作中'],
+    ['Breadcrumb', '面包屑导航'],
+    ['Updated 13:01', '更新于 13:01'],
+    ['Updated 1:05 PM', '更新于 1:05 PM'],
+  ]) {
+    assert.equal(translate(input), expected, input);
+    assert.equal(translate(expected), expected, 'translations must be stable when observed again');
+  }
+
+  for (const name of ['my-workspace', 'Last 7 days', "项目 $& $' / 10 files"]) {
+    const input = ` Project: ${name} `;
+    const expected = ` 项目：${name} `;
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected, 'project name must stay untouched across observer passes');
+  }
+  const convId = '01234567-89ab-cdef-0123-456789abcdef';
+  assert.equal(translate(`Open conversation ${convId}`), `打开对话 ${convId}`);
+  assert.equal(translate(`打开对话 ${convId}`), `打开对话 ${convId}`);
+  assert.equal(translate('Open conversation notes'), 'Open conversation notes', 'non-UUID text must not be matched');
+
+  // 勾选「选项名保留英文」时，Extra High 及模型推理强度保持英文
+  const store = new Map([['antigravityHansEnglishLabels', '1']]);
+  const ctx = {
+    window: {
+      addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+      localStorage: { getItem: (key) => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)) },
+    },
+    document: { readyState: 'loading' },
+  };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.t = translate;\n  function run() {'), ctx);
+  assert.equal(ctx.t('Extra High'), 'Extra High');
+  assert.equal(ctx.t('Gemini 4 Neon Extra High'), 'Gemini 4 Neon Extra High');
+  assert.equal(ctx.t('GPT-OSS 120B (Medium)'), 'GPT-OSS 120B (Medium)');
+  assert.equal(ctx.t('Select model, current: Gemini 4 Neon Extra High'), '选择模型，当前：Gemini 4 Neon Extra High');
+  assert.equal(ctx.t('Thinking effort'), '推理强度');
+});
