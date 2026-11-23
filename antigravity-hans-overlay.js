@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.34.0-20261123-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.34.0-20261123-r2';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -4923,6 +4923,10 @@
     const value = node.nodeValue || '';
     const tracked = originals.texts.get(node);
     if (tracked && tracked.zh === value) return value;
+    // 模型选择器里的 “New” 是状态徽标，不是创建操作。
+    if (value.trim() === 'New' && node.parentElement?.closest('[data-testid="model-selector-panel"] .bg-secondary.rounded-full')) {
+      return value.replace('New', '新');
+    }
     if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
       return value.replace('Type', '输入');
     }
