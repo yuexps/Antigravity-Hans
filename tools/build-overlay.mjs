@@ -63,10 +63,14 @@ function validatePhraseEntry(sourceLabel, key, val, errors) {
   return true;
 }
 
+function readTextLF(filePath) {
+  return fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n');
+}
+
 export function buildOverlayContent() {
-  const engine = fs.readFileSync(ENGINE_PATH, 'utf8');
-  const rules = fs.readFileSync(RULES_PATH, 'utf8').replace(/\n$/, '');
-  const ideNls = JSON.parse(fs.readFileSync(IDE_NLS_PATH, 'utf8'));
+  const engine = readTextLF(ENGINE_PATH);
+  const rules = readTextLF(RULES_PATH).replace(/\n$/, '');
+  const ideNls = JSON.parse(readTextLF(IDE_NLS_PATH));
 
   const seen = new Map();
   const entries = [];
@@ -114,8 +118,8 @@ export function buildOverlayContent() {
 }
 
 export function buildSwarmOverlayContent() {
-  const runtime = fs.readFileSync(SWARM_RUNTIME_PATH, 'utf8');
-  const config = JSON.parse(fs.readFileSync(SWARM_PLUGIN_PATH, 'utf8'));
+  const runtime = readTextLF(SWARM_RUNTIME_PATH);
+  const config = JSON.parse(readTextLF(SWARM_PLUGIN_PATH));
   const errors = [];
 
   if (typeof config.fingerprint !== 'string' || !config.fingerprint) {
@@ -177,9 +181,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
   if (checkOnly) {
     const diffs = [];
-    const existingMain = fs.existsSync(OUTPUT_PATH) ? fs.readFileSync(OUTPUT_PATH, 'utf8') : '';
+    const existingMain = fs.existsSync(OUTPUT_PATH) ? readTextLF(OUTPUT_PATH) : '';
     if (existingMain !== mainResult.output) diffs.push('resources/antigravity-hans-overlay.js');
-    const existingSwarm = fs.existsSync(SWARM_OUTPUT_PATH) ? fs.readFileSync(SWARM_OUTPUT_PATH, 'utf8') : '';
+    const existingSwarm = fs.existsSync(SWARM_OUTPUT_PATH) ? readTextLF(SWARM_OUTPUT_PATH) : '';
     if (existingSwarm !== swarmResult.output) diffs.push('resources/swarm-overlay.js');
     if (diffs.length > 0) {
       console.error(`[错误] ${diffs.join('、')} 与 resources/src/ 不同步，请运行: node tools/build-overlay.mjs`);
