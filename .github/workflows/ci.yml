@@ -55,7 +55,7 @@ jobs:
         run: node tools/build-overlay.mjs --check
 
       - name: 汉化行为回归测试
-        run: node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs
+        run: node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs tools/main-hook.test.mjs
 
       - name: 词典体检
         run: node tools/lint-overlay.mjs resources/antigravity-hans-overlay.js

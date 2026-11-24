@@ -2,6 +2,7 @@ package patch
 
 import (
 	"crypto/sha256"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -15,6 +16,18 @@ import (
 
 	"antigravity-hans/internal/app"
 	"antigravity-hans/internal/safeio"
+	"antigravity-hans/resources"
+)
+
+//go:embed main_hook.mjs
+var mainHookScript []byte
+
+const (
+	mainHookFileName    = "antigravity-hans-main.mjs"
+	swarmOverlayName    = "antigravity-hans-swarm-overlay.js"
+	mainHookMarkerStart = "/* antigravity-hans-main-start */"
+	mainHookMarkerEnd   = "/* antigravity-hans-main-end */"
+	mainHookSnippet     = mainHookMarkerStart + "\nimport('./" + mainHookFileName + "').catch(() => {});\n" + mainHookMarkerEnd
 )
 
 // AppInstance 表示静态补丁操作的目标应用实例。
@@ -122,6 +135,7 @@ func Install(cfg app.Config, inst AppInstance, overlaySource string) bool {
 	}
 
 	// 检测是否已注入
+	outDir := filepath.Join(appDir, "out")
 	htmlFiles := []string{"workbench.html", "workbench-jetski-agent.html"}
 	for _, htmlName := range htmlFiles {
 		htmlPath := filepath.Join(workbenchDir, htmlName)
@@ -131,20 +145,30 @@ func Install(cfg app.Config, inst AppInstance, overlaySource string) bool {
 					fmt.Printf("[错误] 更新补丁文件失败: %v\n", err)
 					return false
 				}
-				fmt.Printf("[完成] 已更新 %s 的静态汉化脚本和自定义名单。\n", inst.Name)
+				if err := writePatchFile(workbenchDir, swarmOverlayName, []byte(resources.SwarmOverlayJS)); err != nil {
+					fmt.Printf("[错误] 更新 Swarm 补丁文件失败: %v\n", err)
+					return false
+				}
+				if err := installMainHook(outDir); err != nil {
+					fmt.Printf("[错误] 更新主进程跨域注入模块失败: %v\n", err)
+					return false
+				}
+				fmt.Printf("[完成] 已更新 %s 的静态汉化脚本和跨域注入模块。\n", inst.Name)
 				return true
 			}
 		}
 	}
 
-	fmt.Println("[提示] 识别为 VS Code 架构，将通过修改 HTML 注入补丁...")
+	fmt.Println("[提示] 识别为 VS Code 架构，将通过 HTML + 主进程钩子注入静态汉化补丁...")
 
-	// 写出 overlay JS 文件
-	// 权限保持 0644：若补丁是以 sudo 安装的，文件属主为 root，
-	// 仍须保证普通用户身份启动的 IDE 能读取它（收窄到 0600 会导致界面异常）。
+	// 写出 overlay 与 Swarm 脚本（0644 保证普通用户启动 IDE 时可读）
 	overlayDest := filepath.Join(workbenchDir, "antigravity-hans-overlay.js")
 	if err := writePatchOverlay(workbenchDir, overlaySource); err != nil {
 		fmt.Printf("[错误] 写入补丁文件失败: %v\n", err)
+		return false
+	}
+	if err := writePatchFile(workbenchDir, swarmOverlayName, []byte(resources.SwarmOverlayJS)); err != nil {
+		fmt.Printf("[错误] 写入 Swarm 补丁文件失败: %v\n", err)
 		return false
 	}
 	fmt.Printf("[成功] 写出补丁源文件至: %s\n", overlayDest)
@@ -233,8 +257,123 @@ func Install(cfg app.Config, inst AppInstance, overlaySource string) bool {
 		}
 	}
 
+	// 挂载 Electron 主进程跨域子帧注入模块（覆盖智能体侧边栏、Antigravity 设置与 Swarm 面板）
+	if err := installMainHook(outDir); err != nil {
+		fmt.Printf("[错误] 挂载主进程跨域注入模块失败: %v\n", err)
+		return false
+	}
+
 	fmt.Printf("[完成] %s 静态注入完成！请启动应用查看效果。\n", inst.Name)
 	return true
+}
+
+// installMainHook 将主进程跨域注入模块写入 out/ 并在 out/main.js 末尾幂等挂载导入语句。
+func installMainHook(outDir string) error {
+	mainJSPath := filepath.Join(outDir, "main.js")
+	if _, err := os.Stat(mainJSPath); os.IsNotExist(err) {
+		return nil
+	}
+	if err := writePatchFile(outDir, mainHookFileName, mainHookScript); err != nil {
+		return err
+	}
+	content, err := os.ReadFile(mainJSPath)
+	if err != nil {
+		return err
+	}
+	src := string(content)
+	if strings.Contains(src, mainHookMarkerStart) {
+		return nil
+	}
+	bakPath := mainJSPath + ".bak"
+	if _, err := os.Stat(bakPath); os.IsNotExist(err) {
+		if err := copyFile(mainJSPath, bakPath); err != nil {
+			return err
+		}
+		fmt.Printf("[成功] 已创建备份: %s\n", bakPath)
+	}
+	patched := appendMainHookSnippet(src)
+	if err := writePatchFile(outDir, "main.js", []byte(patched)); err != nil {
+		return err
+	}
+	fmt.Println("[成功] 已挂载主进程跨域子帧注入模块: out/main.js")
+	return nil
+}
+
+func appendMainHookSnippet(src string) string {
+	const mapPrefix = "//# sourceMappingURL="
+	if idx := strings.LastIndex(src, mapPrefix); idx >= 0 {
+		prefix := strings.TrimRight(src[:idx], "\r\n")
+		return prefix + "\n" + mainHookSnippet + "\n\n" + src[idx:]
+	}
+	return strings.TrimRight(src, "\r\n") + "\n" + mainHookSnippet + "\n"
+}
+
+func stripMainHookSnippet(src string) (string, bool) {
+	start := strings.Index(src, mainHookMarkerStart)
+	if start < 0 {
+		return src, false
+	}
+	end := strings.Index(src[start:], mainHookMarkerEnd)
+	if end < 0 {
+		return src, false
+	}
+	after := start + end + len(mainHookMarkerEnd)
+	if after < len(src) && src[after] == '\r' {
+		after++
+	}
+	if after < len(src) && src[after] == '\n' {
+		after++
+	}
+	before := src[:start]
+	if strings.HasSuffix(before, "\n") && strings.HasPrefix(src[after:], "\n") {
+		before = before[:len(before)-1]
+	}
+	return before + src[after:], true
+}
+
+func uninstallMainHook(outDir string) (bool, bool) {
+	restored := false
+	permissionDenied := false
+	mainJSPath := filepath.Join(outDir, "main.js")
+	bakPath := mainJSPath + ".bak"
+
+	if _, err := os.Stat(bakPath); err == nil {
+		if err := os.Rename(bakPath, mainJSPath); err == nil {
+			fmt.Println("[成功] 已根据备份文件还原: out/main.js")
+			restored = true
+		} else {
+			fmt.Printf("[错误] 还原 out/main.js 失败: %v\n", err)
+			if errors.Is(err, os.ErrPermission) {
+				permissionDenied = true
+			}
+		}
+	} else if content, err := os.ReadFile(mainJSPath); err == nil {
+		if cleaned, changed := stripMainHookSnippet(string(content)); changed {
+			if err := writePatchFile(outDir, "main.js", []byte(cleaned)); err == nil {
+				fmt.Println("[成功] 已清除 out/main.js 中的主进程注入钩子")
+				restored = true
+			} else {
+				fmt.Printf("[错误] 清理 out/main.js 失败: %v\n", err)
+				if errors.Is(err, os.ErrPermission) {
+					permissionDenied = true
+				}
+			}
+		}
+	}
+
+	hookPath := filepath.Join(outDir, mainHookFileName)
+	if _, err := os.Stat(hookPath); err == nil {
+		if err := os.Remove(hookPath); err == nil {
+			fmt.Printf("[成功] 已删除主进程注入模块: %s\n", hookPath)
+			restored = true
+		} else {
+			fmt.Printf("[错误] 删除主进程注入模块失败: %v\n", err)
+			if errors.Is(err, os.ErrPermission) {
+				permissionDenied = true
+			}
+		}
+	}
+	return restored, permissionDenied
 }
 
 // writePatchOverlay 原子写入汉化脚本，不跟随符号链接。
@@ -305,17 +444,28 @@ func Uninstall(cfg app.Config, inst AppInstance) bool {
 		}
 
 		// 删除补丁文件
-		overlayDest := filepath.Join(workbenchDir, "antigravity-hans-overlay.js")
-		if _, err := os.Stat(overlayDest); err == nil {
-			if err := os.Remove(overlayDest); err == nil {
-				fmt.Printf("[成功] 已删除补丁文件: %s\n", overlayDest)
-				restored = true
-			} else {
-				fmt.Printf("[错误] 删除补丁文件失败: %v\n", err)
-				if errors.Is(err, os.ErrPermission) {
-					permissionDenied = true
+		for _, scriptName := range []string{"antigravity-hans-overlay.js", swarmOverlayName} {
+			scriptDest := filepath.Join(workbenchDir, scriptName)
+			if _, err := os.Stat(scriptDest); err == nil {
+				if err := os.Remove(scriptDest); err == nil {
+					fmt.Printf("[成功] 已删除补丁文件: %s\n", scriptDest)
+					restored = true
+				} else {
+					fmt.Printf("[错误] 删除补丁文件失败: %v\n", err)
+					if errors.Is(err, os.ErrPermission) {
+						permissionDenied = true
+					}
 				}
 			}
+		}
+
+		// 还原主进程钩子与模块
+		mainRestored, mainPermDenied := uninstallMainHook(filepath.Join(appDir, "out"))
+		if mainRestored {
+			restored = true
+		}
+		if mainPermDenied {
+			permissionDenied = true
 		}
 
 		// 还原 product.json

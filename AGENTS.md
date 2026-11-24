@@ -32,7 +32,7 @@ Antigravity-Hans/
   - `main` → `cli` / `cdp` / `shortcut` / `overlay` / `process` / `app`
   - `cli` → `cdp` / `patch` / `shortcut` / `app`
   - `cdp` → `app` / `process` / `overlay` / `resources`
-  - `patch` → `app` / `safeio`
+  - `patch` → `app` / `safeio` / `resources`
   - `shortcut` → `app` / `overlay` / `safeio`
   - `overlay` → `resources` / `safeio`
   - `process` → `app` / `safeio`
@@ -66,7 +66,7 @@ go test -count=1 ./...
 # 词库维护、构建、回归测试与体检
 node tools/dict.mjs stats
 node tools/build-overlay.mjs --check
-node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs
+node --test tools/overlay.test.mjs tools/swarm-overlay.test.mjs tools/main-hook.test.mjs
 node tools/lint-overlay.mjs resources/antigravity-hans-overlay.js
 
 # 跨平台构建

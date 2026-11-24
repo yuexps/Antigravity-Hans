@@ -36,7 +36,7 @@ antigravity-hans --app --trust-custom-translations      # 显式信任同目录�
 ## 汉化模式与切换
 
 - **动态汉化（推荐）**：通过 CDP 实时翻译，不改动安装目录；支持普通版 Swarm 面板及 IDE 智能体/独立设置页面，可配合 `--shortcut` 生成一键启动图标。
-- **静态补丁（仅 IDE）**：写入本地 IDE 资源并更新校验和，支持一键还原（Linux 系统目录需 `sudo`）；不覆盖独立智能体/Swarm 内嵌页。
+- **静态补丁（仅 IDE）**：通过 `workbench.html` + Electron 主进程跨域子帧钩子（`out/main.js`）实现一劳永逸全界面汉化（含智能体侧边栏与 Antigravity 设置页），无需后台监视器，支持一键还原（Linux 系统目录需 `sudo`；IDE 升级后重跑 `--patch` 即可）。
 - **中英切换按钮**：汉化生效后窗口右下角会出现半透明圆钮，单击切换中/英文，拖动可调整并记住位置，**双击或右键**可打开菜单勾选「**选项名保留英文**」（中文界面下保留对话权限及模型推理强度 `Extra High / High / Medium / Low` 等英文选项名）。
 
 ### 自定义翻译名单

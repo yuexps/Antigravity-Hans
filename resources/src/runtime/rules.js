@@ -326,6 +326,7 @@ const patternsPost = [
 
   // 模型可用性与公告提示（模型名原样保留，只格式化完整的日期字段）
   [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${localizeEnglishDates(date)} 起，您当前使用的套餐将不再提供第三方模型访问。`],
+  [/\s*\bLeaving on ((?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?)\./gi, (_m, date) => `将于 ${localizeEnglishDates(date)}下线。`],
   [/^([\w .-]+?) is currently available to Ultra and paid Pro plan subscribers\.$/gi, (_m, model) => `${model} 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。`],
   [/^([\w .-]+?) is currently available to Ultra plan subscribers\.$/gi, (_m, model) => `${model} 目前向 Ultra 套餐订阅用户开放。`],
   [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${localizeEnglishDates(date)} 从 Antigravity 中移除。`],

@@ -1894,6 +1894,9 @@ test('2.34.0 normal app greetings, orchestrator settings and controls are locali
     ['Open conversation 00000000-0000-4000-8000-000000000001', '打开对话 00000000-0000-4000-8000-000000000001'],
     ['Updated 11:20 PM', '更新于 11:20 PM'],
     ['GPT-OSS 120B (Medium)', 'GPT-OSS 120B (中)'],
+    ['Leaving Soon', '即将下线'],
+    ['For most deep reasoning and complex problems', '适用于大多数深度推理与复杂问题'],
+    ['The original Gemini 4 model for advanced workflows. Leaving on Nov 30.', '面向高级工作流的原版 Gemini 4 模型。将于 11 月 30 日下线。'],
   ]) {
     assert.equal(translate(input), expected);
     assert.equal(translate(expected), expected, `translation not idempotent: ${expected}`);

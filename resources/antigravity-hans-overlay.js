@@ -1754,6 +1754,7 @@
     ["Requesting a one-time administrator (UAC) elevation", "正在请求一次性管理员 (UAC) 提权"],
     ["Save rule to always allow read access to this path?", "保存规则以始终允许读取此路径？"],
     ["Search for MCP servers to add to your configuration", "搜索要添加到配置中的 MCP 服务器"],
+    ["The original Gemini 4 model for advanced workflows.", "面向高级工作流的原版 Gemini 4 模型。"],
     ["Using the Antigravity Python SDK to build AI agents", "使用 Antigravity Python SDK 构建 AI 智能体"],
     ["Whether the agent asks you to review its documents.", "智能体是否请求您审核其生成的文档。"],
     ["Why are you opting out of auto-triggered Best-of-N?", "为什么要退出自动触发的 Best of N？"],
@@ -1853,6 +1854,7 @@
     ["Agent needs permission to execute JavaScript", "智能体需要权限才能执行 JavaScript"],
     ["Collaborate with the agent to complete tasks", "与智能体协作完成任务"],
     ["Conversation copied as Markdown to clipboard", "对话已作为 Markdown 复制到剪贴板"],
+    ["For most deep reasoning and complex problems", "适用于大多数深度推理与复杂问题"],
     ["Here's how you and your agents work together", "了解你与智能体如何协作"],
     ["Microphone blocked in browser site settings.", "麦克风已在浏览器网站设置中被阻止。"],
     ["Please list the steps to reproduce the issue", "请列出复现此问题的步骤"],
@@ -3418,6 +3420,7 @@
     ["Fuzzy search", "模糊搜索"],
     ["Instructions", "指令"],
     ["Last Updated", "最近更新"],
+    ["Leaving Soon", "即将下线"],
     ["Limited time", "限时提供"],
     ["Make default", "设为默认"],
     ["Manage Hooks", "管理钩子"],
@@ -4359,6 +4362,7 @@ const patternsPost = [
 
   // 模型可用性与公告提示（模型名原样保留，只格式化完整的日期字段）
   [/^([\w .-]+?) is now available on paid Pro and Ultra plans\. Third-party model access will no longer be available on your current plan starting on (.+?)\.$/gi, (_m, model, date) => `${model} 已面向付费 Pro 与 Ultra 套餐开放。自 ${localizeEnglishDates(date)} 起，您当前使用的套餐将不再提供第三方模型访问。`],
+  [/\s*\bLeaving on ((?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?)\./gi, (_m, date) => `将于 ${localizeEnglishDates(date)}下线。`],
   [/^([\w .-]+?) is currently available to Ultra and paid Pro plan subscribers\.$/gi, (_m, model) => `${model} 目前仅向 Ultra 及付费 Pro 套餐订阅用户开放。`],
   [/^([\w .-]+?) is currently available to Ultra plan subscribers\.$/gi, (_m, model) => `${model} 目前向 Ultra 套餐订阅用户开放。`],
   [/^GPT-OSS will be removed from Antigravity on (.+?)\.$/gi, (_m, date) => `GPT-OSS 将于 ${localizeEnglishDates(date)} 从 Antigravity 中移除。`],

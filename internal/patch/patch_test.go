@@ -102,14 +102,17 @@ func TestUninstallPatchRestoresWorkbenchAndChecksums(t *testing.T) {
 	}
 
 	const origHTML = "<html><body><main>IDE</main></body></html>"
+	const origMainJS = "console.log('main');\n//# sourceMappingURL=main.js.map\n"
 	const checksumKey = "vs/code/electron-browser/workbench/workbench.html"
 	origProduct := `{"checksums":{"` + checksumKey + `":"old-checksum"}}`
 
 	htmlPath := filepath.Join(workbenchDir, "workbench.html")
+	mainJSPath := filepath.Join(appDir, "out", "main.js")
 	productPath := filepath.Join(appDir, "product.json")
 	for name, content := range map[string]string{
 		filepath.Join(appDir, "package.json"): "{}",
 		htmlPath:                              origHTML,
+		mainJSPath:                            origMainJS,
 		productPath:                           origProduct,
 	} {
 		if err := os.WriteFile(name, []byte(content), 0600); err != nil {
@@ -120,6 +123,24 @@ func TestUninstallPatchRestoresWorkbenchAndChecksums(t *testing.T) {
 	inst := AppInstance{Name: "isolated fixture", Dir: installDir, ExePath: filepath.Join(installDir, "patch-test-never-running.exe")}
 	if !Install(cfg, inst, "console.log('zh');") {
 		t.Fatal("Install failed")
+	}
+
+	// 验证主进程钩子与 Swarm 脚本已一并安装，且 sourceMappingURL 仍位于末尾
+	patchedMain, err := os.ReadFile(mainJSPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(patchedMain), mainHookSnippet) || !strings.HasSuffix(string(patchedMain), "//# sourceMappingURL=main.js.map\n") {
+		t.Fatalf("unexpected patched main.js: %q", patchedMain)
+	}
+	for _, created := range []string{
+		filepath.Join(appDir, "out", mainHookFileName),
+		mainJSPath + ".bak",
+		filepath.Join(workbenchDir, swarmOverlayName),
+	} {
+		if _, err := os.Stat(created); err != nil {
+			t.Fatalf("expected %s to exist after Install: %v", created, err)
+		}
 	}
 
 	// 验证 product.json 校验和已同步为修改后 workbench.html 的真实 SHA-256
@@ -151,17 +172,62 @@ func TestUninstallPatchRestoresWorkbenchAndChecksums(t *testing.T) {
 	if got, err := os.ReadFile(htmlPath); err != nil || string(got) != origHTML {
 		t.Fatalf("workbench.html not restored: %q, %v", got, err)
 	}
+	if got, err := os.ReadFile(mainJSPath); err != nil || string(got) != origMainJS {
+		t.Fatalf("out/main.js not restored: %q, %v", got, err)
+	}
 	if got, err := os.ReadFile(productPath); err != nil || string(got) != origProduct {
 		t.Fatalf("product.json not restored: %q, %v", got, err)
 	}
 	for _, removed := range []string{
 		filepath.Join(workbenchDir, "antigravity-hans-overlay.js"),
+		filepath.Join(workbenchDir, swarmOverlayName),
+		filepath.Join(appDir, "out", mainHookFileName),
 		htmlPath + ".bak",
+		mainJSPath + ".bak",
 		productPath + ".bak",
 	} {
 		if _, err := os.Stat(removed); !os.IsNotExist(err) {
 			t.Fatalf("expected %s to be removed after Uninstall", removed)
 		}
+	}
+}
+
+func TestInstallPatchUpgradesLegacyHTMLPatchWithMainHook(t *testing.T) {
+	cfg := app.Config{Kind: app.KindIDE, Name: "patch-test-never-running", Exe: "patch-test-never-running.exe"}
+	installDir := filepath.Join(t.TempDir(), "installation")
+	appDir := filepath.Join(installDir, "resources", "app")
+	workbenchDir := filepath.Join(appDir, "out", "vs", "code", "electron-browser", "workbench")
+	if err := os.MkdirAll(workbenchDir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	mainJSPath := filepath.Join(appDir, "out", "main.js")
+	for name, content := range map[string]string{
+		filepath.Join(appDir, "package.json"):         "{}",
+		filepath.Join(workbenchDir, "workbench.html"): `<html><body><script src="./antigravity-hans-overlay.js"></script></body></html>`,
+		mainJSPath: "console.log('legacy');\n",
+	} {
+		if err := os.WriteFile(name, []byte(content), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	inst := AppInstance{Name: "legacy fixture", Dir: installDir, ExePath: filepath.Join(installDir, "patch-test-never-running.exe")}
+	if !Install(cfg, inst, "console.log('upgraded');") {
+		t.Fatal("upgrade install failed")
+	}
+	patchedMain, err := os.ReadFile(mainJSPath)
+	if err != nil || !strings.Contains(string(patchedMain), mainHookSnippet) {
+		t.Fatalf("legacy patch did not upgrade main.js: %q, %v", patchedMain, err)
+	}
+	// 无 .bak 时卸载也应能剥离标记块
+	if err := os.Remove(mainJSPath + ".bak"); err != nil {
+		t.Fatal(err)
+	}
+	if !Uninstall(cfg, inst) {
+		t.Fatal("uninstall without main.js.bak failed")
+	}
+	restoredMain, err := os.ReadFile(mainJSPath)
+	if err != nil || strings.Contains(string(restoredMain), mainHookMarkerStart) {
+		t.Fatalf("main.js hook marker remained: %q, %v", restoredMain, err)
 	}
 }
 
