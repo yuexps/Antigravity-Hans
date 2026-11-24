@@ -33,10 +33,17 @@ $oldGoarch = $env:GOARCH
 $oldCgoEnabled = $env:CGO_ENABLED
 Push-Location $repoRoot
 try {
+    $verNum = $version.TrimStart('v') + '.0'
+    $env:GOOS = ''
+    $env:GOARCH = ''
+    & go run github.com/tc-hib/go-winres@v0.3.3 make --in tools/winres.json --arch amd64 --file-version $verNum --product-version $verNum
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning '生成 Windows PE 资源失败，将继续构建。'
+    }
     $env:GOOS = 'windows'
     $env:GOARCH = 'amd64'
     $env:CGO_ENABLED = '0'
-    & go build -trimpath -buildvcs=false -ldflags "-s -w -X main.Version=$version-local" -o $temporaryPath .
+    & go build -trimpath -buildvcs=false -ldflags "-w -X main.Version=$version-local" -o $temporaryPath .
     if ($LASTEXITCODE -ne 0) {
         throw "Go 构建失败，退出码：$LASTEXITCODE"
     }
@@ -54,6 +61,7 @@ try {
     $env:GOOS = $oldGoos
     $env:GOARCH = $oldGoarch
     $env:CGO_ENABLED = $oldCgoEnabled
+    Get-ChildItem -LiteralPath $repoRoot -Filter 'rsrc_windows_*.syso' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
     Pop-Location
     if (Test-Path -LiteralPath $temporaryPath) {
         Remove-Item -LiteralPath $temporaryPath

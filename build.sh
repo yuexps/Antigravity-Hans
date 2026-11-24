@@ -45,9 +45,12 @@ echo ">>> [2/5] macOS AMD64 (Intel Mac)..."
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.Version=$VERSION" -o "$DIST_DIR/antigravity-hans-macos-amd64" .
 echo "    ✅ $DIST_DIR/antigravity-hans-macos-amd64"
 
-# Windows AMD64
+# Windows AMD64（保留符号表并嵌入 PE 版本信息与 Manifest，降低杀软启发式误报）
 echo ">>> [3/5] Windows AMD64..."
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X main.Version=$VERSION" -o "$DIST_DIR/antigravity-hans-windows-amd64.exe" .
+VER_NUM="${VERSION#v}"
+go run github.com/tc-hib/go-winres@v0.3.3 make --in tools/winres.json --arch amd64 --file-version "${VER_NUM}.0" --product-version "${VER_NUM}.0" || echo "[警告] 生成 Windows PE 资源失败，将继续构建"
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-w -X main.Version=$VERSION" -o "$DIST_DIR/antigravity-hans-windows-amd64.exe" .
+rm -f "$SCRIPT_DIR"/rsrc_windows_*.syso
 echo "    ✅ $DIST_DIR/antigravity-hans-windows-amd64.exe"
 
 # Linux AMD64 (x64)

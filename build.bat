@@ -47,10 +47,17 @@ go build -ldflags="-s -w -X main.Version=%VERSION%" -o "%DIST_DIR%\antigravity-h
 if errorlevel 1 goto :fail
 
 echo ^>^>^> [3/5] Windows AMD64...
+set "VER_NUM=%VERSION:v=%"
+set "GOOS="
+set "GOARCH="
+go run github.com/tc-hib/go-winres@v0.3.3 make --in tools\winres.json --arch amd64 --file-version "%VER_NUM%.0" --product-version "%VER_NUM%.0"
+if errorlevel 1 echo [警告] 生成 Windows PE 资源失败，将继续构建。
 set "GOOS=windows"
 set "GOARCH=amd64"
-go build -ldflags="-s -w -X main.Version=%VERSION%" -o "%DIST_DIR%\antigravity-hans-windows-amd64.exe" .
-if errorlevel 1 goto :fail
+go build -trimpath -ldflags="-w -X main.Version=%VERSION%" -o "%DIST_DIR%\antigravity-hans-windows-amd64.exe" .
+set "WIN_BUILD_ERR=%errorlevel%"
+del /q "%SCRIPT_DIR%rsrc_windows_*.syso" 2>nul
+if not "%WIN_BUILD_ERR%"=="0" goto :fail
 
 echo ^>^>^> [4/5] Linux AMD64 (x64)...
 set "GOOS=linux"

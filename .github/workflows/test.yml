@@ -68,8 +68,17 @@ jobs:
           CGO_ENABLED: 0
         run: |
           mkdir -p dist
-          go build -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
-            -o "dist/${{ matrix.binary }}" .
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            VER_NUM="${{ steps.version.outputs.tag }}"
+            VER_NUM="${VER_NUM#v}"
+            GOOS= GOARCH= go run github.com/tc-hib/go-winres@v0.3.3 make --in tools/winres.json --arch "${{ matrix.goarch }}" --file-version "${VER_NUM}.0" --product-version "${VER_NUM}.0"
+            trap 'rm -f rsrc_windows_*.syso' EXIT
+            go build -trimpath -ldflags="-w -X main.Version=${{ steps.version.outputs.tag }}" \
+              -o "dist/${{ matrix.binary }}" .
+          else
+            go build -trimpath -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
+              -o "dist/${{ matrix.binary }}" .
+          fi
           cd dist
           sha256sum "${{ matrix.binary }}" > "${{ matrix.binary }}.sha256"
 

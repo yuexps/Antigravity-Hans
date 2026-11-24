@@ -64,7 +64,11 @@ jobs:
           GOARCH: amd64
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w -X main.Version=${{ steps.version.outputs.tag }}" \
+          VER_NUM="${{ steps.version.outputs.tag }}"
+          VER_NUM="${VER_NUM#v}"
+          GOOS= GOARCH= go run github.com/tc-hib/go-winres@v0.3.3 make --in tools/winres.json --arch amd64 --file-version "${VER_NUM}.0" --product-version "${VER_NUM}.0"
+          trap 'rm -f rsrc_windows_*.syso' EXIT
+          go build -trimpath -ldflags="-w -X main.Version=${{ steps.version.outputs.tag }}" \
             -o dist/antigravity-hans-windows-amd64.exe .
 
       - name: 编译 Linux AMD64（x64）
@@ -133,3 +137,4 @@ jobs:
             dist/SHA256SUMS
           draft: false
           prerelease: false
+          generate_release_notes: true

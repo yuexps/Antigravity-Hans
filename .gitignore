@@ -1,6 +1,7 @@
 # Go 编译产物
 dist/
 *.exe
+rsrc_windows_*.syso
 
 # 直接在仓库根目录 go build 产出的可执行文件
 /antigravity-hans
