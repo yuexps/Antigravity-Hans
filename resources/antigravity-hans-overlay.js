@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.34.0-20261123-r6';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.1-20261125-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1488,6 +1488,7 @@
     ["When enabled, Antigravity will play a sound when Agent finishes generating a response.", "启用后，Antigravity 会在智能体完成回复生成时播放提示音。"],
     ["When enabled, the agent will include default customizations, including default skills.", "启用后，智能体将包含默认自定义项（包括默认技能）。"],
     ["Comment on the plan before your agent starts, and get a walkthrough when it finishes.", "在智能体开始前审查并批注计划，并在完成后获取详细的演练讲解。"],
+    ["Create a project on a machine you reach over SSH. It opens in that host's own window.", "在通过 SSH 连接的计算机上创建项目，并在该主机的专用窗口中打开。"],
     ["The agent asks for permission before executing commands matched by a deny list entry.", "智能体在执行匹配拒绝列表条目的命令前，会先请求权限。"],
     ["The browser subagent can be invoked by typing /browser in the conversation input box.", "你可以在对话输入框中输入 /browser 来调用浏览器子智能体。"],
     ["Customization token budget exceeded. Large customizations are excluded from context.", "自定义项的 Token 预算已超出。较大的自定义项将从上下文中排除。"],
@@ -1691,6 +1692,7 @@
     ["Inline PDF preview is not available in this environment.", "当前环境下暂不支持内嵌 PDF 预览。"],
     ["Manage project folders, agent settings, and permissions.", "管理项目文件夹、智能体设置和权限。"],
     ["No project selected or project management not available.", "未选择项目，或项目管理不可用。"],
+    ["Permissions cannot be changed while the agent is running", "智能体运行期间无法更改权限"],
     ["Save rule to always allow executing actions on this URL?", "保存规则以始终允许在此 URL 上执行操作？"],
     ["Scan the code to open this device in Remote Control, or ", "扫描二维码以在远程控制中打开此设备，或 "],
     ["Select a model using the model selector in the input box", "使用输入框中的模型选择器选择模型"],
@@ -1771,6 +1773,7 @@
     ["Enter always submits. This adds a second shortcut.", "Enter 始终发送，此项用于添加第二组快捷键。"],
     ["Error: No artifact URI provided in URL parameters.", "错误：URL 参数中未提供产物 URI。"],
     ["GitHub API rate limit exceeded. Try again shortly.", "GitHub API 请求频率超出限制。请稍后重试。"],
+    ["Model cannot be changed while the agent is running", "智能体运行期间无法更换模型"],
     ["Save rule to always allow access to this resource?", "保存规则以始终允许访问此资源？"],
     ["URLs the agent can read or open in this workspace.", "智能体在此工作区中可读取或打开的 URL。"],
     ["What quota or feature is being incorrectly limited", "哪些配额或功能被错误地限制了"],
@@ -2064,6 +2067,7 @@
     ["Select one of the three options.", "选择以下三个选项之一。"],
     ["Set the speed of tab suggestions", "设置 Tab 建议的显示速度"],
     ["Sign in with a different account", "使用其他账号登录"],
+    ["Switch to default text direction", "切换到默认文字方向"],
     ["Taking longer than usual to load", "加载时间比平时更长"],
     ["The branch was pushed to GitLab.", "分支已推送到 GitLab。"],
     ["The change was pushed to Gerrit.", "变更已推送到 Gerrit。"],
@@ -2204,6 +2208,7 @@
     ["Share Conversation (Preview)", "分享对话（预览）"],
     ["Sidebar grouped by workspace", "侧边栏已按工作区分组"],
     ["Steps to reproduce the issue", "重现此问题的步骤"],
+    ["Switch to RTL text direction", "切换到从右向左的文字方向"],
     ["The other model hallucinated", "另一个模型出现了幻觉"],
     ["This page is going away soon", "此页面即将停用"],
     ["Undo Chat Edits in this File", "撤销此文件中的聊天编辑"],
@@ -2606,6 +2611,7 @@
     ["Collapse All Folders", "折叠所有文件夹"],
     ["Command Setup Script", "命令初始化脚本"],
     ["Comment on Selection", "评论选中内容"],
+    ["Connect to SSH Host…", "连接到 SSH 主机…"],
     ["Continue with Google", "使用 Google 账号继续"],
     ["Conversation History", "对话历史"],
     ["Coordinator settings", "协调员设置"],
@@ -2928,6 +2934,7 @@
     ["No agents running", "没有正在运行的智能体"],
     ["No instances yet.", "暂无实例。"],
     ["No matching files", "没有匹配的文件"],
+    ["No matching hosts", "没有匹配的主机"],
     ["No projects found", "未找到项目"],
     ["No sign-in needed", "无需登录"],
     ["No skills loaded.", "未加载任何技能。"],
@@ -3207,6 +3214,7 @@
     ["Invalid embed:", "无效的嵌入内容："],
     ["Issue creation", "创建问题"],
     ["Knowledge Work", "知识工作"],
+    ["Loading Hosts…", "正在加载主机…"],
     ["Local Checkout", "本地检出"],
     ["Manage License", "管理许可证"],
     ["Mark as Unread", "标记为未读"],
@@ -3356,6 +3364,7 @@
     ["Render failed", "渲染失败"],
     ["Review Policy", "审核策略"],
     ["Runs remotely", "远程运行"],
+    ["Search Hosts…", "搜索主机…"],
     ["Select branch", "选择分支"],
     ["Send Feedback", "发送反馈"],
     ["Side Question", "副问题"],
@@ -3771,6 +3780,7 @@
     ["Projects", "项目"],
     ["Protocol", "协议"],
     ["Read URL", "已读取 URL"],
+    ["SSH Host", "SSH 主机"],
     ["Schedule", "计划"],
     ["Searched", "已搜索"],
     ["Security", "安全"],
@@ -4294,6 +4304,8 @@ const dynamicPatterns = [
   [/^Send all \((\d+)\)$/g, '全部发送 ($1)'],
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
   [/^(\d+)\s*projects?$/i, '$1 个项目'],
+  [/^No hosts in (~\/\.ssh\/config) yet$/, '$1 中还没有主机'],
+  [/^(\d+) hidden hosts?$/, '$1 台隐藏的主机'],
   [/Show (\d+)\s*breakdowns?/gi, '显示 $1 个明细'],
   [/Load older messages, showing (\d+) of (\d+)/g, '加载更早的消息，显示 $1 / $2'],
   [/No more older messages, showing (\d+) of (\d+)/g, '没有更早的消息了，显示 $1 / $2'],
@@ -5070,6 +5082,9 @@ function translateTextValue(node) {
     (node.parentElement?.closest('[data-testid="model-selector-panel"] .bg-secondary.rounded-full') ||
       node.parentElement?.closest('[role="menuitem"], [role="option"]'))) {
     return value.replace('New', '新');
+  }
+  if (value.trim() === 'Added' && node.parentElement?.closest('[data-testid="plugin-detail-added-badge"]')) {
+    return value.replace('Added', '已添加');
   }
   const navigation = node.parentElement ? translateScopedNavigation(node.parentElement, value) : null;
   if (navigation !== null) return navigation;

@@ -258,6 +258,8 @@ const dynamicPatterns = [
   [/^Send all \((\d+)\)$/g, '全部发送 ($1)'],
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
   [/^(\d+)\s*projects?$/i, '$1 个项目'],
+  [/^No hosts in (~\/\.ssh\/config) yet$/, '$1 中还没有主机'],
+  [/^(\d+) hidden hosts?$/, '$1 台隐藏的主机'],
   [/Show (\d+)\s*breakdowns?/gi, '显示 $1 个明细'],
   [/Load older messages, showing (\d+) of (\d+)/g, '加载更早的消息，显示 $1 / $2'],
   [/No more older messages, showing (\d+) of (\d+)/g, '没有更早的消息了，显示 $1 / $2'],
@@ -1034,6 +1036,9 @@ function translateTextValue(node) {
     (node.parentElement?.closest('[data-testid="model-selector-panel"] .bg-secondary.rounded-full') ||
       node.parentElement?.closest('[role="menuitem"], [role="option"]'))) {
     return value.replace('New', '新');
+  }
+  if (value.trim() === 'Added' && node.parentElement?.closest('[data-testid="plugin-detail-added-badge"]')) {
+    return value.replace('Added', '已添加');
   }
   const navigation = node.parentElement ? translateScopedNavigation(node.parentElement, value) : null;
   if (navigation !== null) return navigation;

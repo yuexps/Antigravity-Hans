@@ -2009,3 +2009,41 @@ test('2.34.0 model picker New badges are distinct from create actions', () => {
     assert.equal(text.nodeValue, expected, 'reprocessing changed the translation');
   }
 });
+
+
+test('2.35.1 desktop environment, text direction and running-state labels are localized', () => {
+  for (const [input, expected] of [
+    ['SSH Host', 'SSH 主机'],
+    ['Search Hosts…', '搜索主机…'],
+    ['Loading Hosts…', '正在加载主机…'],
+    ['No matching hosts', '没有匹配的主机'],
+    ['No hosts in ~/.ssh/config yet', '~/.ssh/config 中还没有主机'],
+    ['Connect to SSH Host…', '连接到 SSH 主机…'],
+    ["Create a project on a machine you reach over SSH. It opens in that host's own window.", '在通过 SSH 连接的计算机上创建项目，并在该主机的专用窗口中打开。'],
+    ['1 hidden host', '1 台隐藏的主机'],
+    ['5 hidden hosts', '5 台隐藏的主机'],
+    ['Switch to default text direction', '切换到默认文字方向'],
+    ['Switch to RTL text direction', '切换到从右向左的文字方向'],
+    ['Model cannot be changed while the agent is running', '智能体运行期间无法更换模型'],
+    ['Permissions cannot be changed while the agent is running', '智能体运行期间无法更改权限'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+  assert.equal(translate('example: 5 hidden hosts'), 'example: 5 hidden hosts');
+});
+
+test('2.35.1 only the plugin details Added badge uses the plugin translation', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+  const badgeSelector = '[data-testid="plugin-detail-added-badge"]';
+  for (const isBadge of [true, false]) {
+    const label = {
+      nodeType: 1,
+      closest(selector) { return isBadge && selector === badgeSelector ? this : null; },
+      getAttribute() { return null; },
+    };
+    const text = { nodeType: 3, nodeValue: 'Added', parentElement: label };
+    context.translateNodeForTest(text);
+    assert.equal(text.nodeValue, isBadge ? '已添加' : 'Added');
+  }
+});
