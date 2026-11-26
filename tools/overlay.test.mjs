@@ -2267,3 +2267,11 @@ test('code lines, diff viewers, frontmatter, file tree items, and file paths are
     assert.deepEqual(childNodes.map((n) => n.nodeValue), expected);
   }
 });
+
+test('localizes macOS send shortcut without changing key names', () => {
+  const original = 'Press Cmd+Enter to send, Enter for a new line.';
+  const translated = '按 Cmd+Enter 发送，按 Enter 换行。';
+  assert.equal(translate(original), translated);
+  assert.equal(translate(translated), translated);
+  assert.equal(translate('Press Ctrl+Enter to send, Enter for a new line.'), '按 Ctrl+Enter 发送，按 Enter 换行。');
+});
