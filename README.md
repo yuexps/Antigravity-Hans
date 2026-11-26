@@ -27,11 +27,20 @@ antigravity-hans --ide --attach-only   # 仅连接 IDE 已有调试端口
 # 桌面快捷方式
 antigravity-hans --shortcut            # 为两者生成一键汉化快捷方式（可加 --app 或 --ide）
 
+# Windows 自动代理
+antigravity-hans --app --with-proxy             # 读取代理并启动 Antigravity
+antigravity-hans --ide --with-proxy             # 读取代理并启动 Antigravity IDE
+antigravity-hans --shortcut --app --with-proxy  # 创建「Antigravity 中文（代理）」快捷方式，可换成 --ide
+
 # 维护与自定义
 antigravity-hans --stop                                 # 结束汉化监视器
 antigravity-hans --trust-external-overlay               # 显式信任同目录外部汉化脚本
 antigravity-hans --app --trust-custom-translations      # 显式信任同目录自定义翻译名单
 ```
+
+Windows 主菜单和快捷方式菜单均提供「自动代理」选项。每次代理启动优先读取当前用户已启用的 Windows 手动代理，其次读取 `HTTP_PROXY`、`HTTPS_PROXY`、`ALL_PROXY`。如果没有固定代理地址（例如仅设置了 PAC），或代理端口无法连接，启动器会在退出已有应用前提示。使用普通启动时，应用仍按原有方式读取代理设置。
+
+代理设置仅传递给新启动的应用及其子进程，本机 CDP 连接保持直连。切换启动方式或在代理地址变更后重新读取时，如果已有汉化监视器运行，请先执行 `antigravity-hans --stop`，再从对应入口启动。`--with-proxy` 与 `--attach-only` 互斥。
 
 ## 汉化模式与切换
 

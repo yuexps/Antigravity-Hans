@@ -37,7 +37,7 @@ func TestCreateChineseShortcutIsolatedXDGAndDesktop(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", configHome)
 	t.Setenv("XDG_STATE_HOME", filepath.Join(home, "custom-state"))
 
-	if err := Create(app.DefaultNormal(), false); err != nil {
+	if err := Create(app.DefaultNormal(), Options{}); err != nil {
 		t.Fatalf("Create(app.DefaultNormal()) failed: %v", err)
 	}
 

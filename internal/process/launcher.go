@@ -12,7 +12,13 @@ import (
 )
 
 // LaunchWithDebug 以调试模式后台启动应用。
-func LaunchWithDebug(appPath string, port int) error {
+func LaunchWithDebug(appPath string, port int, proxy LaunchProxy) error {
+	cmd := debugCommand(appPath, port, proxy, os.Environ())
+	SetSysProcAttr(cmd)
+	return cmd.Start()
+}
+
+func debugCommand(appPath string, port int, proxy LaunchProxy, environ []string) *exec.Cmd {
 	args := []string{
 		appPath,
 		fmt.Sprintf("--remote-debugging-port=%d", port),
@@ -24,15 +30,15 @@ func LaunchWithDebug(appPath string, port int) error {
 		fmt.Println("[警告] 已启用 AGY_HANS_ALLOW_ANY_ORIGIN=1，调试端口将接受任意 Origin（存在安全风险）。")
 		args = append(args, "--remote-allow-origins=*")
 	}
+	environ = envWithoutElectronRunAsNode(environ)
+	if proxy.source != "" {
+		args = append(args, "--proxy-server="+proxy.chromiumRules())
+		environ = proxy.applyEnv(environ)
+	}
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = filepath.Dir(appPath)
-	cmd.Env = envWithoutElectronRunAsNode(os.Environ())
-	cmd.Stdout = nil
-	cmd.Stderr = nil
-	cmd.Stdin = nil
-
-	SetSysProcAttr(cmd)
-	return cmd.Start()
+	cmd.Env = environ
+	return cmd
 }
 
 func envWithoutElectronRunAsNode(environ []string) []string {

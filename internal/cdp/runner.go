@@ -10,10 +10,20 @@ import (
 	"antigravity-hans/internal/process"
 )
 
-// Run 启动并监视目标应用；attachOnly 为 true 时仅复用已有调试端口。
-func Run(cfg app.Config, overlaySource string, interactive, attachOnly bool, input *bufio.Reader) {
+// RunOptions 配置动态汉化的启动方式。
+type RunOptions struct {
+	Interactive bool
+	AttachOnly  bool
+	WithProxy   bool
+}
+
+// Run 启动并监视目标应用。
+func Run(cfg app.Config, overlaySource string, options RunOptions, input *bufio.Reader) {
 	release, ok := process.AcquireMonitorLock(cfg)
 	if !ok {
+		if options.WithProxy {
+			reportProxyError(options.Interactive, "无法接管汉化监视器。若已有监视器运行，请先执行 --stop，再重试代理启动。")
+		}
 		process.FocusRunningNormalApp(cfg)
 		return
 	}
@@ -22,23 +32,40 @@ func Run(cfg app.Config, overlaySource string, interactive, attachOnly bool, inp
 	injectedSet := make(map[string]bool)
 	var mu sync.Mutex
 
-	if port, found := findCDPPort(cfg); found {
-		cfg.Port = port
-		fmt.Printf("检测到 %s 调试端口 %d 已开启，直接进入监视模式...\n", cfg.Name, port)
-		process.FocusRunningNormalApp(cfg)
-		Watch(cfg, overlaySource, injectedSet, &mu)
-		return
-	}
-
-	if attachOnly {
-		fmt.Printf("[提示] 未找到 %s 可复用的调试端口；仅连接模式不会启动或重启应用。\n", cfg.Name)
-		return
+	var proxy process.LaunchProxy
+	if options.WithProxy {
+		var err error
+		proxy, err = process.DetectLaunchProxy()
+		if err != nil {
+			reportProxyError(options.Interactive, err.Error())
+			return
+		}
+		fmt.Printf("检测到代理（%s）\n", proxy)
+	} else {
+		if port, found := findCDPPort(cfg); found {
+			cfg.Port = port
+			fmt.Printf("检测到 %s 调试端口 %d 已开启，直接进入监视模式...\n", cfg.Name, port)
+			process.FocusRunningNormalApp(cfg)
+			Watch(cfg, overlaySource, injectedSet, &mu)
+			return
+		}
+		if options.AttachOnly {
+			fmt.Printf("[提示] 未找到 %s 可复用的调试端口；仅连接模式不会启动或重启应用。\n", cfg.Name)
+			return
+		}
 	}
 
 	detected := app.Detect(cfg)
 	if detected.Running {
-		fmt.Printf("[提示] 检测到 %s 正在运行，但未开启调试端口。正在重新拉起...\n", detected.Name)
-		if !process.KillProcess(cfg, interactive, input) {
+		if options.WithProxy {
+			fmt.Printf("[提示] 检测到 %s 正在运行。正在使用当前代理配置重新拉起...\n", detected.Name)
+		} else {
+			fmt.Printf("[提示] 检测到 %s 正在运行，但未开启调试端口。正在重新拉起...\n", detected.Name)
+		}
+		if !process.KillProcess(cfg, options.Interactive, input) {
+			if options.WithProxy && !options.Interactive {
+				process.ShowProxyLaunchError("无法完成代理启动。请保存内容并退出应用后重试。")
+			}
 			return
 		}
 		time.Sleep(1500 * time.Millisecond)
@@ -55,7 +82,7 @@ func Run(cfg app.Config, overlaySource string, interactive, attachOnly bool, inp
 	cfg.Port = port
 
 	detected = app.Detect(cfg)
-	targetPath := selectLaunchTarget(detected, interactive, input)
+	targetPath := selectLaunchTarget(detected, options.Interactive, input)
 	if targetPath == "" {
 		return
 	}
@@ -66,8 +93,12 @@ func Run(cfg app.Config, overlaySource string, interactive, attachOnly bool, inp
 	}
 
 	fmt.Printf("正在以调试模式启动 %s: %s (调试端口 %d) ...\n", detected.Name, targetPath, detected.Port)
-	if err := process.LaunchWithDebug(targetPath, detected.Port); err != nil {
-		fmt.Printf("[错误] 启动失败: %v\n", err)
+	if err := process.LaunchWithDebug(targetPath, detected.Port, proxy); err != nil {
+		if options.WithProxy {
+			reportProxyError(options.Interactive, err.Error())
+		} else {
+			fmt.Printf("[错误] 启动失败: %v\n", err)
+		}
 		return
 	}
 	fmt.Printf("正在等待 %s 调试端口就绪并建立监视...\n", detected.Name)
@@ -78,6 +109,13 @@ func Run(cfg app.Config, overlaySource string, interactive, attachOnly bool, inp
 	}
 
 	Watch(cfg, overlaySource, injectedSet, &mu)
+}
+
+func reportProxyError(interactive bool, message string) {
+	fmt.Printf("[错误] 代理启动失败：%s\n", message)
+	if !interactive {
+		process.ShowProxyLaunchError(message)
+	}
 }
 
 func selectLaunchTarget(detected app.Detected, interactive bool, input *bufio.Reader) string {

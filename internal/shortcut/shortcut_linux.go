@@ -31,8 +31,8 @@ type linuxShortcutOptions struct {
 	TrustCustomTranslations bool
 }
 
-// Create 在 Linux 应用菜单和桌面（若存在）生成动态汉化 .desktop 启动器。
-func Create(cfg app.Config, trustCustomTranslations bool) error {
+// create 在 Linux 应用菜单和桌面（若存在）生成动态汉化 .desktop 启动器。
+func create(cfg app.Config, options Options) error {
 	selfExe, err := os.Executable()
 	if err != nil {
 		return fmt.Errorf("无法获取当前程序路径: %v", err)
@@ -47,7 +47,7 @@ func Create(cfg app.Config, trustCustomTranslations bool) error {
 		return fmt.Errorf("无法获取用户主目录: %v", err)
 	}
 
-	opts := defaultLinuxShortcutOptions(cfg, selfExeAbs, homeDir, trustCustomTranslations)
+	opts := defaultLinuxShortcutOptions(cfg, selfExeAbs, homeDir, options.TrustCustomTranslations)
 	return createLinuxShortcut(cfg, opts)
 }
 

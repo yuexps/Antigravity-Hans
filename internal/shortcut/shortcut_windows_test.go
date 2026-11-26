@@ -12,12 +12,32 @@ import (
 
 func TestShortcutArgumentsRequireExplicitCustomTrust(t *testing.T) {
 	for _, cfg := range []app.Config{app.DefaultNormal(), app.DefaultIDE()} {
-		if strings.Contains(shortcutArguments(cfg, false), overlay.TrustCustomTranslationsArg) {
+		if strings.Contains(shortcutArguments(cfg, Options{}), overlay.TrustCustomTranslationsArg) {
 			t.Fatal("unrequested trust included in shortcut")
 		}
-		if !strings.Contains(shortcutArguments(cfg, true), overlay.TrustCustomTranslationsArg) {
+		if !strings.Contains(shortcutArguments(cfg, Options{TrustCustomTranslations: true}), overlay.TrustCustomTranslationsArg) {
 			t.Fatal("explicit custom trust missing from shortcut")
 		}
+	}
+}
+
+func TestShortcutKeepsProxyOptIn(t *testing.T) {
+	for _, tc := range []struct {
+		cfg app.Config
+		arg string
+	}{{app.DefaultNormal(), "--app"}, {app.DefaultIDE(), "--ide"}} {
+		t.Run(tc.cfg.Name, func(t *testing.T) {
+			if got := shortcutArguments(tc.cfg, Options{}); got != tc.arg+" --nogui" {
+				t.Fatalf("默认快捷方式参数 = %q", got)
+			}
+			options := Options{WithProxy: true, TrustCustomTranslations: true}
+			if got := shortcutArguments(tc.cfg, options); got != tc.arg+" --nogui --with-proxy "+overlay.TrustCustomTranslationsArg {
+				t.Fatalf("代理快捷方式参数 = %q", got)
+			}
+			if got := shortcutName(tc.cfg, options); got != tc.cfg.Name+" 中文（代理）.lnk" {
+				t.Fatalf("代理快捷方式名称 = %q", got)
+			}
+		})
 	}
 }
 
