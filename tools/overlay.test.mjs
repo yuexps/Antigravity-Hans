@@ -2047,3 +2047,18 @@ test('2.35.1 only the plugin details Added badge uses the plugin translation', (
     assert.equal(text.nodeValue, isBadge ? '已添加' : 'Added');
   }
 });
+
+
+test('2.35.2 model selection notes localize the tooltip and accessible label', () => {
+  for (const [input, expected] of [
+    ['Applies to /btw and messages sent after this turn', '适用于 /btw 和本轮结束后发送的消息'],
+    ['Applies to messages sent after this turn', '适用于本轮结束后发送的消息'],
+  ]) {
+    assert.equal(translate(input), expected);
+    const label = translate('Select model, current: Gemini 4 Neon Medium. ' + input);
+    assert.equal(label, '选择模型，当前：Gemini 4 Neon 中. ' + expected);
+    assert.equal(translate(label), label);
+  }
+  assert.equal(translate('Model cannot be changed while the agent is running'), '智能体运行期间无法更换模型');
+  assert.equal(translate('Permissions cannot be changed while the agent is running'), '智能体运行期间无法更改权限');
+});

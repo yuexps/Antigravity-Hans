@@ -29,7 +29,7 @@ for (let i = 1; i < entries.length; i++) {
 
 // 译文里允许保留的英文：产品名、协议名、命令名、路径名
 const ALLOWED_LATIN = new Set([
-  'agy', 'android', 'antigravity', 'antigravity-browser-profile', 'blaze', 'browser', 'cascade',
+  'agy', 'android', 'antigravity', 'antigravity-browser-profile', 'blaze', 'browser', 'btw', 'cascade',
   'chrome', 'citc', 'cli', 'devtools', 'gemini', 'gemini-api', 'git', 'gitignore', 'http', 'https',
   'ide', 'inline-actions-feedback', 'javascript', 'jetski', 'json', 'lint', 'localhost', 'markdown',
   'mcp', 'plan', 'powershell', 'python', 'sdk', 'shell', 'sidecar', 'tab', 'token', 'url', 'vcs',
