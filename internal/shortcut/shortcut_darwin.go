@@ -13,8 +13,8 @@ import (
 	"antigravity-hans/internal/safeio"
 )
 
-// Create 创建一个运行动态汉化的 “原名字 中文.app” 包装应用。
-func Create(cfg app.Config, trustCustomTranslations bool) error {
+// create 创建一个运行动态汉化的 “原名字 中文.app” 包装应用。
+func create(cfg app.Config, options Options) error {
 	// 获取当前 antigravity-hans 的绝对路径
 	selfExe, err := os.Executable()
 	if err != nil {
@@ -107,7 +107,7 @@ func Create(cfg app.Config, trustCustomTranslations bool) error {
 		arg = "--ide"
 	}
 	// 监视进程的日志落到 ~/Library/Logs，便于排查“没有汉化”这类静默失败
-	launcherContent := macLauncherScript(selfExeAbs, arg, trustCustomTranslations)
+	launcherContent := macLauncherScript(selfExeAbs, arg, options.TrustCustomTranslations)
 	launcherPath := filepath.Join(macosDir, "launcher")
 	launcherRel, _ := filepath.Rel(appsDir, launcherPath)
 	if err := safeio.WriteRootFileAtomic(root, launcherRel, []byte(launcherContent), 0755); err != nil {

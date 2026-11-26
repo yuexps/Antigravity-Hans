@@ -19,8 +19,8 @@ import (
 
 const minHeadlessConhostBuild = 17763 // Windows 10 1809 引入 conhost --headless
 
-// Create 创建一个运行动态汉化的“原名字 中文”桌面快捷方式。
-func Create(cfg app.Config, trustCustomTranslations bool) error {
+// create 创建一个运行动态汉化的“原名字 中文”桌面快捷方式。
+func create(cfg app.Config, options Options) error {
 	// 获取当前 antigravity-hans.exe 的绝对路径
 	selfExe, err := os.Executable()
 	if err != nil {
@@ -38,7 +38,7 @@ func Create(cfg app.Config, trustCustomTranslations bool) error {
 
 	// 查找原快捷方式的可能名字
 	lnkName := cfg.Name + ".lnk"
-	newLnkName := cfg.Name + " 中文.lnk"
+	newLnkName := shortcutName(cfg, options)
 
 	// 待检测的原快捷方式路径
 	possibleOldPaths := []string{
@@ -69,7 +69,7 @@ func Create(cfg app.Config, trustCustomTranslations bool) error {
 
 	// 目标快捷方式的保存路径，默认放在当前用户桌面
 	targetLnkPath := filepath.Join(desktopDir, newLnkName)
-	arg := shortcutArguments(cfg, trustCustomTranslations)
+	arg := shortcutArguments(cfg, options)
 	lnkTarget, lnkArgs := shortcutTargetAndArgs(selfExeAbs, arg, findHeadlessConhost())
 
 	var psScript string
@@ -124,12 +124,22 @@ $newLnk.Save()
 	return nil
 }
 
-func shortcutArguments(cfg app.Config, trustCustomTranslations bool) string {
+func shortcutName(cfg app.Config, options Options) string {
+	if options.WithProxy {
+		return cfg.Name + " 中文（代理）.lnk"
+	}
+	return cfg.Name + " 中文.lnk"
+}
+
+func shortcutArguments(cfg app.Config, options Options) string {
 	arg := "--app --nogui"
 	if cfg.IsIDE() {
 		arg = "--ide --nogui"
 	}
-	if trustCustomTranslations {
+	if options.WithProxy {
+		arg += " --with-proxy"
+	}
+	if options.TrustCustomTranslations {
 		arg += " " + overlay.TrustCustomTranslationsArg
 	}
 	return arg

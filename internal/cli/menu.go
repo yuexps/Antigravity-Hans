@@ -42,21 +42,32 @@ func RunMainMenu(version, overlaySource string, trustCustom bool) {
 		fmt.Println("3. 静态补丁管理 (仅支持 IDE)")
 		shortcutType := shortcutTypeLabelForOS(runtime.GOOS)
 		fmt.Printf("4. 生成%s快捷启动方式\n", shortcutType)
+		lastChoice := 4
+		if app.IsWindows {
+			fmt.Println("5. 启动 Antigravity (动态汉化，自动代理)")
+			fmt.Println("6. 启动 Antigravity IDE (动态汉化，自动代理)")
+			lastChoice = 6
+		}
 		fmt.Println("0. 退出")
 		fmt.Println("----------------------------------------")
-		fmt.Print("\n请选择 (0-4): ")
+		fmt.Printf("\n请选择 (0-%d): ", lastChoice)
 
 		line, _ := reader.ReadString('\n')
 		choice := strings.TrimSpace(line)
 
 		switch choice {
-		case "1":
-			fmt.Println("\n正在启动 Antigravity 动态汉化...")
-			cdp.Run(app.DefaultNormal(), overlaySource, true, false, reader)
-			pressEnterToContinue(reader)
-		case "2":
-			fmt.Println("\n正在启动 Antigravity IDE 动态汉化...")
-			cdp.Run(app.DefaultIDE(), overlaySource, true, false, reader)
+		case "1", "2", "5", "6":
+			cfg := app.DefaultNormal()
+			if choice == "2" || choice == "6" {
+				cfg = app.DefaultIDE()
+			}
+			withProxy := choice == "5" || choice == "6"
+			if withProxy && !app.IsWindows {
+				fmt.Println("[错误] 自动代理启动仅支持 Windows。")
+			} else {
+				fmt.Printf("\n正在启动 %s 动态汉化...\n", cfg.Name)
+				cdp.Run(cfg, overlaySource, cdp.RunOptions{Interactive: true, WithProxy: withProxy}, reader)
+			}
 			pressEnterToContinue(reader)
 		case "3":
 			RunPatchMenu(overlaySource)
@@ -82,27 +93,35 @@ func runShortcutMenu(reader *bufio.Reader, shortcutType string, trustCustom bool
 	fmt.Println(" [1] 全部生成 (默认)")
 	fmt.Println(" [2] 仅 APP")
 	fmt.Println(" [3] 仅 IDE")
-	fmt.Print("\n请选择 (1-3, 直接回车默认为 1): ")
+	lastChoice := 3
+	if app.IsWindows {
+		fmt.Println(" [4] 仅 APP（自动代理）")
+		fmt.Println(" [5] 仅 IDE（自动代理）")
+		lastChoice = 5
+	}
+	fmt.Printf("\n请选择 (1-%d, 直接回车默认为 1): ", lastChoice)
 
 	subLine, _ := reader.ReadString('\n')
 	subChoice := strings.TrimSpace(subLine)
+	options := shortcut.Options{TrustCustomTranslations: trustCustom}
+	var targets []app.Config
 	switch subChoice {
 	case "", "1":
-		fmt.Println("\n正在生成快捷方式...")
-		_ = shortcut.Create(app.DefaultNormal(), trustCustom)
-		_ = shortcut.Create(app.DefaultIDE(), trustCustom)
-	case "2":
-		fmt.Println("\n正在生成 Antigravity 中文快捷方式...")
-		if err := shortcut.Create(app.DefaultNormal(), trustCustom); err != nil {
-			fmt.Printf("[错误] 生成失败: %v\n", err)
-		}
-	case "3":
-		fmt.Println("\n正在生成 Antigravity IDE 中文快捷方式...")
-		if err := shortcut.Create(app.DefaultIDE(), trustCustom); err != nil {
-			fmt.Printf("[错误] 生成失败: %v\n", err)
-		}
+		targets = []app.Config{app.DefaultNormal(), app.DefaultIDE()}
+	case "2", "4":
+		targets = []app.Config{app.DefaultNormal()}
+		options.WithProxy = subChoice == "4"
+	case "3", "5":
+		targets = []app.Config{app.DefaultIDE()}
+		options.WithProxy = subChoice == "5"
 	default:
 		fmt.Println("[提示] 操作已取消。")
+	}
+	for _, cfg := range targets {
+		fmt.Printf("\n正在生成 %s 中文快捷方式...\n", cfg.Name)
+		if err := shortcut.Create(cfg, options); err != nil {
+			fmt.Printf("[错误] 生成失败: %v\n", err)
+		}
 	}
 }
 

@@ -59,47 +59,60 @@ func setupSignalHandler() {
 func dispatchCLI(args []string, overlaySource string, interactive, trustCustom bool) {
 	input := bufio.NewReader(os.Stdin)
 
-	if slices.Contains(args, "--patch") || slices.Contains(args, "-patch") {
-		cli.RunPatchMenu(overlaySource)
-		return
-	}
-
+	isPatch := slices.Contains(args, "--patch") || slices.Contains(args, "-patch")
 	isShortcut := slices.Contains(args, "--shortcut") || slices.Contains(args, "-shortcut") || slices.Contains(args, "--create-shortcut")
 	isApp := slices.Contains(args, "--app") || slices.Contains(args, "-app")
 	isIDE := slices.Contains(args, "--ide") || slices.Contains(args, "-ide")
 	attachOnly := slices.Contains(args, "--attach-only")
+	withProxy := slices.Contains(args, "--with-proxy")
 
-	if isShortcut {
-		runShortcutCLI(isApp, isIDE, trustCustom)
+	if withProxy {
+		switch {
+		case !app.IsWindows:
+			fmt.Println("[错误] 自动代理启动仅支持 Windows。")
+			return
+		case isPatch || attachOnly || (!isShortcut && !isApp && !isIDE):
+			fmt.Println("[错误] --with-proxy 仅用于动态汉化启动或生成快捷方式，不能与 --attach-only 一起使用。")
+			return
+		}
+	}
+	if isPatch {
+		cli.RunPatchMenu(overlaySource)
 		return
 	}
+
+	if isShortcut {
+		runShortcutCLI(isApp, isIDE, shortcut.Options{TrustCustomTranslations: trustCustom, WithProxy: withProxy})
+		return
+	}
+	options := cdp.RunOptions{Interactive: interactive, AttachOnly: attachOnly, WithProxy: withProxy}
 	if isIDE {
-		cdp.Run(app.DefaultIDE(), overlaySource, interactive, attachOnly, input)
+		cdp.Run(app.DefaultIDE(), overlaySource, options, input)
 		return
 	}
 	if isApp {
-		cdp.Run(app.DefaultNormal(), overlaySource, interactive, attachOnly, input)
+		cdp.Run(app.DefaultNormal(), overlaySource, options, input)
 		return
 	}
 
 	printCLIUsage()
 }
 
-func runShortcutCLI(isApp, isIDE, trustCustom bool) {
-	if isIDE {
-		if err := shortcut.Create(app.DefaultIDE(), trustCustom); err != nil {
+func runShortcutCLI(isApp, isIDE bool, options shortcut.Options) {
+	var targets []app.Config
+	switch {
+	case isIDE:
+		targets = []app.Config{app.DefaultIDE()}
+	case isApp:
+		targets = []app.Config{app.DefaultNormal()}
+	default:
+		targets = []app.Config{app.DefaultNormal(), app.DefaultIDE()}
+	}
+	for _, cfg := range targets {
+		if err := shortcut.Create(cfg, options); err != nil {
 			fmt.Printf("[错误] 创建快捷方式失败: %v\n", err)
 		}
-		return
 	}
-	if isApp {
-		if err := shortcut.Create(app.DefaultNormal(), trustCustom); err != nil {
-			fmt.Printf("[错误] 创建快捷方式失败: %v\n", err)
-		}
-		return
-	}
-	_ = shortcut.Create(app.DefaultNormal(), trustCustom)
-	_ = shortcut.Create(app.DefaultIDE(), trustCustom)
 }
 
 func printCLIUsage() {
@@ -112,6 +125,10 @@ func printCLIUsage() {
 	fmt.Println("  antigravity-hans --shortcut --ide  # 生成 Antigravity IDE 中文快捷方式")
 	fmt.Println("  antigravity-hans --stop            # 结束由本工具启动的汉化监视器")
 	fmt.Println("  antigravity-hans --app --attach-only  # 仅连接已有调试端口，不启动或重启应用")
+	if app.IsWindows {
+		fmt.Println("  antigravity-hans --app --with-proxy  # 使用自动检测的代理启动，可换成 --ide")
+		fmt.Println("  antigravity-hans --shortcut --app --with-proxy  # 生成自动代理快捷方式，可换成 --ide")
+	}
 	fmt.Println("  antigravity-hans --trust-external-overlay  # 跳过校验，强制加载同目录外部汉化脚本")
 	fmt.Println("  antigravity-hans --trust-custom-translations  # 显式信任同目录自定义翻译名单")
 }
