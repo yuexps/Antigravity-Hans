@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+# 提交前若暂存了词库源码或构建脚本，自动同步生成 overlay 产物并加入暂存区
+
+set -e
+
+staged=$(git diff --cached --name-only -- resources/src tools/build-overlay.mjs)
+[ -z "$staged" ] && exit 0
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "[pre-commit] 未找到 node，请手动运行: node tools/build-overlay.mjs" >&2
+  exit 1
+fi
+
+if ! git diff --quiet -- resources/src tools/build-overlay.mjs; then
+  echo "[pre-commit] resources/src/ 存在未暂存修改，请先暂存或手动运行: node tools/build-overlay.mjs" >&2
+  exit 1
+fi
+
+node tools/build-overlay.mjs
+git add resources/antigravity-hans-overlay.js resources/swarm-overlay.js
