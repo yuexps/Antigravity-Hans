@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r2';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r3';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -4758,12 +4758,13 @@ function shouldSkipSubtree(node) {
   if (isProtectedMentionLabel(element)) return true;
 
   // 跳过代码与编辑区（textarea 放到下方输入区规则中，保留自身 placeholder/aria-label 翻译）
-  if (element.closest('script, style, code, pre, .xterm, .monaco-editor, [data-agy-hans-ui]')) {
+  // Antigravity 的代码块与 Diff 行使用 .code-block/.code-line/.line-content 而非 <pre>/<code>，必须一并排除。
+  if (element.closest('script, style, code, pre, .xterm, .monaco-editor, .code-block, .code-line, .line-content, .markdown-frontmatter, [data-testid="markdown-frontmatter"], [data-agy-hans-ui]')) {
     return true;
   }
 
-  // 这些界面节点显示用户自定义名称或资源，而不是固定控件文案。
-  if (element.closest('[data-testid="file-title-name"], [data-testid="branch-pill-label"], [data-testid="branch-repo-label"], [data-testid="automation-name"], [data-testid="webview-download-filename"], [data-testid="side-question-tab-header-name"], [data-testid="subagent-tab-header-title"], [data-testid="project-selector-item"] span[title], [data-testid="branch-option"] span[title], [data-testid="project-selector-github-repo-item"], [data-testid="resource-link"]')) {
+  // 这些界面节点显示用户自定义名称、文件路径或资源，而不是固定控件文案。
+  if (element.closest('[data-testid="file-title-name"], [data-testid="file-title-name"] + div:not([data-testid]), [data-testid="tab-file-tree-sidebar"] [role="treeitem"], [data-testid="branch-pill-label"], [data-testid="branch-repo-label"], [data-testid="automation-name"], [data-testid="webview-download-filename"], [data-testid="side-question-tab-header-name"], [data-testid="subagent-tab-header-title"], [data-testid="project-selector-item"] span[title], [data-testid="branch-option"] span[title], [data-testid="project-selector-github-repo-item"], [data-testid="resource-link"]')) {
     return true;
   }
 
@@ -4963,9 +4964,29 @@ const composedSentences = [
 function translateSplitVariableText(element) {
   if (!element?.childNodes) return false;
   const len = element.childNodes.length;
-  if (len !== 2 && len !== 3) return false;
+  if (len !== 2 && len !== 3 && len !== 5) return false;
   const nodes = Array.from(element.childNodes);
   if (!nodes.every((node) => node.nodeType === Node.TEXT_NODE)) return false;
+
+  // Diff 折叠行展开按钮：["+", count, " more", " ", "line"|"lines"]，避免把 " more" 单独翻成 "+15 更多 lines"。
+  if (len === 5 && element.tagName === 'BUTTON' &&
+      nodes[0].nodeValue === '+' && /^\d+$/.test((nodes[1].nodeValue || '').trim())) {
+    const mid = nodes[2].nodeValue || '';
+    const space = nodes[3].nodeValue || '';
+    const unit = nodes[4].nodeValue || '';
+    if (mid === ' more' && space === ' ' && /^lines?$/.test(unit)) {
+      writeText(nodes[2], ' 行');
+      writeText(nodes[3], '');
+      writeText(nodes[4], '');
+      for (const node of nodes) node.__zh_patched = true;
+      return true;
+    }
+    if (mid === ' 行' && space === '' && unit === '') {
+      for (const node of nodes) node.__zh_patched = true;
+      return true;
+    }
+    return false;
+  }
 
   if (len === 2 && element.closest?.('[data-testid="ssh-connect-error"]')) {
     const first = nodes[0].nodeValue || '';

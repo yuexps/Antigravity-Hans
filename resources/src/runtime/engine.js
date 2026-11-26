@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r2';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r3';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -139,13 +139,13 @@
   // 仅在已验证的 IDE 2.6.0-2.8.0 工作台布局下补充未翻译的原生 NLS 条目
   function applyIdeNlsMessages() {
     if (!window.location?.pathname?.endsWith('workbench.html') ||
-        typeof window._VSCODE_NLS_LANGUAGE !== 'string' ||
-        window._VSCODE_NLS_LANGUAGE.toLowerCase() !== 'zh-cn') return;
+      typeof window._VSCODE_NLS_LANGUAGE !== 'string' ||
+      window._VSCODE_NLS_LANGUAGE.toLowerCase() !== 'zh-cn') return;
     const messages = window._VSCODE_NLS_MESSAGES;
     if (!Array.isArray(messages) || messages.length !== 16558 ||
-        messages[3864] !== 'Used to represent onboardingsteps which have not been completed' ||
-        messages[3865] !== 'Used to represent onboarding steps which have been completed' ||
-        messages[3866] !== 'Code with Agent') return;
+      messages[3864] !== 'Used to represent onboardingsteps which have not been completed' ||
+      messages[3865] !== 'Used to represent onboarding steps which have been completed' ||
+      messages[3866] !== 'Code with Agent') return;
     for (const [index, original, translated] of ideNlsSupplement) {
       if (messages[index] !== original) continue;
       const custom = customTranslations.get(original.trim().toLowerCase());
@@ -318,13 +318,13 @@
       const data = e.data;
       if (!data || typeof data !== 'object') return;
       if (isAgentFrame && e.source === topWindow &&
-          (e.origin === 'vscode-file://vscode-app' || e.origin === 'null') && data.type === preferenceState &&
-          (data.lang === 'en' || data.lang === 'zh') && typeof data.englishLabels === 'boolean') {
+        (e.origin === 'vscode-file://vscode-app' || e.origin === 'null') && data.type === preferenceState &&
+        (data.lang === 'en' || data.lang === 'zh') && typeof data.englishLabels === 'boolean') {
         setLang(data.lang, false);
         setEnglishLabels(data.englishLabels, false);
       } else if (!isFrame && data.type === preferenceRequest && e.source &&
-          ((isWorkbench && /^http:\/\/127\.0\.0\.1:\d{1,5}$/.test(e.origin)) ||
-           /^plugin:\/\/swarm--swarm_board-[a-z0-9]{1,16}$/i.test(e.origin))) {
+        ((isWorkbench && /^http:\/\/127\.0\.0\.1:\d{1,5}$/.test(e.origin)) ||
+          /^plugin:\/\/swarm--swarm_board-[a-z0-9]{1,16}$/i.test(e.origin))) {
         for (const peer of preferencePeers.keys()) {
           try { if (peer.closed) preferencePeers.delete(peer); } catch (_e) { preferencePeers.delete(peer); }
         }
@@ -612,7 +612,7 @@
           // 容器身份变化时要重新扫描整个子树；仅翻译属性本身会漏掉此前
           // 因未命中白名单而尚未处理的 Settings 子节点。
           if (mutation.attributeName === 'class' || mutation.attributeName === 'id' ||
-              mutation.attributeName === 'role' || mutation.attributeName === 'data-testid') {
+            mutation.attributeName === 'role' || mutation.attributeName === 'data-testid') {
             nodesToTranslate.push(target);
           } else {
             elementsToTranslate.push(target);
@@ -633,7 +633,7 @@
             continue;
           }
           if (mutation.target.nodeType === Node.ELEMENT_NODE &&
-              (projectDeletionParts(mutation.target) || automationManagedParts(mutation.target))) {
+            (projectDeletionParts(mutation.target) || automationManagedParts(mutation.target))) {
             mutation.target.__zh_patched = false;
             nodesToTranslate.push(mutation.target);
           }

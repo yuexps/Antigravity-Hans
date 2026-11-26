@@ -2217,3 +2217,53 @@ test('2.35.2 orchestrator routing, SSH dialog, browsing data and /btw validation
     assert.deepEqual(childNodes.map((n) => n.nodeValue), item.expected);
   }
 });
+
+test('code lines, diff viewers, frontmatter, file tree items, and file paths are skipped; diff expand button is localized', () => {
+  // 1. 代码行、代码块、YAML frontmatter、文件树节点与文件相对路径均须跳过，防止 business/custom 等 token 被误翻
+  const skippedSelectors = [
+    '.code-line',
+    '.code-block',
+    '.line-content',
+    '.markdown-frontmatter',
+    '[data-testid="markdown-frontmatter"]',
+    '[data-testid="tab-file-tree-sidebar"] [role="treeitem"]',
+    '[data-testid="file-title-name"] + div:not([data-testid])',
+  ];
+  for (const matchedSelector of skippedSelectors) {
+    for (const token of ['business', 'custom', 'default', 'models', 'context']) {
+      const parentElement = {
+        nodeType: 1,
+        closest(selector) {
+          return selector.includes(matchedSelector) ? this : null;
+        },
+      };
+      const textNode = { nodeType: 3, nodeValue: token, parentElement };
+      assert.equal(context.shouldSkipSubtreeForTest(textNode), true, `${matchedSelector} should skip "${token}"`);
+      context.translateNodeForTest(textNode);
+      assert.equal(textNode.nodeValue, token, `${matchedSelector} must not translate "${token}"`);
+    }
+  }
+
+  // 2. Diff 折叠行展开按钮：["+", count, " more", " ", "line"|"lines"] -> "+<count> 行"，且二次扫描幂等
+  for (const [parts, expected] of [
+    [['+', '15', ' more', ' ', 'lines'], ['+', '15', ' 行', '', '']],
+    [['+', '1', ' more', ' ', 'line'], ['+', '1', ' 行', '', '']],
+  ]) {
+    const childNodes = parts.map((value) => ({ nodeType: 3, nodeValue: value }));
+    const button = {
+      nodeType: 1,
+      tagName: 'BUTTON',
+      childNodes,
+      matches() { return false; },
+      closest() { return null; },
+      getAttribute() { return null; },
+    };
+    for (const n of childNodes) n.parentElement = button;
+    context.translateElementForTest(button);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), expected);
+    for (const n of childNodes) context.translateNodeForTest(n);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), expected);
+    context.translateElementForTest(button);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), expected);
+  }
+});
