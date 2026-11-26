@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.1-20261125-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1778,6 +1778,7 @@
     ["URLs the agent can read or open in this workspace.", "智能体在此工作区中可读取或打开的 URL。"],
     ["What quota or feature is being incorrectly limited", "哪些配额或功能被错误地限制了"],
     ["Whether it never connects or is intermittent/flaky", "它是从未连接成功，还是连接间歇性不稳定"],
+    ["Applies to /btw and messages sent after this turn", "适用于 /btw 和本轮结束后发送的消息"],
     ["Connect an account so the agent can use this app.", "连接账号，让智能体能够使用此应用。"],
     ["Creating workspace for the forked conversation...", "正在为派生对话创建工作区..."],
     ["Dev mode: Localhost server automatically detected", "开发模式：已自动检测到 Localhost 本地服务器"],
@@ -1913,6 +1914,7 @@
     ["Your quota for this model is running low.", "你对此模型的额度即将用完。"],
     ["projectManagementService is not available", "项目管理服务当前不可用"],
     ["A project with this name already exists.", "已存在同名项目。"],
+    ["Applies to messages sent after this turn", "适用于本轮结束后发送的消息"],
     ["Attaching logs requires an email address", "附加日志需要提供电子邮件地址"],
     ["Commands and files these agents can use.", "这些智能体可调用的命令与文件。"],
     ["Configure AI models and view your quota.", "配置 AI 模型并查看额度。"],

@@ -47,6 +47,8 @@
   "Antigravity would like to use the browser.": "Antigravity 想要使用浏览器。",
   "App Settings": "应用设置",
   "Appearance": "外观",
+  "Applies to /btw and messages sent after this turn": "适用于 /btw 和本轮结束后发送的消息",
+  "Applies to messages sent after this turn": "适用于本轮结束后发送的消息",
   "Apps connected to your account": "已连接到你账号的应用",
   "Artifact Review Policy": "产物审核策略",
   "Authorization Required": "需要授权",
