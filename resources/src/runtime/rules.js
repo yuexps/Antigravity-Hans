@@ -259,6 +259,9 @@ const dynamicPatterns = [
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
   [/^(\d+)\s*projects?$/i, '$1 个项目'],
   [/^No hosts in (~\/\.ssh\/config) yet$/, '$1 中还没有主机'],
+  [/^Enter (\[user@\]host\[:port\]), or pick a host from your SSH config\.$/, '输入 $1，或从 SSH 配置中选择主机。'],
+  [/^(~\/\.ssh\/config) \(default\)$/, '$1（默认）'],
+  [/^(\d+) cookies?$/, '$1 个 Cookie'],
   [/^(\d+) hidden hosts?$/, '$1 台隐藏的主机'],
   [/Show (\d+)\s*breakdowns?/gi, '显示 $1 个明细'],
   [/Load older messages, showing (\d+) of (\d+)/g, '加载更早的消息，显示 $1 / $2'],
@@ -374,6 +377,36 @@ function translate(value) {
   const updatedClock = trimmed.match(/^Updated (\d{1,2}:\d{2}(?:\s*[AP]M)?)$/);
   if (updatedClock) return value.replace(trimmed, () => `更新于 ${updatedClock[1]}`);
 
+  // SSH 远程连接与浏览器站点 Cookie 提示含主机名、配置路径或域名，须完整匹配并保幂等。
+  if (/^(?:已连接到 |正在连接到 |无法连接到 |SSH 配置：|SSH 配置 \(|已从最近使用中移除 |无法从最近使用中移除 |已删除 .+ 的 Cookie$|删除 .+ 的 Cookie$|无法删除 .+ 的 Cookie，请重试。$|没有匹配“[\s\S]+”的站点。$|.+ 中还没有主机，你可在上方输入。$)/.test(trimmed)) return value;
+  const sshConnected = trimmed.match(/^Connected to ([^\r\n]+)$/);
+  if (sshConnected) return value.replace(trimmed, () => `已连接到 ${sshConnected[1]}`);
+  const sshConnecting = trimmed.match(/^Connecting to ([^\r\n]+)…$/);
+  if (sshConnecting) return value.replace(trimmed, () => `正在连接到 ${sshConnecting[1]}…`);
+  const sshConnectFailed = trimmed.match(/^Couldn't connect to ([^\r\n]+)$/);
+  if (sshConnectFailed) return value.replace(trimmed, () => `无法连接到 ${sshConnectFailed[1]}`);
+  const sshConfigTitle = trimmed.match(/^SSH Config \(([^\r\n]+)\)$/);
+  if (sshConfigTitle) return value.replace(trimmed, () => `SSH 配置 (${sshConfigTitle[1]})`);
+  const sshConfigLine = trimmed.match(/^SSH config: ([^\r\n]+)$/);
+  if (sshConfigLine) {
+    const configName = sshConfigLine[1] === '~/.ssh/config (default)' ? '~/.ssh/config（默认）' : sshConfigLine[1];
+    return value.replace(trimmed, () => `SSH 配置：${configName}`);
+  }
+  const sshRemovedRecent = trimmed.match(/^Removed ([^\r\n]+) from Recent$/);
+  if (sshRemovedRecent) return value.replace(trimmed, () => `已从最近使用中移除 ${sshRemovedRecent[1]}`);
+  const sshRemoveRecentFailed = trimmed.match(/^Couldn't remove ([^\r\n]+) from Recent$/);
+  if (sshRemoveRecentFailed) return value.replace(trimmed, () => `无法从最近使用中移除 ${sshRemoveRecentFailed[1]}`);
+  const deletedCookies = trimmed.match(/^Deleted cookies for ([^\r\n]+)$/);
+  if (deletedCookies) return value.replace(trimmed, () => `已删除 ${deletedCookies[1]} 的 Cookie`);
+  const deleteCookies = trimmed.match(/^Delete cookies for ([^\r\n]+)$/);
+  if (deleteCookies) return value.replace(trimmed, () => `删除 ${deleteCookies[1]} 的 Cookie`);
+  const sshNoHostsInConfig = trimmed.match(/^No hosts in ([^\r\n]+) yet\. Type one above\.$/);
+  if (sshNoHostsInConfig) return value.replace(trimmed, () => `${sshNoHostsInConfig[1]} 中还没有主机，你可在上方输入。`);
+  const deleteCookiesFailed = trimmed.match(/^Couldn't delete cookies for ([^\r\n]+)\. Try again\.$/);
+  if (deleteCookiesFailed) return value.replace(trimmed, () => `无法删除 ${deleteCookiesFailed[1]} 的 Cookie，请重试。`);
+  const noCookieSiteMatch = trimmed.match(/^No sites match “([^\r\n]+)”\.$/);
+  if (noCookieSiteMatch) return value.replace(trimmed, () => `没有匹配“${noCookieSiteMatch[1]}”的站点。`);
+
   // 项目摘要中的数量由应用生成；只匹配已确认的完整模板。
   const conversationCounts = trimmed.match(/^(\d+) (active|archived) conversations?(?: and (\d+) archived conversations?)?$/);
   if (conversationCounts && !(conversationCounts[2] === 'archived' && conversationCounts[3])) {
@@ -477,6 +510,10 @@ const dynamicAriaLabels = [
   [/^([\s\S]+) download progress$/, (_m, name) => `下载进度：${name}`, '下载进度：'],
   [/^Show ([\s\S]+) in folder$/, (_m, name) => `在文件夹中显示：${name}`, '在文件夹中显示：'],
   [/^Remove ([\s\S]+) from list$/, (_m, name) => `从列表中移除：${name}`, '从列表中移除：'],
+  [/^Remove ([\s\S]+) from Recent$/, (_m, host) => `从最近使用中移除：${host}`, '从最近使用中移除：'],
+  [/^Hide ([\s\S]+) from this list$/, (_m, host) => `从此列表中隐藏：${host}`, '从此列表中隐藏：'],
+  [/^Show ([\s\S]+) in the list again$/, (_m, host) => `在列表中重新显示：${host}`, '在列表中重新显示：'],
+  [/^Delete cookies for ([\s\S]+)$/, (_m, site) => `删除 Cookie：${site}`, '删除 Cookie：'],
   [/^Stop (\d+) selected$/, (_m, count) => `停止所选的 ${count} 项`, '停止所选的 '],
   [/^Recording shortcut for ([\s\S]+)\. Press keys to bind, Enter to save, Escape to cancel\.$/, (_m, name) => `正在为 ${name} 录制快捷键。按下按键绑定，按 Enter 保存，按 Escape 取消。`, '正在为 '],
   [/^Remove shortcut ([\s\S]+?) for ([\s\S]+)$/, (_m, key, action) => `移除快捷键 ${key}：${matchExactPhrase(action) ?? action}`, '移除快捷键 '],
@@ -829,6 +866,74 @@ const composedSentences = [
   },
 ];
 
+// React 将部分带变量（主机名、配置路径、域名、搜索词）的提示拆成纯文本兄弟节点，
+// 仅改写固定前缀与后缀节点，并标记中间变量节点以避免被误译。
+function translateSplitVariableText(element) {
+  if (!element?.childNodes) return false;
+  const len = element.childNodes.length;
+  if (len !== 2 && len !== 3) return false;
+  const nodes = Array.from(element.childNodes);
+  if (!nodes.every((node) => node.nodeType === Node.TEXT_NODE)) return false;
+
+  if (len === 2 && element.closest?.('[data-testid="ssh-connect-error"]')) {
+    const first = nodes[0].nodeValue || '';
+    if (first === "Couldn't connect to ") {
+      writeText(nodes[0], '无法连接到 ');
+      nodes[0].__zh_patched = true;
+      nodes[1].__zh_patched = true;
+      return true;
+    }
+    if (first === '无法连接到 ') {
+      nodes[0].__zh_patched = true;
+      nodes[1].__zh_patched = true;
+      return true;
+    }
+    return false;
+  }
+
+  if (len === 3) {
+    const first = nodes[0].nodeValue || '';
+    const last = nodes[2].nodeValue || '';
+    const specs = [
+      {
+        match: () => element.closest?.('[data-testid="ssh-connect-dialog"]'),
+        enFirst: 'No hosts in ',
+        enLast: ' yet. Type one above.',
+        zhFirst: '',
+        zhLast: ' 中还没有主机，你可在上方输入。',
+      },
+      {
+        match: () => element.matches?.('[data-testid="browser-site-data-delete-error"]'),
+        enFirst: "Couldn't delete cookies for ",
+        enLast: '. Try again.',
+        zhFirst: '无法删除 ',
+        zhLast: ' 的 Cookie，请重试。',
+      },
+      {
+        match: () => element.matches?.('[data-testid="browser-site-data-no-match"]'),
+        enFirst: 'No sites match “',
+        enLast: '”.',
+        zhFirst: '没有匹配“',
+        zhLast: '”的站点。',
+      },
+    ];
+    for (const spec of specs) {
+      if (!spec.match()) continue;
+      if (first === spec.enFirst && last === spec.enLast) {
+        writeText(nodes[0], spec.zhFirst);
+        writeText(nodes[2], spec.zhLast);
+        for (const node of nodes) node.__zh_patched = true;
+        return true;
+      }
+      if (first === spec.zhFirst && last === spec.zhLast) {
+        for (const node of nodes) node.__zh_patched = true;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function translateComposedElement(element) {
   const managed = automationManagedParts(element);
   if (managed) {
@@ -854,6 +959,7 @@ function translateComposedElement(element) {
     }
     return true;
   }
+  if (translateSplitVariableText(element)) return true;
   // 组合句都至少需要 3 个文本节点；叶子元素直接跳过，避免读取整棵子树的 textContent。
   if (!element.childNodes || element.childNodes.length < 3) return false;
   const text = (element.textContent || '').replace(/\s+/g, ' ').trim();

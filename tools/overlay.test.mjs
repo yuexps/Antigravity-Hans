@@ -2062,3 +2062,158 @@ test('2.35.2 model selection notes localize the tooltip and accessible label', (
   assert.equal(translate('Model cannot be changed while the agent is running'), '智能体运行期间无法更换模型');
   assert.equal(translate('Permissions cannot be changed while the agent is running'), '智能体运行期间无法更改权限');
 });
+
+test('2.35.2 orchestrator routing, SSH dialog, browsing data and /btw validation are localized', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+
+  // 1. 静态词条与动态模板（含二次翻译幂等与变量保护）
+  for (const [input, expected] of [
+    ['Model selection', '模型选择'],
+    [
+      'Default uses server-managed routing and Orchestrator quota. Custom pins specific models for orchestration and execution.',
+      '默认使用服务端托管路由和编排器额度；自定义可为编排和执行固定指定模型。',
+    ],
+    ['Orchestrator model selection', '编排器模型选择'],
+    ['Default (Gemini Pro)', '默认 (Gemini Pro)'],
+    ["The Orchestrator's own planner", '编排器自带规划器'],
+    ['Open SSH Host', '打开 SSH 主机'],
+    ['Connect to SSH Host', '连接到 SSH 主机'],
+    ['Stop SSH Server…', '停止 SSH 服务器…'],
+    ['Switch to This Computer', '切换到此电脑'],
+    ['Switch To', '切换到'],
+    ['Then create the project in its window.', '然后在其窗口中创建项目。'],
+    ["A host can't contain spaces.", '主机名不能包含空格。'],
+    ['Connecting…', '正在连接…'],
+    ['Remove from Recent', '从最近使用中移除'],
+    ['Hide from this list', '从此列表中隐藏'],
+    ['Show in the list again', '在列表中重新显示'],
+    ['SSH Config', 'SSH 配置'],
+    ['SSH Config (work_ssh_config)', 'SSH 配置 (work_ssh_config)'],
+    ['SSH config:', 'SSH 配置：'],
+    ['SSH config: ~/.ssh/config (default)', 'SSH 配置：~/.ssh/config（默认）'],
+    ['SSH config: work_ssh_config', 'SSH 配置：work_ssh_config'],
+    ['~/.ssh/config (default)', '~/.ssh/config（默认）'],
+    ['Choose File…', '选择文件…'],
+    ['Use Default', '使用默认'],
+    ['Hidden hosts', '已隐藏的主机'],
+    ["Couldn't load your SSH hosts", '无法加载 SSH 主机列表'],
+    ["Couldn't load your SSH hosts. You can still type one.", '无法加载 SSH 主机列表，你仍可手动输入。'],
+    ['The Hub sent an unexpected response.', 'Hub 返回了意外响应。'],
+    ['Enter [user@]host[:port], or pick a host from your SSH config.', '输入 [user@]host[:port]，或从 SSH 配置中选择主机。'],
+    ['Connected to prod-box', '已连接到 prod-box'],
+    ['Connected to default', '已连接到 default'],
+    ['Connecting to prod-box…', '正在连接到 prod-box…'],
+    ["Couldn't connect to prod-box", '无法连接到 prod-box'],
+    ['Removed prod-box from Recent', '已从最近使用中移除 prod-box'],
+    ["Couldn't remove prod-box from Recent", '无法从最近使用中移除 prod-box'],
+    ['No hosts in work_ssh_config yet. Type one above.', 'work_ssh_config 中还没有主机，你可在上方输入。'],
+    ['No hosts in ~/.ssh/config yet. Type one above.', '~/.ssh/config 中还没有主机，你可在上方输入。'],
+    ['Browsing data', '浏览数据'],
+    [
+      'Clear history, cookies and site data from the built-in browser, or manage cookies for each site.',
+      '清除内置浏览器的历史记录、Cookie 和站点数据，或按站点管理 Cookie。',
+    ],
+    ['Cleared built-in browser data', '已清除内置浏览器数据'],
+    ['Cleared built-in browser history', '已清除内置浏览器历史记录'],
+    ['Clear Browsing Data?', '清除浏览数据？'],
+    ["Choose what to clear from the built-in browser. It can't be undone.", '选择要从内置浏览器清除的内容。此操作无法撤销。'],
+    ['Visited URLs and autocomplete suggestions.', '访问过的网址和自动补全建议。'],
+    ['Cookies and other site data', 'Cookie 及其他站点数据'],
+    [
+      'Cookies, site storage and cache. Signs you out of all sites in the built-in browser and reloads its open tabs.',
+      'Cookie、站点存储和缓存。这会退出内置浏览器中所有站点的登录状态并重新加载已打开的标签页。',
+    ],
+    [
+      'An agent is using the built-in browser. Clearing its data signs the agent out of sites and may interrupt its task.',
+      '智能体正在使用内置浏览器。清除数据会退出智能体的站点登录状态，并可能中断当前任务。',
+    ],
+    ["Couldn't clear browsing data. Try again.", '无法清除浏览数据，请重试。'],
+    ['Cookies by Site', '按站点管理 Cookie'],
+    [
+      "Cookies the built-in browser stores for each site. Deleting a site's cookies usually signs you out of it. Other site data (local storage, IndexedDB, cache) is cleared only by Browsing data → Clear.",
+      '内置浏览器为每个站点保存的 Cookie。删除某站点的 Cookie 通常会退出该站点登录。其他站点数据（本地存储、IndexedDB、缓存）仅能通过“浏览数据 → 清除”清理。',
+    ],
+    ['Loading cookies…', '正在加载 Cookie…'],
+    ["Couldn't load cookies.", '无法加载 Cookie。'],
+    ['No sites have cookies in the built-in browser.', '内置浏览器中没有任何站点保存了 Cookie。'],
+    ['Search sites...', '搜索站点...'],
+    ['Search sites', '搜索站点'],
+    ['Sites with cookies', '包含 Cookie 的站点'],
+    ['1 cookie', '1 个 Cookie'],
+    ['12 cookies', '12 个 Cookie'],
+    ['Delete cookies for example.com', '删除 example.com 的 Cookie'],
+    ['Deleted cookies for example.com', '已删除 example.com 的 Cookie'],
+    ["Couldn't delete cookies for example.com. Try again.", '无法删除 example.com 的 Cookie，请重试。'],
+    ['No sites match “Cancel”.', '没有匹配“Cancel”的站点。'],
+    ['Enter a side question after /btw', '请在 /btw 后输入侧边问题'],
+  ]) {
+    assert.equal(translate(input), expected, input);
+    assert.equal(translate(expected), expected, `translation not idempotent: ${expected}`);
+  }
+
+  // 2. aria-label 专项模板优先于通用 Remove / Delete
+  const targetHost = "prod-box $& $$ $'";
+  for (const [input, expected] of [
+    [`Remove ${targetHost} from Recent`, `从最近使用中移除：${targetHost}`],
+    [`Hide ${targetHost} from this list`, `从此列表中隐藏：${targetHost}`],
+    [`Show ${targetHost} in the list again`, `在列表中重新显示：${targetHost}`],
+    [`Delete cookies for ${targetHost}`, `删除 Cookie：${targetHost}`],
+  ]) {
+    const attrs = new Map([['aria-label', input]]);
+    const element = {
+      nodeType: 1,
+      closest() { return null; },
+      getAttribute(name) { return attrs.get(name) ?? null; },
+      setAttribute(name, value) { attrs.set(name, value); },
+    };
+    context.translateElementForTest(element);
+    assert.equal(attrs.get('aria-label'), expected, input);
+    context.translateElementForTest(element);
+    assert.equal(attrs.get('aria-label'), expected, `aria-label not idempotent: ${input}`);
+  }
+
+  // 3. React 拆分纯文本兄弟节点（中间变量即使与英文词条同名也不得被翻译）
+  const splitCases = [
+    {
+      matchTestId: 'ssh-connect-error',
+      mode: 'closest',
+      parts: ["Couldn't connect to ", 'default'],
+      expected: ['无法连接到 ', 'default'],
+    },
+    {
+      matchTestId: 'ssh-connect-dialog',
+      mode: 'closest',
+      parts: ['No hosts in ', 'default', ' yet. Type one above.'],
+      expected: ['', 'default', ' 中还没有主机，你可在上方输入。'],
+    },
+    {
+      matchTestId: 'browser-site-data-delete-error',
+      mode: 'matches',
+      parts: ["Couldn't delete cookies for ", 'example.com', '. Try again.'],
+      expected: ['无法删除 ', 'example.com', ' 的 Cookie，请重试。'],
+    },
+    {
+      matchTestId: 'browser-site-data-no-match',
+      mode: 'matches',
+      parts: ['No sites match “', 'Cancel', '”.'],
+      expected: ['没有匹配“', 'Cancel', '”的站点。'],
+    },
+  ];
+  for (const item of splitCases) {
+    const childNodes = item.parts.map((value) => ({ nodeType: 3, nodeValue: value }));
+    const element = {
+      nodeType: 1,
+      childNodes,
+      matches(sel) { return item.mode === 'matches' && sel.includes(item.matchTestId); },
+      closest(sel) { return item.mode === 'closest' && sel.includes(item.matchTestId) ? this : null; },
+      getAttribute() { return null; },
+    };
+    for (const n of childNodes) n.parentElement = element;
+    context.translateElementForTest(element);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), item.expected);
+    for (const n of childNodes) context.translateNodeForTest(n);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), item.expected);
+    context.translateElementForTest(element);
+    assert.deepEqual(childNodes.map((n) => n.nodeValue), item.expected);
+  }
+});
