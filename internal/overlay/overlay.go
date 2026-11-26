@@ -88,6 +88,7 @@ func LoadSource(allowExternal bool) string {
 			} else {
 				fmt.Printf("[提示] 使用外部汉化脚本: %s (SHA-256 %s)\n", extPath, Fingerprint(source))
 			}
+			fmt.Println("       升级 Hans 后，同目录的外部汉化脚本仍会优先加载。")
 			return source
 		} else if !os.IsNotExist(err) {
 			fmt.Printf("[警告] 已忽略外部汉化脚本: %v\n       路径: %s\n", err, extPath)

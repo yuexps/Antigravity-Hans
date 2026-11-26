@@ -48,11 +48,15 @@ func RunMainMenu(version, overlaySource string, trustCustom bool) {
 			fmt.Println("6. 启动 Antigravity IDE (动态汉化，自动代理)")
 			lastChoice = 6
 		}
+		fmt.Println("M. 管理汉化")
 		fmt.Println("0. 退出")
 		fmt.Println("----------------------------------------")
-		fmt.Printf("\n请选择 (0-%d): ", lastChoice)
+		fmt.Printf("\n请选择 (0-%d / M): ", lastChoice)
 
-		line, _ := reader.ReadString('\n')
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return
+		}
 		choice := strings.TrimSpace(line)
 
 		switch choice {
@@ -75,6 +79,8 @@ func RunMainMenu(version, overlaySource string, trustCustom bool) {
 		case "4":
 			runShortcutMenu(reader, shortcutType, trustCustom)
 			pressEnterToContinue(reader)
+		case "m", "M":
+			runHansManagementMenu(reader, version)
 		case "0", "q", "Q", "exit":
 			fmt.Println("\n感谢使用 Antigravity 汉化工具，再见！")
 			os.Exit(0)
