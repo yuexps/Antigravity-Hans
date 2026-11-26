@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r2';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1308,6 +1308,7 @@
     ["The breakdown below shows token usage from customizations like rules, skills, and MCP. If a budget is exceeded, large rules are demoted to path pointers and large customizations are excluded automatically.", "下方明细显示规则、技能和 MCP 等自定义项的 Token 使用量。超出预算时，大型规则会降级为路径指针，大型自定义项会被自动排除。"],
     ["You are logged in using Application Default Credentials (ADC). To log out, undo any changes to ~/.gemini/config/config.json (or unset AGY_ADC_AUTH if launched from terminal) and restart the application.", "你使用应用默认凭据（ADC）登录。如需退出，请撤销对 ~/.gemini/config/config.json 的修改（如果从终端启动，也可取消设置 AGY_ADC_AUTH），然后重启应用。"],
     ["Automatically migrate legacy workflows to modern skills across global and workspace configurations. Scans for existing workflows, creates target SKILL.md files, and safely archives old workflow files.", "自动将全局及工作区配置中的旧工作流迁移为新版技能。会扫描已有工作流、创建目标 SKILL.md 文件，并安全归档旧工作流文件。"],
+    ["Cookies the built-in browser stores for each site. Deleting a site's cookies usually signs you out of it. Other site data (local storage, IndexedDB, cache) is cleared only by Browsing data → Clear.", "内置浏览器为每个站点保存的 Cookie。删除某站点的 Cookie 通常会退出该站点登录。其他站点数据（本地存储、IndexedDB、缓存）仅能通过“浏览数据 → 清除”清理。"],
     ["A high-risk mode that disables all safety barriers. The agent operates with full system access, auto-executes all terminal commands, and reads or writes to all local files without review prompts.", "一种禁用所有安全屏障的高风险模式。智能体将以完全系统访问权限运行，自动执行所有终端命令，读写所有本地文件，且不弹出审查提示。"],
     ["When toggled on, Antigravity IDE will use your AI credits to fulfill model requests once you're out of model quota. Antigravity IDE will always use your model quota first before using AI credits.", "开启后，当模型额度用完时，Antigravity IDE 将使用 AI 积分完成模型请求。Antigravity IDE 始终会先使用模型额度，再使用 AI 积分。"],
     ["What the coordinator writes so the Swarm UI's Overview can show the swarm's goal, its groups of work and a screenshot timeline. Load it before you brief and add the first workers to a swarm.", "协调者写入的内容，用于在 Swarm 界面的概览中展示集群目标、工作分组与截图时间线。请在布置任务并添加首批工作智能体前加载。"],
@@ -1396,6 +1397,7 @@
     ["What should the agent do on each run? For example: summarize new bugs assigned to me and anything that changed overnight.", "智能体每次运行时应该做什么？例如：汇总分配给我的新错误和昨晚发生的变更。"],
     ["Always auto-execute commands unless they are in your deny list. This also allows Agent to auto-execute Browser controls.", "始终自动执行命令，拒绝列表中的命令除外。此设置也允许智能体自动执行浏览器操作。"],
     ["Choose a predefined security preset for the agent. This controls terminal auto-execution policy, and file access policy.", "为智能体选择预设安全策略。它会控制终端自动执行策略和文件访问策略。"],
+    ["Default uses server-managed routing and Orchestrator quota. Custom pins specific models for orchestration and execution.", "默认使用服务端托管路由和编排器额度；自定义可为编排和执行固定指定模型。"],
     ["This shortcut is reserved by browser tabs and may not trigger in Web mode. It works in the Desktop Hub or installed PWA.", "此快捷键已被浏览器标签页占用，在网页模式下可能无法触发。在桌面客户端或已安装的 PWA 中可正常使用。"],
     ["Request Review - Agent always asks for confirmation before executing terminal commands (except those in the Allow List)", "请求审核——智能体在执行终端命令前始终请求确认（允许列表中的命令除外）"],
     ["Always Proceed - Agent never asks for confirmation before executing terminal commands (except those in the Deny List)", "始终继续——智能体在执行终端命令前从不请求确认（拒绝列表中的命令除外）"],
@@ -1403,6 +1405,7 @@
     ["No models are available for your current project or account. Please check your project settings and IAM permissions.", "当前项目或账户没有可用的模型。请检查您的项目设置和 IAM 权限。"],
     ["This page is taking longer than expected to load, or it may be blocking embedded views (via X-Frame-Options or CSP).", "此页面加载时间超出预期，或者它通过 X-Frame-Options 或 CSP 阻止了嵌入式视图。"],
     ["You currently don't have any MCP Servers installed. Add an MCP server above or add a custom one via the MCP Config.", "您当前还没有安装任何 MCP 服务器。请在上方添加 MCP 服务器，或通过 MCP 配置文件添加自定义服务器。"],
+    ["An agent is using the built-in browser. Clearing its data signs the agent out of sites and may interrupt its task.", "智能体正在使用内置浏览器。清除数据会退出智能体的站点登录状态，并可能中断当前任务。"],
     ["Connect to your managed Looker MCP server to explore data, run saved Looks, build dashboards, and validate LookML.", "连接到托管的 Looker MCP 服务器，以探索数据、运行已保存的 Look、构建仪表盘并验证 LookML。"],
     ["Recommended: 64,000–256,000 tokens. Actual compaction threshold may differ since max output tokens are subtracted.", "建议范围：64,000–256,000 个 Token。由于会减去最大输出 Token 数，实际压缩阈值可能有所不同。"],
     ["Show how full the context window is next to the send button. Click it for a breakdown and to see your model quota.", "在发送按钮旁显示上下文窗口的使用进度。点击可查看明细及模型配额。"],
@@ -1416,6 +1419,7 @@
     ["We recommend attaching logs. Attaching logs will help the Antigravity team act on and prioritize your feedback.", "我们建议附上日志。附上日志将有助于 Antigravity 团队处理并优先解决您的反馈。"],
     ["When enabled, the Changes Overview toolbar will automatically expand when Agent finishes generating a response.", "启用后，Changes Overview 工具栏将在智能体完成回复生成时自动展开。"],
     ["A shell setup script run before every command the agent executes in this project. Overrides the global script.", "在智能体于当前项目中执行每条命令前所运行的 Shell 初始化脚本。该设置会覆盖全局脚本。"],
+    ["Cookies, site storage and cache. Signs you out of all sites in the built-in browser and reloads its open tabs.", "Cookie、站点存储和缓存。这会退出内置浏览器中所有站点的登录状态并重新加载已打开的标签页。"],
     ["Projects serve as your workspace where your agents work. Each project has its own file scope and permissions. ", "项目是智能体工作的工作区。每个项目都有自己的文件范围和权限。"],
     ["Terminal command automatically proceeds if the command runs inside the sandbox. Otherwise, it requests review.", "如果终端命令在沙盒内运行，则会自动继续执行；否则会请求审核。"],
     ["Find plugins - bundles of skills, agents, MCP servers, UI extensions and more, and install them in one click.", "查找包含技能、智能体、MCP 服务器、界面扩展等内容的插件，并一键安装。"],
@@ -1449,6 +1453,7 @@
     ["Requires manual review for all terminal commands and file accesses outside of the working folders.", "所有终端命令以及工作文件夹之外的文件访问均需人工审查。"],
     ["When toggled on, Antigravity collects usage data to help Google enhance performance and features.", "开启后，Antigravity 会收集使用数据，帮助 Google 改进性能和功能。"],
     ["Automatically expand the Changes Overview toolbar when the agent finishes generating a response.", "智能体完成回复生成时，自动展开更改概览工具栏。"],
+    ["Clear history, cookies and site data from the built-in browser, or manage cookies for each site.", "清除内置浏览器的历史记录、Cookie 和站点数据，或按站点管理 Cookie。"],
     ["Payments, CRM, accounting, data, identity, customer support, marketing, and workflow automation.", "支付、客户关系管理、会计、数据、身份、客户支持、营销和工作流自动化。"],
     ["Select one of the three options. Agent settings and permissions can be further customized below.", "选择以下三个选项之一。智能体设置和权限可在下方进一步自定义。"],
     ["This conversation grew too large, so the history before this point may be missing or incomplete.", "此对话内容过长，因此该节点之前的历史记录可能缺失或不完整。"],
@@ -1579,6 +1584,7 @@
     ["The conversation could not be loaded because its data was not found.", "无法加载该对话，因为未找到其数据。"],
     ["Allows the agent to access files outside of your current workspace.", "允许智能体访问当前工作区之外的文件。"],
     ["An error occurred while submitting your feedback. Please try again.", "提交反馈时出错，请重试。"],
+    ["Choose what to clear from the built-in browser. It can't be undone.", "选择要从内置浏览器清除的内容。此操作无法撤销。"],
     ["External tools the agent can invoke via the Model Context Protocol.", "智能体可通过模型上下文协议 (MCP) 调用的外部工具。"],
     ["Let's tailor the experience for you. What best describes your work?", "让我们为你定制体验。哪项最能描述你的工作？"],
     ["Save rule to always allow a one-time administrator (UAC) elevation?", "保存规则以始终允许一次性管理员 (UAC) 提权？"],
@@ -1727,6 +1733,7 @@
     ["for more information (this migration is experimental).", "了解更多信息（此迁移为实验性功能）。"],
     ["Choose between the Default and Project 4K experience.", "在默认体验与 Project 4K 体验之间选择。"],
     ["Configure default behaviors, skills, and MCP servers.", "配置默认行为、技能和 MCP 服务器。"],
+    ["Couldn't load your SSH hosts. You can still type one.", "无法加载 SSH 主机列表，你仍可手动输入。"],
     ["Curated collection of agent skills for science tasks.", "精选的科学任务智能体技能集。"],
     ["Deploy and host your apps, sites, and their backends.", "部署和托管应用、网站及其后端。"],
     ["Discard changes (revert file to last committed state)", "放弃更改（将文件还原到上次提交的状态）"],
@@ -1836,6 +1843,7 @@
     ["Continue conversation in the current workspace", "在当前工作区继续对话"],
     ["Controls permissions for remote conversations.", "控制远程对话的权限。"],
     ["Encountered an error while running the plugin.", "运行插件时出错。"],
+    ["No sites have cookies in the built-in browser.", "内置浏览器中没有任何站点保存了 Cookie。"],
     ["Save rule to always allow using this MCP tool?", "保存规则以始终允许使用此 MCP 工具？"],
     ["Search, read, draft, and send emails in Gmail.", "在 Gmail 中搜索、阅读、起草和发送邮件。"],
     ["Show AI autocomplete suggestions in the editor", "在编辑器中显示 AI 自动补全建议"],
@@ -1897,6 +1905,7 @@
     ["Refreshed credentials for all automations.", "已刷新所有自动化任务的凭据。"],
     ["Search, upload, download, and share files.", "搜索、上传、下载和共享文件。"],
     ["Show suggestions when typing in the editor", "在编辑器中输入时显示建议"],
+    ["Visited URLs and autocomplete suggestions.", "访问过的网址和自动补全建议。"],
     ["Allow Tab to access .gitignore exclusions", "Tab 键访问 .gitignore 排除文件"],
     ["Ask anything, @ to mention, / for actions", "想问什么都可以，@ 引用，/ 执行动作"],
     ["Cannot revert messages with file comments", "无法回退包含文件评论的消息"],
@@ -1919,6 +1928,7 @@
     ["Commands and files these agents can use.", "这些智能体可调用的命令与文件。"],
     ["Configure AI models and view your quota.", "配置 AI 模型并查看额度。"],
     ["Controls the actions the agent can take.", "控制智能体可以执行的操作。"],
+    ["Couldn't clear browsing data. Try again.", "无法清除浏览数据，请重试。"],
     ["Creating projects for your conversations", "正在为你的对话创建项目"],
     ["Enter a URL (e.g. http://localhost:8080)", "输入网址（例如 http://localhost:8080）"],
     ["Explore other marketplace customizations", "探索更多应用市场自定义内容"],
@@ -1954,6 +1964,7 @@
     ["Organization MCP Allowlist (Read-Only)", "组织 MCP 允许列表（只读）"],
     ["Pricing is based on public API pricing", "定价以公开 API 价格为基础"],
     ["Run all commands without restrictions.", "不受限制地运行所有命令。"],
+    ["Then create the project in its window.", "然后在其窗口中创建项目。"],
     ["Trust the agent to do tasks end-to-end", "信任智能体独立完成整个任务"],
     ["Use theme to be imported with settings", "随设置导入时使用的主题"],
     ["Add them to allow future interactions", "将其加入允许列表，以便以后进行交互"],
@@ -1986,6 +1997,7 @@
     ["Manage your model quota and credits.", "管理您的模型额度与积分。"],
     ["No customizations match your search.", "没有与搜索条件匹配的自定义项。"],
     ["Scan the code to open this device in", "扫描二维码以在远程控制中打开此设备"],
+    ["The Hub sent an unexpected response.", "Hub 返回了意外响应。"],
     ["There are no customizations enabled.", "没有启用任何自定义项。"],
     ["(tell the agent what to do instead)", "（告诉智能体改做什么）"],
     ["Are you sure you want to delete the", "确定要删除"],
@@ -2052,9 +2064,11 @@
     ["扫描二维码以在此设备上打开 Remote Control, or ", "扫描二维码以在远程控制中打开此设备，或 "],
     ["Allow write access to this path?", "允许写入此路径？"],
     ["Ask before sensitive operations.", "执行敏感操作前先询问。"],
+    ["Cleared built-in browser history", "已清除内置浏览器历史记录"],
     ["Connecting to language server...", "正在连接语言服务..."],
     ["Cron expression e.g. 0 */6 * * *", "Cron 表达式（例如 0 */6 * * *）"],
     ["Daily conversation limit reached", "已达到每日会话上限"],
+    ["Enter a side question after /btw", "请在 /btw 后输入侧边问题"],
     ["Every command requires approval.", "每条命令都需要审核。"],
     ["Folders these agents can access.", "这些智能体可访问的文件夹。"],
     ["For example: Morning bug summary", "例如：早间缺陷汇总"],
@@ -2135,6 +2149,7 @@
     ["Setup script ran successfully.", "设置脚本运行成功。"],
     ["Show the welcome screen again.", "重新显示欢迎界面。"],
     ["Terminal & Tooling Permissions", "终端与工具权限"],
+    ["The Orchestrator's own planner", "编排器自带规划器"],
     ["The full developer experience.", "面向开发者的完整全功能体验。"],
     ["To use the agent, please login", "请登录以使用智能体"],
     ["Toggle Maximize Auxiliary Pane", "切换最大化辅助窗格"],
@@ -2145,6 +2160,7 @@
     ["Agent terminated due to error", "智能体因错误而终止"],
     ["Boolean AND, OR, and negation", "布尔与、或及取反"],
     ["Browser Actuation Permissions", "浏览器操作权限"],
+    ["Cleared built-in browser data", "已清除内置浏览器数据"],
     ["Click to view or edit comment", "点击查看或编辑评论"],
     ["Create a Fig shared workspace", "创建 Fig 共享工作区"],
     ["Delete All Remote Agents Data", "删除所有远程智能体数据"],
@@ -2172,12 +2188,14 @@
     ["Workspace URI query parameter", "工作区 URI 查询参数"],
     ["e.g. \"My Custom Gemini Model\"", "例如“我的自定义 Gemini 模型”"],
     ["e.g., main or refs/heads/main", "例如 main 或 refs/heads/main"],
+    ["A host can't contain spaces.", "主机名不能包含空格。"],
     ["Allow List Terminal Commands", "终端命令允许列表"],
     ["Auto-Expand Changes Overview", "自动展开更改概览"],
     ["Baseline model quota reached", "已达基础模型额度上限"],
     ["Better instruction following", "指令遵循更准确"],
     ["Could not load the app view:", "无法加载应用视图："],
     ["Couldn't edit queued message", "无法编辑排队中的消息"],
+    ["Couldn't load your SSH hosts", "无法加载 SSH 主机列表"],
     ["Dismiss service announcement", "关闭服务公告"],
     ["Download the Antigravity IDE", "下载 Antigravity IDE"],
     ["Edits the conversation title", "编辑对话标题"],
@@ -2197,6 +2215,7 @@
     ["Nothing is running right now", "当前没有正在运行的内容"],
     ["Only stored on your machine.", "仅存储在你的本地计算机上。"],
     ["Open extracted DOM in editor", "在编辑器中打开提取的 DOM"],
+    ["Orchestrator model selection", "编排器模型选择"],
     ["Previous match (Shift+Enter)", "上一个匹配项 (Shift+Enter)"],
     ["Provide Google Cloud Project", "提供 Google Cloud 项目"],
     ["Refresh Custom Agent Configs", "刷新自定义智能体配置"],
@@ -2228,6 +2247,7 @@
     ["Configure Worktree Branches", "配置工作树分支"],
     ["Confirm Browser Interaction", "确认浏览器交互"],
     ["Context and Quota Indicator", "上下文与配额指示器"],
+    ["Cookies and other site data", "Cookie 及其他站点数据"],
     ["Daily environment time used", "每日环境使用时间已用尽"],
     ["Deny List Terminal Commands", "终端命令拒绝列表"],
     ["Enter authorization code...", "输入授权码..."],
@@ -2444,6 +2464,7 @@
     ["Show or Hide Extensions", "显示或隐藏扩展"],
     ["Side Question Selection", "侧边提问选择"],
     ["Standalone Conversation", "独立对话"],
+    ["Switch to This Computer", "切换到此电脑"],
     ["This page isn’t working", "此页面无法正常运行"],
     ["Toggle Project Selector", "切换项目选择器"],
     ["UI view does not exist.", "界面视图不存在。"],
@@ -2465,6 +2486,7 @@
     ["Conversation Telemetry", "对话遥测"],
     ["Copy the trajectory ID", "复制轨迹 ID"],
     ["Copy this subtree JSON", "复制此子树的 JSON"],
+    ["Couldn't load cookies.", "无法加载 Cookie。"],
     ["Custom flag to turn on", "要启用的自定义标志"],
     ["Default Cog Repository", "默认 Cog 仓库"],
     ["Default Customizations", "默认自定义项"],
@@ -2501,6 +2523,7 @@
     ["Sent to Chief of Staff", "已发送给统筹助手"],
     ["Show Browser Allowlist", "显示浏览器允许列表"],
     ["Show Selection Actions", "显示选择操作"],
+    ["Show in the list again", "在列表中重新显示"],
     ["Side Pane UI Available", "侧边面板界面可用"],
     ["Sync and Upload Failed", "同步并上传失败"],
     ["This cannot be undone.", "此操作无法撤销。"],
@@ -2610,6 +2633,7 @@
     ["Browse MCP resources", "浏览 MCP 资源"],
     ["Cancel questionnaire", "取消问卷"],
     ["Capture Console Logs", "捕获控制台日志"],
+    ["Clear Browsing Data?", "清除浏览数据？"],
     ["Collapse All Folders", "折叠所有文件夹"],
     ["Command Setup Script", "命令初始化脚本"],
     ["Comment on Selection", "评论选中内容"],
@@ -2624,6 +2648,7 @@
     ["Creating terminal...", "正在创建终端..."],
     ["Custom Context Menus", "自定义右键菜单"],
     ["Customizations views", "自定义视图"],
+    ["Default (Gemini Pro)", "默认 (Gemini Pro)"],
     ["Delete Side Question", "删除副问题"],
     ["Dismiss notification", "关闭通知"],
     ["Download Diagnostics", "下载诊断信息"],
@@ -2703,6 +2728,7 @@
     ["Clicking in Browser", "正在浏览器中点击"],
     ["Code Change Summary", "代码更改摘要"],
     ["Connect to Cloudtop", "连接到 Cloudtop"],
+    ["Connect to SSH Host", "连接到 SSH 主机"],
     ["Conversation picker", "对话选择器"],
     ["Copied to clipboard", "已复制到剪贴板"],
     ["Create New Workflow", "创建新工作流"],
@@ -2722,6 +2748,7 @@
     ["Get More AI Credits", "获取更多 AI 积分"],
     ["GitHub Repositories", "GitHub 仓库"],
     ["Google One Referral", "Google One 推荐计划"],
+    ["Hide from this list", "从此列表中隐藏"],
     ["Jump to Next Prompt", "跳转到下一条提示词"],
     ["Load older messages", "加载更早的消息"],
     ["Loading Antigravity", "正在加载 Antigravity"],
@@ -2858,6 +2885,7 @@
     ["Project + Worktree", "项目与工作树"],
     ["Remote Agents Data", "远程智能体数据"],
     ["Remote Permissions", "远程权限"],
+    ["Remove from Recent", "从最近使用中移除"],
     ["Rendering playback", "正在渲染回放"],
     ["Review permissions", "审查权限"],
     ["Screen Reader Mode", "屏幕阅读器模式"],
@@ -2866,6 +2894,7 @@
     ["Select Environment", "选择环境"],
     ["Semantic searching", "正在语义搜索"],
     ["Signed-in accounts", "已登录的账号"],
+    ["Sites with cookies", "包含 Cookie 的站点"],
     ["Skill Custom Paths", "技能自定义路径"],
     ["Sort Conversations", "排序对话"],
     ["Steps to Reproduce", "重现步骤"],
@@ -3018,6 +3047,7 @@
     ["Invoked subagent", "已调用子智能体"],
     ["Keep In Menu Bar", "保留在菜单栏"],
     ["License Required", "需要许可证"],
+    ["Loading cookies…", "正在加载 Cookie…"],
     ["Loading hooks...", "正在加载钩子..."],
     ["Loading media...", "正在加载媒体..."],
     ["Mark All as Read", "全部标为已读"],
@@ -3058,6 +3088,7 @@
     ["Sign in required", "需要登录"],
     ["Sign-in required", "需要登录"],
     ["Start Voice mode", "启动语音模式"],
+    ["Stop SSH Server…", "停止 SSH 服务器…"],
     ["Terms of Service", "服务条款"],
     ["Toggle file diff", "切换文件差异视图"],
     ["Tool Permissions", "工具权限"],
@@ -3087,6 +3118,7 @@
     ["Code with Agent", "与智能体协作编码"],
     ["Command Palette", "命令面板"],
     ["Conversation ID", "对话 ID"],
+    ["Cookies by Site", "按站点管理 Cookie"],
     ["Copy debug info", "复制调试信息"],
     ["Create New Rule", "创建新规则"],
     ["Delete All Data", "删除所有数据"],
@@ -3119,6 +3151,7 @@
     ["Match Case (Aa)", "区分大小写 (Aa)"],
     ["Message history", "消息历史"],
     ["Missing Folders", "缺失文件夹"],
+    ["Model selection", "模型选择"],
     ["Modified files:", "已修改文件："],
     ["Needs attention", "需要关注"],
     ["Needs reconnect", "需要重新连接"],
@@ -3147,6 +3180,7 @@
     ["Search Projects", "搜索项目"],
     ["Search branches", "搜索分支"],
     ["Search files...", "搜索文件..."],
+    ["Search sites...", "搜索站点..."],
     ["Search tasks...", "搜索任务..."],
     ["Section header:", "章节标题："],
     ["Security Preset", "安全预设"],
@@ -3291,6 +3325,7 @@
     ["Back to Agent", "返回智能体"],
     ["Billing model", "计费模式"],
     ["Browser steps", "浏览器步骤"],
+    ["Browsing data", "浏览数据"],
     ["CEL Reference", "CEL 参考"],
     ["Chat Settings", "聊天设置"],
     ["Choose Region", "选择区域"],
@@ -3348,6 +3383,7 @@
     ["On a schedule", "按计划"],
     ["Only Archived", "仅已归档"],
     ["Open Links In", "打开链接的方式"],
+    ["Open SSH Host", "打开 SSH 主机"],
     ["Open Settings", "打开设置"],
     ["Open Terminal", "打开终端"],
     ["Open in Cider", "在 Cider 中打开"],
@@ -3403,6 +3439,7 @@
     ["Browser Task", "浏览器任务"],
     ["Change model", "更改模型"],
     ["Chime volume", "提示音音量"],
+    ["Choose File…", "选择文件…"],
     ["Clear Search", "清除搜索"],
     ["Clear filter", "清除筛选条件"],
     ["Close Folder", "关闭文件夹"],
@@ -3429,6 +3466,7 @@
     ["Full Machine", "整机访问模式"],
     ["Full machine", "整机访问模式"],
     ["Fuzzy search", "模糊搜索"],
+    ["Hidden hosts", "已隐藏的主机"],
     ["Instructions", "指令"],
     ["Last Updated", "最近更新"],
     ["Leaving Soon", "即将下线"],
@@ -3460,6 +3498,7 @@
     ["Repositories", "代码仓库"],
     ["Restart Task", "重启任务"],
     ["Search flags", "搜索标志"],
+    ["Search sites", "搜索站点"],
     ["Searched web", "已搜索网页"],
     ["See Activity", "查看活动记录"],
     ["Select Agent", "选择智能体"],
@@ -3503,6 +3542,7 @@
     ["Close (Esc)", "关闭 (Esc)"],
     ["Close Panel", "关闭面板"],
     ["Code Search", "代码搜索"],
+    ["Connecting…", "正在连接…"],
     ["Connections", "连接"],
     ["Copy output", "复制输出"],
     ["Copy prompt", "复制提示词"],
@@ -3556,6 +3596,7 @@
     ["Recommended", "推荐"],
     ["Reject Step", "拒绝此步骤"],
     ["Remote only", "仅远程"],
+    ["SSH config:", "SSH 配置："],
     ["Setting up…", "正在配置…"],
     ["Split Right", "向右拆分"],
     ["Start voice", "开始语音"],
@@ -3567,6 +3608,7 @@
     ["Tool Output", "工具输出"],
     ["Unavailable", "不可用"],
     ["Uncommitted", "未提交"],
+    ["Use Default", "使用默认"],
     ["User Intent", "用户意图"],
     ["Valid until", "有效期至"],
     ["Voice speed", "语速"],
@@ -3637,6 +3679,7 @@
     ["Repository", "代码仓库"],
     ["Reset Zoom", "重置缩放"],
     ["Review tab", "审核标签页"],
+    ["SSH Config", "SSH 配置"],
     ["Select All", "全选"],
     ["Send reply", "发送回复"],
     ["Setting up", "正在配置"],
@@ -3720,6 +3763,7 @@
     ["Stop Task", "停止任务"],
     ["Subagents", "子智能体"],
     ["Subtitles", "副标题"],
+    ["Switch To", "切换到"],
     ["Tab Speed", "Tab 补全速度"],
     ["Task Logs", "任务日志"],
     ["Terminals", "终端"],
@@ -4307,6 +4351,9 @@ const dynamicPatterns = [
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
   [/^(\d+)\s*projects?$/i, '$1 个项目'],
   [/^No hosts in (~\/\.ssh\/config) yet$/, '$1 中还没有主机'],
+  [/^Enter (\[user@\]host\[:port\]), or pick a host from your SSH config\.$/, '输入 $1，或从 SSH 配置中选择主机。'],
+  [/^(~\/\.ssh\/config) \(default\)$/, '$1（默认）'],
+  [/^(\d+) cookies?$/, '$1 个 Cookie'],
   [/^(\d+) hidden hosts?$/, '$1 台隐藏的主机'],
   [/Show (\d+)\s*breakdowns?/gi, '显示 $1 个明细'],
   [/Load older messages, showing (\d+) of (\d+)/g, '加载更早的消息，显示 $1 / $2'],
@@ -4422,6 +4469,36 @@ function translate(value) {
   const updatedClock = trimmed.match(/^Updated (\d{1,2}:\d{2}(?:\s*[AP]M)?)$/);
   if (updatedClock) return value.replace(trimmed, () => `更新于 ${updatedClock[1]}`);
 
+  // SSH 远程连接与浏览器站点 Cookie 提示含主机名、配置路径或域名，须完整匹配并保幂等。
+  if (/^(?:已连接到 |正在连接到 |无法连接到 |SSH 配置：|SSH 配置 \(|已从最近使用中移除 |无法从最近使用中移除 |已删除 .+ 的 Cookie$|删除 .+ 的 Cookie$|无法删除 .+ 的 Cookie，请重试。$|没有匹配“[\s\S]+”的站点。$|.+ 中还没有主机，你可在上方输入。$)/.test(trimmed)) return value;
+  const sshConnected = trimmed.match(/^Connected to ([^\r\n]+)$/);
+  if (sshConnected) return value.replace(trimmed, () => `已连接到 ${sshConnected[1]}`);
+  const sshConnecting = trimmed.match(/^Connecting to ([^\r\n]+)…$/);
+  if (sshConnecting) return value.replace(trimmed, () => `正在连接到 ${sshConnecting[1]}…`);
+  const sshConnectFailed = trimmed.match(/^Couldn't connect to ([^\r\n]+)$/);
+  if (sshConnectFailed) return value.replace(trimmed, () => `无法连接到 ${sshConnectFailed[1]}`);
+  const sshConfigTitle = trimmed.match(/^SSH Config \(([^\r\n]+)\)$/);
+  if (sshConfigTitle) return value.replace(trimmed, () => `SSH 配置 (${sshConfigTitle[1]})`);
+  const sshConfigLine = trimmed.match(/^SSH config: ([^\r\n]+)$/);
+  if (sshConfigLine) {
+    const configName = sshConfigLine[1] === '~/.ssh/config (default)' ? '~/.ssh/config（默认）' : sshConfigLine[1];
+    return value.replace(trimmed, () => `SSH 配置：${configName}`);
+  }
+  const sshRemovedRecent = trimmed.match(/^Removed ([^\r\n]+) from Recent$/);
+  if (sshRemovedRecent) return value.replace(trimmed, () => `已从最近使用中移除 ${sshRemovedRecent[1]}`);
+  const sshRemoveRecentFailed = trimmed.match(/^Couldn't remove ([^\r\n]+) from Recent$/);
+  if (sshRemoveRecentFailed) return value.replace(trimmed, () => `无法从最近使用中移除 ${sshRemoveRecentFailed[1]}`);
+  const deletedCookies = trimmed.match(/^Deleted cookies for ([^\r\n]+)$/);
+  if (deletedCookies) return value.replace(trimmed, () => `已删除 ${deletedCookies[1]} 的 Cookie`);
+  const deleteCookies = trimmed.match(/^Delete cookies for ([^\r\n]+)$/);
+  if (deleteCookies) return value.replace(trimmed, () => `删除 ${deleteCookies[1]} 的 Cookie`);
+  const sshNoHostsInConfig = trimmed.match(/^No hosts in ([^\r\n]+) yet\. Type one above\.$/);
+  if (sshNoHostsInConfig) return value.replace(trimmed, () => `${sshNoHostsInConfig[1]} 中还没有主机，你可在上方输入。`);
+  const deleteCookiesFailed = trimmed.match(/^Couldn't delete cookies for ([^\r\n]+)\. Try again\.$/);
+  if (deleteCookiesFailed) return value.replace(trimmed, () => `无法删除 ${deleteCookiesFailed[1]} 的 Cookie，请重试。`);
+  const noCookieSiteMatch = trimmed.match(/^No sites match “([^\r\n]+)”\.$/);
+  if (noCookieSiteMatch) return value.replace(trimmed, () => `没有匹配“${noCookieSiteMatch[1]}”的站点。`);
+
   // 项目摘要中的数量由应用生成；只匹配已确认的完整模板。
   const conversationCounts = trimmed.match(/^(\d+) (active|archived) conversations?(?: and (\d+) archived conversations?)?$/);
   if (conversationCounts && !(conversationCounts[2] === 'archived' && conversationCounts[3])) {
@@ -4525,6 +4602,10 @@ const dynamicAriaLabels = [
   [/^([\s\S]+) download progress$/, (_m, name) => `下载进度：${name}`, '下载进度：'],
   [/^Show ([\s\S]+) in folder$/, (_m, name) => `在文件夹中显示：${name}`, '在文件夹中显示：'],
   [/^Remove ([\s\S]+) from list$/, (_m, name) => `从列表中移除：${name}`, '从列表中移除：'],
+  [/^Remove ([\s\S]+) from Recent$/, (_m, host) => `从最近使用中移除：${host}`, '从最近使用中移除：'],
+  [/^Hide ([\s\S]+) from this list$/, (_m, host) => `从此列表中隐藏：${host}`, '从此列表中隐藏：'],
+  [/^Show ([\s\S]+) in the list again$/, (_m, host) => `在列表中重新显示：${host}`, '在列表中重新显示：'],
+  [/^Delete cookies for ([\s\S]+)$/, (_m, site) => `删除 Cookie：${site}`, '删除 Cookie：'],
   [/^Stop (\d+) selected$/, (_m, count) => `停止所选的 ${count} 项`, '停止所选的 '],
   [/^Recording shortcut for ([\s\S]+)\. Press keys to bind, Enter to save, Escape to cancel\.$/, (_m, name) => `正在为 ${name} 录制快捷键。按下按键绑定，按 Enter 保存，按 Escape 取消。`, '正在为 '],
   [/^Remove shortcut ([\s\S]+?) for ([\s\S]+)$/, (_m, key, action) => `移除快捷键 ${key}：${matchExactPhrase(action) ?? action}`, '移除快捷键 '],
@@ -4877,6 +4958,74 @@ const composedSentences = [
   },
 ];
 
+// React 将部分带变量（主机名、配置路径、域名、搜索词）的提示拆成纯文本兄弟节点，
+// 仅改写固定前缀与后缀节点，并标记中间变量节点以避免被误译。
+function translateSplitVariableText(element) {
+  if (!element?.childNodes) return false;
+  const len = element.childNodes.length;
+  if (len !== 2 && len !== 3) return false;
+  const nodes = Array.from(element.childNodes);
+  if (!nodes.every((node) => node.nodeType === Node.TEXT_NODE)) return false;
+
+  if (len === 2 && element.closest?.('[data-testid="ssh-connect-error"]')) {
+    const first = nodes[0].nodeValue || '';
+    if (first === "Couldn't connect to ") {
+      writeText(nodes[0], '无法连接到 ');
+      nodes[0].__zh_patched = true;
+      nodes[1].__zh_patched = true;
+      return true;
+    }
+    if (first === '无法连接到 ') {
+      nodes[0].__zh_patched = true;
+      nodes[1].__zh_patched = true;
+      return true;
+    }
+    return false;
+  }
+
+  if (len === 3) {
+    const first = nodes[0].nodeValue || '';
+    const last = nodes[2].nodeValue || '';
+    const specs = [
+      {
+        match: () => element.closest?.('[data-testid="ssh-connect-dialog"]'),
+        enFirst: 'No hosts in ',
+        enLast: ' yet. Type one above.',
+        zhFirst: '',
+        zhLast: ' 中还没有主机，你可在上方输入。',
+      },
+      {
+        match: () => element.matches?.('[data-testid="browser-site-data-delete-error"]'),
+        enFirst: "Couldn't delete cookies for ",
+        enLast: '. Try again.',
+        zhFirst: '无法删除 ',
+        zhLast: ' 的 Cookie，请重试。',
+      },
+      {
+        match: () => element.matches?.('[data-testid="browser-site-data-no-match"]'),
+        enFirst: 'No sites match “',
+        enLast: '”.',
+        zhFirst: '没有匹配“',
+        zhLast: '”的站点。',
+      },
+    ];
+    for (const spec of specs) {
+      if (!spec.match()) continue;
+      if (first === spec.enFirst && last === spec.enLast) {
+        writeText(nodes[0], spec.zhFirst);
+        writeText(nodes[2], spec.zhLast);
+        for (const node of nodes) node.__zh_patched = true;
+        return true;
+      }
+      if (first === spec.zhFirst && last === spec.zhLast) {
+        for (const node of nodes) node.__zh_patched = true;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function translateComposedElement(element) {
   const managed = automationManagedParts(element);
   if (managed) {
@@ -4902,6 +5051,7 @@ function translateComposedElement(element) {
     }
     return true;
   }
+  if (translateSplitVariableText(element)) return true;
   // 组合句都至少需要 3 个文本节点；叶子元素直接跳过，避免读取整棵子树的 textContent。
   if (!element.childNodes || element.childNodes.length < 3) return false;
   const text = (element.textContent || '').replace(/\s+/g, ' ').trim();
