@@ -754,6 +754,7 @@
   "Predict the location of your next edit and navigates you there with a tab keypress": "预测下一处编辑位置，按 Tab 键可跳转到该位置",
   "Predict the location of your next edit and navigates you there with a tab keypress.": "预测您下一次编辑的位置，并在按下 Tab 键时导航至该处。",
   "Preset": "预设",
+  "Press Cmd+Enter to send, Enter for a new line.": "按 Cmd+Enter 发送，按 Enter 换行。",
   "Press Ctrl+Enter to send, Enter for a new line.": "按 Ctrl+Enter 发送，按 Enter 换行。",
   "Press Enter to send, Shift+Enter for a new line.": "按 Enter 发送，按 Shift+Enter 换行。",
   "Press keys...": "请按下快捷键...",

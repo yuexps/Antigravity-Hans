@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r3';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r4';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1844,6 +1844,7 @@
     ["Controls permissions for remote conversations.", "控制远程对话的权限。"],
     ["Encountered an error while running the plugin.", "运行插件时出错。"],
     ["No sites have cookies in the built-in browser.", "内置浏览器中没有任何站点保存了 Cookie。"],
+    ["Press Cmd+Enter to send, Enter for a new line.", "按 Cmd+Enter 发送，按 Enter 换行。"],
     ["Save rule to always allow using this MCP tool?", "保存规则以始终允许使用此 MCP 工具？"],
     ["Search, read, draft, and send emails in Gmail.", "在 Gmail 中搜索、阅读、起草和发送邮件。"],
     ["Show AI autocomplete suggestions in the editor", "在编辑器中显示 AI 自动补全建议"],
