@@ -2275,3 +2275,24 @@ test('localizes macOS send shortcut without changing key names', () => {
   assert.equal(translate(translated), translated);
   assert.equal(translate('Press Ctrl+Enter to send, Enter for a new line.'), '按 Ctrl+Enter 发送，按 Enter 换行。');
 });
+
+test('quota percentage split across two text nodes is translated as a whole', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  const num = { nodeType: 3, nodeValue: '75' };
+  const tail = { nodeType: 3, nodeValue: '% left' };
+  num.nextSibling = tail;
+  tail.previousSibling = num;
+  const element = {
+    nodeType: 1,
+    textContent: '75% left',
+    childNodes: [num, tail],
+    closest() { return null; },
+    getAttribute() { return null; },
+    setAttribute() {},
+  };
+  num.parentElement = element;
+  tail.parentElement = element;
+  context.translateNodeForTest(tail);
+  assert.equal(num.nodeValue, '剩余 75%');
+  assert.equal(tail.nodeValue, '');
+});

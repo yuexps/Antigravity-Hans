@@ -1152,6 +1152,17 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
+  // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
+  if (value.trim() === '% left') {
+    const prev = node.previousSibling;
+    const num = prev && prev.nodeType === Node.TEXT_NODE ? (prev.nodeValue || '').trim() : '';
+    if (/^\d+(?:\.\d+)?$/.test(num)) {
+      writeText(prev, `剩余 ${num}%`);
+      prev.__zh_patched = true;
+      return '';
+    }
+  }
   if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
     return value.replace('Type', '输入');
   }

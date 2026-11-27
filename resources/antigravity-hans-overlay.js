@@ -1521,6 +1521,7 @@
     ["Google Cloud SDK detected. Install Google Extensions to enhance your workflow.", "检测到 Google Cloud SDK。安装 Google 扩展以增强工作流程。"],
     ["No model specified for Battle Mode, falling back to use current selected model", "对战模式未指定模型，已回退为使用当前选中的模型"],
     ["Background tasks and terminals agents left running, across all conversations.", "所有会话中由智能体启动并保持运行的后台任务与终端。"],
+    ["Offloads routine steps to a faster executor. Same quality, fewer tokens used.", "将常规步骤交给更快的执行器。质量相同，消耗的 Token 更少。"],
     ["Uploaded files and connected resources are mounted in your cloud environment.", "上传的文件和连接的资源会挂载到你的云端环境中。"],
     ["You can upgrade to a Google AI Ultra plan to receive the highest rate limits.", "你可以升级到 Google AI Ultra 套餐以获得最高速率限制。"],
     ["Allow reading workflow runs (list, view, watch) across the whole repository.", "允许读取整个仓库的工作流运行记录（列表、查看、监听）。"],
@@ -1715,6 +1716,7 @@
     ["Scan the code to open this device in Remote Control, or", "扫描二维码以在远程控制中打开此设备，或"],
     ["This project overrides your global permission settings.", "此项目覆盖了您的全局权限设置。"],
     ["This subagent was killed and can no longer be messaged.", "此子智能体已终止，无法再向其发送消息。"],
+    ["Use Hydrogen for better quality with lower quota usage.", "改用 Hydrogen 可在更低额度消耗下获得更好质量。"],
     ["A Google Cloud project is required to use Antigravity.", "使用 Antigravity 需要 Google Cloud 项目。"],
     ["A few things to know, and a couple settings to review.", "请了解以下事项，并检查几项设置。"],
     ["AI may make mistakes. Double-check all generated code.", "AI 可能会出错，请仔细核对生成的代码。"],
@@ -1885,6 +1887,7 @@
     ["Configure when follow-up messages are sent.", "配置何时发送后续消息。"],
     ["Connected Google Drive and GitHub resources", "已关联的 Google 云端硬盘与 GitHub 资源"],
     ["Conversation is not open in this Hub window", "此对话未在当前主窗口中打开"],
+    ["For speed and efficiency in execution tasks", "适用于强调速度与效率的执行任务"],
     ["Google3 projects are deprecated. Learn more", "Google3 项目已弃用。了解详情"],
     ["Manage fine-grained permissions for GitHub.", "管理针对 GitHub 的细粒度权限配置。"],
     ["No active terminals. Click + to create one.", "暂无活动终端。点击 + 创建一个。"],
@@ -1994,6 +1997,7 @@
     ["Authenticated via Enterprise Gateway", "已通过企业网关身份验证"],
     ["Configure allowed terminal commands.", "配置允许的终端命令。"],
     ["Did restarting the desktop app help?", "重启桌面应用是否有助于解决问题？"],
+    ["For your hardest, long-horizon tasks", "适用于最艰难、长周期的任务"],
     ["Manage project folders and settings.", "管理项目文件夹和设置。"],
     ["Manage your model quota and credits.", "管理您的模型额度与积分。"],
     ["No customizations match your search.", "没有与搜索条件匹配的自定义项。"],
@@ -2620,6 +2624,7 @@
     ["View site information", "查看网站信息"],
     ["What's in this bundle", "此插件包包含的内容"],
     ["Workspace File Access", "工作区文件访问"],
+    ["opens in your browser", "在你的浏览器中打开"],
     ["troubleshooting guide", "故障排除指南"],
     ["ABFS mount directory", "ABFS 挂载目录"],
     ["Active Browser pages", "活动的浏览器页面"],
@@ -5245,6 +5250,17 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
+  // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
+  if (value.trim() === '% left') {
+    const prev = node.previousSibling;
+    const num = prev && prev.nodeType === Node.TEXT_NODE ? (prev.nodeValue || '').trim() : '';
+    if (/^\d+(?:\.\d+)?$/.test(num)) {
+      writeText(prev, `剩余 ${num}%`);
+      prev.__zh_patched = true;
+      return '';
+    }
+  }
   if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
     return value.replace('Type', '输入');
   }
