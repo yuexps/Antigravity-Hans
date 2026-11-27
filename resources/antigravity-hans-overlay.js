@@ -1521,6 +1521,7 @@
     ["Google Cloud SDK detected. Install Google Extensions to enhance your workflow.", "检测到 Google Cloud SDK。安装 Google 扩展以增强工作流程。"],
     ["No model specified for Battle Mode, falling back to use current selected model", "对战模式未指定模型，已回退为使用当前选中的模型"],
     ["Background tasks and terminals agents left running, across all conversations.", "所有会话中由智能体启动并保持运行的后台任务与终端。"],
+    ["Offloads routine steps to a faster executor. Same quality, fewer tokens used.", "将常规步骤交给更快的执行器。质量相同，消耗的 Token 更少。"],
     ["Uploaded files and connected resources are mounted in your cloud environment.", "上传的文件和连接的资源会挂载到你的云端环境中。"],
     ["You can upgrade to a Google AI Ultra plan to receive the highest rate limits.", "你可以升级到 Google AI Ultra 套餐以获得最高速率限制。"],
     ["Allow reading workflow runs (list, view, watch) across the whole repository.", "允许读取整个仓库的工作流运行记录（列表、查看、监听）。"],
@@ -1715,6 +1716,7 @@
     ["Scan the code to open this device in Remote Control, or", "扫描二维码以在远程控制中打开此设备，或"],
     ["This project overrides your global permission settings.", "此项目覆盖了您的全局权限设置。"],
     ["This subagent was killed and can no longer be messaged.", "此子智能体已终止，无法再向其发送消息。"],
+    ["Use Hydrogen for better quality with lower quota usage.", "改用 Hydrogen 可在更低额度消耗下获得更好质量。"],
     ["A Google Cloud project is required to use Antigravity.", "使用 Antigravity 需要 Google Cloud 项目。"],
     ["A few things to know, and a couple settings to review.", "请了解以下事项，并检查几项设置。"],
     ["AI may make mistakes. Double-check all generated code.", "AI 可能会出错，请仔细核对生成的代码。"],
@@ -1885,6 +1887,7 @@
     ["Configure when follow-up messages are sent.", "配置何时发送后续消息。"],
     ["Connected Google Drive and GitHub resources", "已关联的 Google 云端硬盘与 GitHub 资源"],
     ["Conversation is not open in this Hub window", "此对话未在当前主窗口中打开"],
+    ["For speed and efficiency in execution tasks", "适用于强调速度与效率的执行任务"],
     ["Google3 projects are deprecated. Learn more", "Google3 项目已弃用。了解详情"],
     ["Manage fine-grained permissions for GitHub.", "管理针对 GitHub 的细粒度权限配置。"],
     ["No active terminals. Click + to create one.", "暂无活动终端。点击 + 创建一个。"],
@@ -1994,6 +1997,7 @@
     ["Authenticated via Enterprise Gateway", "已通过企业网关身份验证"],
     ["Configure allowed terminal commands.", "配置允许的终端命令。"],
     ["Did restarting the desktop app help?", "重启桌面应用是否有助于解决问题？"],
+    ["For your hardest, long-horizon tasks", "适用于最艰难、长周期的任务"],
     ["Manage project folders and settings.", "管理项目文件夹和设置。"],
     ["Manage your model quota and credits.", "管理您的模型额度与积分。"],
     ["No customizations match your search.", "没有与搜索条件匹配的自定义项。"],
@@ -2284,6 +2288,7 @@
     ["Agent Auto-Fix Lint Errors", "智能体自动修复 Lint 错误"],
     ["Allow using this MCP tool?", "允许使用此 MCP 工具？"],
     ["Browser tools (browser_.*)", "浏览器工具 (browser_.*)"],
+    ["Choose Antigravity's Voice", "选择 Antigravity 的声音"],
     ["Click to copy full command", "点击复制完整命令"],
     ["Cloud Hosting & Deployment", "云托管与部署"],
     ["Continue with Google Cloud", "使用 Google Cloud 继续"],
@@ -2618,8 +2623,10 @@
     ["Verification required", "需要验证"],
     ["View network requests", "查看网络请求"],
     ["View site information", "查看网站信息"],
+    ["Warm and approachable", "温暖亲切"],
     ["What's in this bundle", "此插件包包含的内容"],
     ["Workspace File Access", "工作区文件访问"],
+    ["opens in your browser", "在你的浏览器中打开"],
     ["troubleshooting guide", "故障排除指南"],
     ["ABFS mount directory", "ABFS 挂载目录"],
     ["Active Browser pages", "活动的浏览器页面"],
@@ -2691,6 +2698,7 @@
     ["Refresh skills paths", "刷新技能路径"],
     ["Remote Control Issue", "远程控制问题"],
     ["Restore Conversation", "恢复对话"],
+    ["Runs on this machine", "在此电脑上运行"],
     ["Search Conversations", "搜索对话"],
     ["Search all convos...", "搜索全部对话..."],
     ["Search workspaces...", "搜索工作区…"],
@@ -2728,6 +2736,7 @@
     ["Citc workspace name", "CitC 工作区名称"],
     ["Clicking in Browser", "正在浏览器中点击"],
     ["Code Change Summary", "代码更改摘要"],
+    ["Confident and clear", "自信清晰"],
     ["Connect to Cloudtop", "连接到 Cloudtop"],
     ["Connect to SSH Host", "连接到 SSH 主机"],
     ["Conversation picker", "对话选择器"],
@@ -2818,6 +2827,7 @@
     ["Build new features", "构建全新功能"],
     ["Capture Screenshot", "截取屏幕"],
     ["Chrome Binary Path", "Chrome 可执行文件路径"],
+    ["Clear and friendly", "清晰友好"],
     ["Clear search (Esc)", "清除搜索 (Esc)"],
     ["Click to Open Docs", "点击打开文档"],
     ["Click to view more", "点击查看更多"],
@@ -2953,6 +2963,7 @@
     ["Global Permission", "全局权限"],
     ["Goal Verification", "目标验证"],
     ["Google Extensions", "Google 扩展"],
+    ["Light and precise", "轻快精准"],
     ["Loading events...", "正在加载事件..."],
     ["Loading models...", "正在加载模型..."],
     ["Loading skills...", "正在加载技能..."],
@@ -3005,6 +3016,7 @@
     ["Toggle Status Bar", "切换状态栏"],
     ["Unmount workspace", "卸载工作区"],
     ["View Stacked Diff", "查看上下排列的差异"],
+    ["Warm and engaging", "温暖而有感染力"],
     ["ABFS branch name", "ABFS 分支名称"],
     ["Add Custom Model", "添加自定义模型"],
     ["Add to allowlist", "添加到允许列表"],
@@ -3029,6 +3041,7 @@
     ["Copy schema JSON", "复制架构 JSON"],
     ["Create a Project", "创建项目"],
     ["Creating Fork...", "正在派生..."],
+    ["Deep and velvety", "低沉丝滑"],
     ["Default (Mendel)", "默认（Mendel）"],
     ["Delete workspace", "删除工作区"],
     ["Document Answers", "文档答案"],
@@ -3084,6 +3097,7 @@
     ["Scroll to bottom", "滚动到底部"],
     ["Search shortcuts", "搜索快捷键"],
     ["See more results", "查看更多结果"],
+    ["Select a folder.", "选择文件夹。"],
     ["Select workspace", "选择工作区"],
     ["Send Immediately", "立即发送"],
     ["Sign in required", "需要登录"],
@@ -3409,6 +3423,7 @@
     ["Side Question", "副问题"],
     ["Sidecar error", "Sidecar 错误"],
     ["Sign in again", "重新登录"],
+    ["Sort Projects", "项目排序"],
     ["Still running", "仍在运行"],
     ["Stop Subagent", "停止子智能体"],
     ["Tab to Import", "按下 Tab 导入"],
@@ -4375,6 +4390,10 @@ const dynamicPatterns = [
   [/^(\d+)s$/g, '$1秒'],
   [/^Resets in ((?:\d+\s*[dhms]\b\s*)+)$/gi, (_m, dur) => `${formatShortDuration(dur)}后重置`],
   [/^(\d+(?:\.\d+)?)%\s*left$/i, '剩余 $1%'],
+  // 额度面板的积分余额与「本组模型」提示都带变量：数字/逗号金额原样保留，
+  // 模型名是产品名，只把列表分隔符换成中文顿号。
+  [/^Available AI credits:\s*([\d,]+(?:\.\d+)?)$/i, '可用 AI 积分：$1'],
+  [/^Models within this group: ([\s\S]+)$/i, (_m, list) => `本组包含的模型：${list.replace(/\s*,\s*/g, '、')}`],
 
   // 动态下拉与控件参数
   [/Toggle Agent(\s*\([^)]+\))?/g, '切换智能体$1'],
@@ -5245,6 +5264,17 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
+  // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
+  if (value.trim() === '% left') {
+    const prev = node.previousSibling;
+    const num = prev && prev.nodeType === Node.TEXT_NODE ? (prev.nodeValue || '').trim() : '';
+    if (/^\d+(?:\.\d+)?$/.test(num)) {
+      writeText(prev, `剩余 ${num}%`);
+      prev.__zh_patched = true;
+      return '';
+    }
+  }
   if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
     return value.replace('Type', '输入');
   }

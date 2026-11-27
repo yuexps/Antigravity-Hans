@@ -2275,3 +2275,33 @@ test('localizes macOS send shortcut without changing key names', () => {
   assert.equal(translate(translated), translated);
   assert.equal(translate('Press Ctrl+Enter to send, Enter for a new line.'), '按 Ctrl+Enter 发送，按 Enter 换行。');
 });
+
+test('quota percentage split across two text nodes is translated as a whole', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
+  const num = { nodeType: 3, nodeValue: '75' };
+  const tail = { nodeType: 3, nodeValue: '% left' };
+  num.nextSibling = tail;
+  tail.previousSibling = num;
+  const element = {
+    nodeType: 1,
+    textContent: '75% left',
+    childNodes: [num, tail],
+    closest() { return null; },
+    getAttribute() { return null; },
+    setAttribute() {},
+  };
+  num.parentElement = element;
+  tail.parentElement = element;
+  context.translateNodeForTest(tail);
+  assert.equal(num.nodeValue, '剩余 75%');
+  assert.equal(tail.nodeValue, '');
+});
+
+test('quota credits and model-group hints keep their variables intact', () => {
+  assert.equal(translate('Available AI credits: 0'), '可用 AI 积分：0');
+  assert.equal(translate('Available AI credits: 1,250'), '可用 AI 积分：1,250');
+  const group = 'Models within this group: Gemini 4 Neon, Gemini 4 Carbon, Orchestrator (Neon), Gemini 3.8 Flash';
+  const translated = '本组包含的模型：Gemini 4 Neon、Gemini 4 Carbon、Orchestrator (Neon)、Gemini 3.8 Flash';
+  assert.equal(translate(group), translated);
+  assert.equal(translate(translated), translated, '二次翻译必须幂等');
+});

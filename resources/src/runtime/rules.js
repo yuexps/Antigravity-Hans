@@ -282,6 +282,10 @@ const dynamicPatterns = [
   [/^(\d+)s$/g, '$1秒'],
   [/^Resets in ((?:\d+\s*[dhms]\b\s*)+)$/gi, (_m, dur) => `${formatShortDuration(dur)}后重置`],
   [/^(\d+(?:\.\d+)?)%\s*left$/i, '剩余 $1%'],
+  // 额度面板的积分余额与「本组模型」提示都带变量：数字/逗号金额原样保留，
+  // 模型名是产品名，只把列表分隔符换成中文顿号。
+  [/^Available AI credits:\s*([\d,]+(?:\.\d+)?)$/i, '可用 AI 积分：$1'],
+  [/^Models within this group: ([\s\S]+)$/i, (_m, list) => `本组包含的模型：${list.replace(/\s*,\s*/g, '、')}`],
 
   // 动态下拉与控件参数
   [/Toggle Agent(\s*\([^)]+\))?/g, '切换智能体$1'],
@@ -1152,6 +1156,17 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
+  // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
+  if (value.trim() === '% left') {
+    const prev = node.previousSibling;
+    const num = prev && prev.nodeType === Node.TEXT_NODE ? (prev.nodeValue || '').trim() : '';
+    if (/^\d+(?:\.\d+)?$/.test(num)) {
+      writeText(prev, `剩余 ${num}%`);
+      prev.__zh_patched = true;
+      return '';
+    }
+  }
   if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
     return value.replace('Type', '输入');
   }
