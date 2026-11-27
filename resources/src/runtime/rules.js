@@ -282,6 +282,10 @@ const dynamicPatterns = [
   [/^(\d+)s$/g, '$1秒'],
   [/^Resets in ((?:\d+\s*[dhms]\b\s*)+)$/gi, (_m, dur) => `${formatShortDuration(dur)}后重置`],
   [/^(\d+(?:\.\d+)?)%\s*left$/i, '剩余 $1%'],
+  // 额度面板的积分余额与「本组模型」提示都带变量：数字/逗号金额原样保留，
+  // 模型名是产品名，只把列表分隔符换成中文顿号。
+  [/^Available AI credits:\s*([\d,]+(?:\.\d+)?)$/i, '可用 AI 积分：$1'],
+  [/^Models within this group: ([\s\S]+)$/i, (_m, list) => `本组包含的模型：${list.replace(/\s*,\s*/g, '、')}`],
 
   // 动态下拉与控件参数
   [/Toggle Agent(\s*\([^)]+\))?/g, '切换智能体$1'],
