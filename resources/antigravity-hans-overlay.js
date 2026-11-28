@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.36.0-20261128-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.36.0-20261128-r2';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -4771,9 +4771,34 @@ function isProtectedMentionLabel(element) {
 // 折叠输入条使用同一个 span 显示占位文案或未发送草稿，用透明度 class 区分两者。
 const floatingComposerDraftSelector = '[data-testid="aux-pane-floating-composer-trigger"] > span.opacity-90';
 
+// 模型输出使用独立 Markdown 渲染根节点；不要把整个对话区域排除，否则步骤栏等界面也会漏译。
+const protectedAgentContentSelector = [
+  '[data-testid="agent-response"] [data-markdown-root]',
+  '[data-bubble-side="agent"] [data-markdown-root]',
+  '[data-testid="side-question-answer"] [data-markdown-root]',
+  '[aria-label="Agent response"] [data-markdown-root]',
+  '[aria-label="智能体回复"] [data-markdown-root]',
+  '[data-testid="agent-response"] .cursor-edit.group.relative.text-secondary-foreground.pl-2',
+].join(', ');
+
+// Markdown 渲染器自身的固定控件与模型生成的链接、按钮区分开来。
+const markdownControlSelector = [
+  '[data-testid="markdown-table-menu"]',
+  '[data-testid="markdown-table-copy-markdown"]',
+  '[data-testid="markdown-table-width-toggle"]',
+  '[data-testid="code-block-preview-toggle"]',
+].join(', ');
+
+function isProtectedAgentContent(node) {
+  const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+  return !!element?.closest(protectedAgentContentSelector) && !element.closest(markdownControlSelector);
+}
+
 function shouldSkipSubtree(node) {
   const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
   if (!element) return false;
+
+  if (isProtectedAgentContent(node)) return true;
 
   // 协调员欢迎语中的项目名由用户提供，即使与词条同名也不翻译。
   if (element.closest('[data-testid="coordinator-welcome"] strong')) return true;
@@ -4819,7 +4844,7 @@ function shouldSkipSubtree(node) {
   }
 
   // 跳过用户输入
-  if (element.closest('[data-testid="user-input-step"], [aria-label="User message"], [aria-label="用户消息"]')) {
+  if (element.closest('[data-testid="user-input-step"], [data-testid="side-question-followup-user"], [aria-label="User message"], [aria-label="用户消息"]')) {
     return true;
   }
 
@@ -5256,7 +5281,10 @@ function translateKnownSlashDescription(element) {
 }
 
 function translateElement(element) {
-  if (shouldSkip(element)) return;
+  if (shouldSkip(element)) {
+    if (isProtectedAgentContent(element)) restoreTrackedNode(element);
+    return;
+  }
   if (!isInAntigravityContainer(element)) return;
   // 若应用复用占位节点来展示草稿，先撤销仍留在节点上的占位译文。
   if (element.matches?.(floatingComposerDraftSelector)) {
@@ -5327,7 +5355,12 @@ function translateTextValue(node) {
 
   function translateNode(root) {
     if (!root) return;
-    if (shouldSkipSubtree(root)) return;
+    if (shouldSkipSubtree(root)) {
+      if (!isProtectedAgentContent(root)) return;
+      restoreTrackedNode(root);
+      // 正文容器可能在挂载后取得身份；继续遍历，以还原已有误译并保留固定界面控件。
+      if (root.nodeType === Node.TEXT_NODE) return;
+    }
     if (root.nodeType === Node.TEXT_NODE) {
       if (shouldSkip(root)) return;
       if (!isInAntigravityContainer(root)) return;
@@ -5351,7 +5384,10 @@ function translateTextValue(node) {
     }
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-      if (shouldSkip(node)) continue;
+      if (shouldSkip(node)) {
+        if (isProtectedAgentContent(node)) restoreTrackedNode(node);
+        continue;
+      }
       if (node.nodeType === Node.TEXT_NODE) {
         if (!isInAntigravityContainer(node)) continue;
         if (node.__zh_patched) continue;
@@ -5765,7 +5801,8 @@ function translateTextValue(node) {
           // 容器身份变化时要重新扫描整个子树；仅翻译属性本身会漏掉此前
           // 因未命中白名单而尚未处理的 Settings 子节点。
           if (mutation.attributeName === 'class' || mutation.attributeName === 'id' ||
-            mutation.attributeName === 'role' || mutation.attributeName === 'data-testid') {
+            mutation.attributeName === 'role' || mutation.attributeName === 'data-testid' ||
+            mutation.attributeName === 'data-markdown-root' || mutation.attributeName === 'data-bubble-side') {
             nodesToTranslate.push(target);
           } else {
             elementsToTranslate.push(target);
@@ -5806,7 +5843,7 @@ function translateTextValue(node) {
       characterData: true,
       attributes: true,
       // 监听容器身份变化。Settings 页面经常先挂载空节点，再异步补 class/id。
-      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid'],
+      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid', 'data-markdown-root', 'data-bubble-side'],
     });
     mountToggleUI();
   }

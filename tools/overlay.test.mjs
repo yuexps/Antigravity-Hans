@@ -2418,3 +2418,138 @@ test('2.36.0 floating composer badges preserve counts and its status buttons hav
     assert.equal(attrs.get('title'), expected);
   }
 });
+
+test('2.36.0 model thinking and reply content is preserved during updates, language toggles and streaming', () => {
+  // 构造已核实的对话、思考、侧边提问和 Markdown 渲染器的选择器关系。
+  const doc = { nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' }, childNodes: [] };
+  function element(parent, selectors = [], attrs = {}, tagName = 'DIV') {
+    const node = {
+      nodeType: 1, tagName, childNodes: [], parentElement: parent.nodeType === 1 ? parent : null,
+      selectors: new Set(selectors), attrs: new Map(Object.entries(attrs)),
+      matches(selector) { return this.selectors.has(selector); },
+      closest(selector) {
+        const alternatives = selector.split(',').map(s => s.trim());
+        for (let current = this; current; current = current.parentElement) {
+          if (alternatives.some(s => current.matches(s))) return current;
+        }
+        return null;
+      },
+      getAttribute(name) { return this.attrs.get(name) ?? null; },
+      setAttribute(name, value) { this.attrs.set(name, value); },
+    };
+    parent.childNodes.push(node);
+    return node;
+  }
+  function text(parentElement, nodeValue) {
+    const node = { nodeType: 3, nodeValue, parentElement };
+    parentElement.childNodes.push(node);
+    return node;
+  }
+  doc.querySelectorAll = () => [];
+  doc.createTreeWalker = root => {
+    const descendants = [];
+    function visit(node) {
+      for (const child of node.childNodes ?? []) { descendants.push(child); visit(child); }
+    }
+    visit(root);
+    let index = 0;
+    return { nextNode: () => descendants[index++] ?? null };
+  };
+  const response = element(doc);
+  const markdown = element(response, ['[data-testid="agent-response"] [data-markdown-root]']);
+  const heading = text(element(markdown, [], {}, 'H2'), '智能体');
+  const paragraph = text(element(markdown, [], {}, 'P'), 'Configure AI models and view your quota.');
+  const changedByApp = text(element(markdown, [], {}, 'P'), 'New Conversation');
+  const link = element(markdown, ['[role="button"]'], { title: '设置', href: 'https://example.test/Settings' }, 'A');
+  const linkText = text(link, 'Open File');
+  const tableControl = element(markdown, ['[data-testid="markdown-table-menu"]'], { 'aria-label': 'Table options' }, 'BUTTON');
+  const codeControl = element(markdown, ['[data-testid="code-block-preview-toggle"]']);
+  const codePreview = text(element(codeControl), 'Preview');
+  const thinking = element(response, ['[data-testid="agent-response"] .cursor-edit.group.relative.text-secondary-foreground.pl-2']);
+  const thought = text(element(thinking), 'I should inspect the menu. Configure AI models and view your quota.');
+  const thoughtHeader = text(element(response), 'Thought for 21s');
+  const copyButton = text(element(response), 'Copy');
+  const taskStatus = text(element(response), '3 tasks running');
+  const remoteReply = text(element(doc, ['[data-bubble-side="agent"] [data-markdown-root]']), 'Agent');
+  const sideReply = text(element(doc, ['[data-testid="side-question-answer"] [data-markdown-root]']), 'New Conversation');
+  const sideUser = text(element(doc, ['[data-testid="side-question-followup-user"]']), 'Settings');
+  const ordinaryUI = text(element(doc), 'Agent');
+  const lateMarkdown = element(response);
+  const lateText = text(lateMarkdown, 'New Conversation');
+
+  const window = {
+    addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+    __antigravityZhPatchInstalled: true, __observedDocument: doc, __antigravityZhPatchFingerprint: 'old',
+    __antigravityZhOriginals: { texts: new WeakMap(), attrs: new WeakMap() },
+  };
+  const originals = window.__antigravityZhOriginals;
+  originals.texts.set(heading, { orig: 'Agent', zh: '智能体' });
+  originals.texts.set(changedByApp, { orig: 'Settings', zh: '设置' });
+  originals.attrs.set(link, new Map([['title', { orig: 'Settings', zh: '设置' }]]));
+  let observe, trigger;
+  class FakeMutationObserver {
+    constructor(callback) { trigger = callback; }
+    observe(_target, options) { observe = options; }
+    disconnect() {}
+  }
+  const queue = [];
+  const ctx = {
+    window, document: doc, MutationObserver: FakeMutationObserver,
+    Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 },
+    setTimeout(fn) { queue.push(fn); return queue.length; }, clearTimeout() {},
+  };
+  vm.createContext(ctx);
+  const instrumented = source.replace('  function run() {', '  globalThis.runForTest = run;\n  function run() {').replace('    mountToggleUI();', '');
+  vm.runInContext(instrumented, ctx);
+  ctx.runForTest();
+  const flush = () => { for (const fn of queue.splice(0)) fn(); };
+  function assertContent() {
+    assert.equal(heading.nodeValue, 'Agent');
+    assert.equal(paragraph.nodeValue, 'Configure AI models and view your quota.');
+    assert.equal(changedByApp.nodeValue, 'New Conversation', 'keep application updates');
+    assert.equal(link.getAttribute('title'), 'Settings');
+    assert.equal(link.getAttribute('href'), 'https://example.test/Settings');
+    assert.equal(linkText.nodeValue, 'Open File');
+    assert.equal(thought.nodeValue, 'I should inspect the menu. Configure AI models and view your quota.');
+    assert.equal(remoteReply.nodeValue, 'Agent');
+    assert.equal(sideReply.nodeValue, 'New Conversation');
+    assert.equal(sideUser.nodeValue, 'Settings');
+  }
+  function assertLocalizedControls() {
+    assert.equal(thoughtHeader.nodeValue, '已思考 21 秒');
+    assert.equal(copyButton.nodeValue, '复制');
+    assert.equal(taskStatus.nodeValue, '3 个任务正在运行');
+    assert.equal(ordinaryUI.nodeValue, '智能体');
+    assert.equal(tableControl.getAttribute('aria-label'), '表格选项');
+    assert.equal(codePreview.nodeValue, '预览');
+  }
+  assertContent();
+  assertLocalizedControls();
+  // 容器身份延迟到达时，已改写的正文也应恢复。
+  assert.equal(lateText.nodeValue, '新建对话');
+  assert.ok(observe.attributeFilter.includes('data-markdown-root'));
+  assert.ok(observe.attributeFilter.includes('data-bubble-side'));
+  lateMarkdown.selectors.add('[data-testid="agent-response"] [data-markdown-root]');
+  trigger([{ type: 'attributes', target: lateMarkdown, attributeName: 'data-markdown-root' }]);
+  flush();
+  assert.equal(lateText.nodeValue, 'New Conversation');
+
+  window.__antigravityZhSetLang('en');
+  assertContent();
+  assert.equal(tableControl.getAttribute('aria-label'), 'Table options');
+  assert.equal(thoughtHeader.nodeValue, 'Thought for 21s');
+  window.__antigravityZhSetLang('zh');
+  assertContent();
+  assertLocalizedControls();
+
+  const streamed = text(markdown, 'Agent');
+  trigger([{ type: 'childList', target: markdown, addedNodes: [streamed] }]);
+  flush();
+  assert.equal(streamed.nodeValue, 'Agent');
+  streamed.nodeValue = 'Choose which key sends a message in the chat composer.';
+  trigger([{ type: 'characterData', target: streamed }]);
+  flush();
+  assert.equal(streamed.nodeValue, 'Choose which key sends a message in the chat composer.');
+  assert.equal(originals.texts.has(streamed), false);
+  assertLocalizedControls();
+});
