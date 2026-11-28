@@ -1207,15 +1207,13 @@ function translateTextValue(node) {
   if (value.trim() === 'Attached' && node.parentElement?.closest?.('[data-testid="aux-pane-floating-composer-attachment-badge"]')) {
     return value.replace('Attached', '个附件');
   }
-  // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
-  // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
+  // 额度条里的数字与固定后缀是两个文本节点。React 刷新额度时只更新数字，
+  // 因此仅翻译后缀，保持数字由应用管理，避免丢失百分号和说明（#47）。
   if (value.trim() === '% left') {
     const prev = node.previousSibling;
     const num = prev && prev.nodeType === Node.TEXT_NODE ? (prev.nodeValue || '').trim() : '';
     if (/^\d+(?:\.\d+)?$/.test(num)) {
-      writeText(prev, `剩余 ${num}%`);
-      prev.__zh_patched = true;
-      return '';
+      return value.replace('% left', '% 可用');
     }
   }
   if (value.trim() === 'Type' && node.parentElement?.closest('[data-testid="plan-command-fyi-alert"]')) {
