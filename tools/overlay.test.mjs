@@ -2276,25 +2276,90 @@ test('localizes macOS send shortcut without changing key names', () => {
   assert.equal(translate('Press Ctrl+Enter to send, Enter for a new line.'), '按 Ctrl+Enter 发送，按 Enter 换行。');
 });
 
-test('quota percentage split across two text nodes is translated as a whole', () => {
-  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3 };
-  const num = { nodeType: 3, nodeValue: '75' };
-  const tail = { nodeType: 3, nodeValue: '% left' };
-  num.nextSibling = tail;
-  tail.previousSibling = num;
-  const element = {
-    nodeType: 1,
-    textContent: '75% left',
-    childNodes: [num, tail],
-    closest() { return null; },
-    getAttribute() { return null; },
-    setAttribute() {},
+test('split quota percentages keep their suffix on live updates and language toggles (#47)', () => {
+  function quotaRow(value, suffix) {
+    const element = { nodeType: 1, closest() { return null; }, getAttribute() { return null; } };
+    const num = { nodeType: 3, nodeValue: value, parentElement: element };
+    const tail = { nodeType: 3, nodeValue: suffix, parentElement: element, previousSibling: num };
+    num.nextSibling = tail;
+    element.childNodes = [num, tail];
+    return { element, num, tail };
+  }
+  const fresh = quotaRow('100', '% left');
+  // 旧版已清空后缀，且 React 已更新数字；热更新必须保留新的额度。
+  const refreshed = quotaRow('75', '');
+  // 旧版改写后尚未刷新，热更新时还原原始数字。
+  const legacy = quotaRow('剩余 100%', '');
+  const unrelated = quotaRow('Other', '% left');
+  const rows = [fresh, refreshed, legacy, unrelated];
+  const nodes = rows.flatMap(({ element, num, tail }) => [element, num, tail]);
+  const document = {
+    nodeType: 9, readyState: 'loading', documentElement: { lang: 'en' }, body: {},
+    querySelectorAll() { return []; },
+    createTreeWalker(root) {
+      const children = root === this ? nodes : root.childNodes ?? [];
+      let i = 0;
+      return { nextNode: () => children[i++] ?? null };
+    },
   };
-  num.parentElement = element;
-  tail.parentElement = element;
-  context.translateNodeForTest(tail);
-  assert.equal(num.nodeValue, '剩余 75%');
-  assert.equal(tail.nodeValue, '');
+  const window = {
+    addEventListener() {}, removeEventListener() {}, location: { pathname: '/', href: 'http://127.0.0.1/' },
+    __antigravityZhPatchInstalled: true, __observedDocument: document, __antigravityZhPatchFingerprint: 'old',
+    __antigravityZhOriginals: { texts: new WeakMap(), attrs: new WeakMap() },
+  };
+  const originals = window.__antigravityZhOriginals.texts;
+  for (const row of [refreshed, legacy]) {
+    originals.set(row.num, { orig: '100', zh: '剩余 100%' });
+    originals.set(row.tail, { orig: '% left', zh: '' });
+  }
+  let mutate;
+  class FakeMutationObserver {
+    constructor(callback) { mutate = callback; }
+    observe() {}
+    disconnect() {}
+  }
+  const pending = [];
+  const ctx = {
+    window, document, MutationObserver: FakeMutationObserver,
+    Node: { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 }, NodeFilter: { SHOW_TEXT: 4, SHOW_ELEMENT: 1 },
+    setTimeout(fn) { pending.push(fn); return pending.length; }, clearTimeout() {},
+  };
+  vm.createContext(ctx);
+  vm.runInContext(source.replace('  function run() {', '  globalThis.runForTest = run;\n  function run() {').replace('    mountToggleUI();', ''), ctx);
+  ctx.runForTest();
+  const flush = () => { for (const fn of pending.splice(0)) fn(); };
+  const verify = (row, value, suffix = '% 可用') => {
+    assert.equal(row.num.nodeValue, value);
+    assert.equal(row.tail.nodeValue, suffix);
+    assert.equal(originals.has(row.num), false, '数字由应用更新，不应被汉化脚本记录或改写');
+  };
+  verify(fresh, '100');
+  verify(refreshed, '75');
+  verify(legacy, '100');
+  assert.equal(unrelated.tail.nodeValue, '% left');
+  for (const value of ['75', '69', '0', '98.5', '100']) {
+    fresh.num.nodeValue = value;
+    // 模拟真实 React 行为：刷新时仅数字节点产生 characterData 事件。
+    mutate([{ type: 'characterData', target: fresh.num }]);
+    flush();
+    verify(fresh, value);
+    mutate([{ type: 'characterData', target: fresh.tail }]);
+    flush();
+    verify(fresh, value);
+  }
+  fresh.tail.nodeValue = '% left';
+  mutate([{ type: 'characterData', target: fresh.tail }]);
+  flush();
+  verify(fresh, '100');
+  window.__antigravityZhSetLang('en');
+  verify(fresh, '100', '% left');
+  verify(refreshed, '75', '% left');
+  verify(legacy, '100', '% left');
+  fresh.num.nodeValue = '69';
+  window.__antigravityZhSetLang('zh');
+  verify(fresh, '69');
+  verify(refreshed, '75');
+  verify(legacy, '100');
 });
 
 test('quota credits and model-group hints keep their variables intact', () => {
