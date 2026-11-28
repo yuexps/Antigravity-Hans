@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.36.0-20261128-r1';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.36.0-20261128-r2';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -174,7 +174,12 @@
 
   function translateNode(root) {
     if (!root) return;
-    if (shouldSkipSubtree(root)) return;
+    if (shouldSkipSubtree(root)) {
+      if (!isProtectedAgentContent(root)) return;
+      restoreTrackedNode(root);
+      // 正文容器可能在挂载后取得身份；继续遍历，以还原已有误译并保留固定界面控件。
+      if (root.nodeType === Node.TEXT_NODE) return;
+    }
     if (root.nodeType === Node.TEXT_NODE) {
       if (shouldSkip(root)) return;
       if (!isInAntigravityContainer(root)) return;
@@ -198,7 +203,10 @@
     }
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-      if (shouldSkip(node)) continue;
+      if (shouldSkip(node)) {
+        if (isProtectedAgentContent(node)) restoreTrackedNode(node);
+        continue;
+      }
       if (node.nodeType === Node.TEXT_NODE) {
         if (!isInAntigravityContainer(node)) continue;
         if (node.__zh_patched) continue;
@@ -612,7 +620,8 @@
           // 容器身份变化时要重新扫描整个子树；仅翻译属性本身会漏掉此前
           // 因未命中白名单而尚未处理的 Settings 子节点。
           if (mutation.attributeName === 'class' || mutation.attributeName === 'id' ||
-            mutation.attributeName === 'role' || mutation.attributeName === 'data-testid') {
+            mutation.attributeName === 'role' || mutation.attributeName === 'data-testid' ||
+            mutation.attributeName === 'data-markdown-root' || mutation.attributeName === 'data-bubble-side') {
             nodesToTranslate.push(target);
           } else {
             elementsToTranslate.push(target);
@@ -653,7 +662,7 @@
       characterData: true,
       attributes: true,
       // 监听容器身份变化。Settings 页面经常先挂载空节点，再异步补 class/id。
-      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid'],
+      attributeFilter: ['aria-label', 'title', 'placeholder', 'alt', 'class', 'id', 'role', 'data-testid', 'data-markdown-root', 'data-bubble-side'],
     });
     mountToggleUI();
   }
