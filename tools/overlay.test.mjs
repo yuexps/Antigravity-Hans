@@ -2305,3 +2305,116 @@ test('quota credits and model-group hints keep their variables intact', () => {
   assert.equal(translate(group), translated);
   assert.equal(translate(translated), translated, '二次翻译必须幂等');
 });
+
+test('2.36.0 floating composer statuses and prepaid wallet notice are localized', () => {
+  for (const [input, expected] of [
+    ['Conversation input', '对话输入框'],
+    ['Unread message', '未读消息'],
+    ['Canceling', '正在取消'],
+    ['Question waiting', '等待回答问题'],
+    ['Subagent needs approval', '子智能体需要批准'],
+    ['Action required', '需要操作'],
+    ['1 task running', '1 个任务正在运行'],
+    ['3 tasks running', '3 个任务正在运行'],
+    ['Organization prepaid wallet is empty', '组织预付余额已耗尽'],
+    ['Your organization has run out of Antigravity funds. Prompt generation is paused until your administrator adds funds.',
+      '你的组织已用完 Antigravity 资金。在管理员充值前，将暂停生成回复。'],
+  ]) {
+    assert.equal(translate(input), expected);
+    assert.equal(translate(expected), expected);
+  }
+});
+
+test('2.36.0 floating composer translates its placeholder without translating drafts', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+  const triggerSelector = '[data-testid="aux-pane-floating-composer-trigger"] > span.';
+  function preview(text, isDraft) {
+    const node = { nodeType: 3, nodeValue: text };
+    const span = {
+      nodeType: 1,
+      childNodes: [node],
+      isDraft,
+      matches(selector) { return selector === triggerSelector + (this.isDraft ? 'opacity-90' : 'opacity-60'); },
+      closest(selector) { return this.matches(selector) ? this : null; },
+      getAttribute() { return null; },
+    };
+    node.parentElement = span;
+    return { span, node };
+  }
+
+  const { node, span } = preview('Ask anything', false);
+  context.translateNodeForTest(node);
+  assert.equal(node.nodeValue, '想问什么都可以');
+  node.__zh_patched = false;
+  context.translateNodeForTest(node);
+  assert.equal(node.nodeValue, '想问什么都可以');
+
+  // React 可复用同一节点：草稿恰好等于英文占位时，也必须还原原文。
+  span.isDraft = true;
+  context.translateElementForTest(span);
+  context.translateNodeForTest(node);
+  assert.equal(node.nodeValue, 'Ask anything');
+
+  span.isDraft = false;
+  context.translateNodeForTest(node);
+  assert.equal(node.nodeValue, '想问什么都可以');
+  span.isDraft = true;
+  node.nodeValue = '3 tasks running';
+  context.translateElementForTest(span);
+  context.translateNodeForTest(node);
+  assert.equal(node.nodeValue, '3 tasks running');
+
+  for (const draft of ['Ask anything', 'Canceling', '3 tasks running', 'New Conversation', '想问什么都可以', 'C:\\Users\\10 files']) {
+    const { node: draftNode, span: draftSpan } = preview(draft, true);
+    context.translateElementForTest(draftSpan);
+    context.translateNodeForTest(draftNode);
+    assert.equal(draftNode.nodeValue, draft);
+  }
+  assert.equal(translate('Ask anything'), 'Ask anything', 'only the floating placeholder receives this translation');
+});
+
+test('2.36.0 floating composer badges preserve counts and its status buttons have localized accessible labels', () => {
+  context.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, DOCUMENT_NODE: 9 };
+  for (const [testId, number, suffix, expected] of [
+    ['aux-pane-floating-composer-comment-badge', '1', ' Comment', ' 条评论'],
+    ['aux-pane-floating-composer-comment-badge', '5', ' Comments', ' 条评论'],
+    ['aux-pane-floating-composer-attachment-badge', '3', ' Attached', ' 个附件'],
+  ]) {
+    const parent = {
+      nodeType: 1,
+      closest(selector) { return selector === `[data-testid="${testId}"]` ? this : null; },
+      getAttribute() { return null; },
+    };
+    const nodes = [number, suffix].map(nodeValue => ({ nodeType: 3, nodeValue, parentElement: parent }));
+    for (const node of nodes) context.translateNodeForTest(node);
+    assert.deepEqual(nodes.map(node => node.nodeValue), [number, expected]);
+    for (const node of nodes) {
+      node.__zh_patched = false;
+      context.translateNodeForTest(node);
+    }
+    assert.deepEqual(nodes.map(node => node.nodeValue), [number, expected]);
+  }
+
+  for (const [status, expected] of [
+    ['Unread message', '未读消息'],
+    ['Canceling', '正在取消'],
+    ['3 tasks running', '3 个任务正在运行'],
+    ['Working', '正在工作'],
+    ['mcp_tool.example', 'mcp_tool.example'],
+  ]) {
+    const attrs = new Map([['aria-label', `${status} — restore split view`], ['title', status]]);
+    const button = {
+      nodeType: 1,
+      childNodes: [],
+      closest() { return null; },
+      getAttribute(name) { return attrs.get(name) ?? null; },
+      setAttribute(name, value) { attrs.set(name, value); },
+    };
+    context.translateElementForTest(button);
+    assert.equal(attrs.get('aria-label'), `恢复分屏视图：${expected}`);
+    assert.equal(attrs.get('title'), expected);
+    context.translateElementForTest(button);
+    assert.equal(attrs.get('aria-label'), `恢复分屏视图：${expected}`);
+    assert.equal(attrs.get('title'), expected);
+  }
+});

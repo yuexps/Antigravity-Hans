@@ -2,7 +2,7 @@
 
 专为 **Google Antigravity** 及 **Antigravity IDE** 开发的中文汉化工具。
 
-> **适配版本**：**Antigravity `2.35.2`** 与 **Antigravity IDE `2.8.0`**。
+> **适配版本**：**Antigravity `2.36.0`** 与 **Antigravity IDE `2.8.0`**。
 
 ## 快速使用
 

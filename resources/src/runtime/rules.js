@@ -254,6 +254,7 @@ const dynamicPatterns = [
   // 动态用量与数量词
   [/(\d+(?:\.\d+)?)% of the customization budget is available\./g, '自定义预算还剩 $1%。'],
   [/(\d+)\s*agents running/g, '$1 个智能体正在运行'],
+  [/^(\d+) tasks? running$/, '$1 个任务正在运行'],
   [/See all \((\d+)\)/g, '查看全部 ($1)'],
   [/^Send all \((\d+)\)$/g, '全部发送 ($1)'],
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
@@ -507,6 +508,7 @@ function translate(value) {
 // 仅用于应用生成的 aria-label 模板。名称、路径、URL 和账号均原样保留，
 // 并在命中后立即返回，避免通用短语或数量规则再次改写变量。
 const dynamicAriaLabels = [
+  [/^([\s\S]+) — restore split view$/, (_m, status) => `恢复分屏视图：${translate(status)}`, '恢复分屏视图：'],
   [/^Playback speed (\d+(?:\.\d+)?)x$/, (_m, n) => `播放速度：${n}x`, '播放速度：'],
   [/^Zoom (\d+(?:\.\d+)?)%, reset to fit$/, (_m, n) => `缩放：${n}%，重置为适应窗口`, '缩放：'],
   [/^Open ([\s\S]+) skill$/, (_m, name) => `打开技能：${name}`, '打开技能：'],
@@ -651,6 +653,9 @@ function isProtectedMentionLabel(element) {
     !label.closest?.('[data-testid="menu-category-row"]');
 }
 
+// 折叠输入条使用同一个 span 显示占位文案或未发送草稿，用透明度 class 区分两者。
+const floatingComposerDraftSelector = '[data-testid="aux-pane-floating-composer-trigger"] > span.opacity-90';
+
 function shouldSkipSubtree(node) {
   const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
   if (!element) return false;
@@ -682,6 +687,7 @@ function shouldSkipSubtree(node) {
 
   // 跳过输入框与文本域的正文/子节点，但允许元素自身属性（placeholder、aria-label）翻译
   if (node.nodeType === Node.TEXT_NODE) {
+    if (element.closest(floatingComposerDraftSelector)) return true;
     if (element.closest('[contenteditable]:not([contenteditable="false"]), input, textarea')) {
       return true;
     }
@@ -1137,6 +1143,13 @@ function translateKnownSlashDescription(element) {
 function translateElement(element) {
   if (shouldSkip(element)) return;
   if (!isInAntigravityContainer(element)) return;
+  // 若应用复用占位节点来展示草稿，先撤销仍留在节点上的占位译文。
+  if (element.matches?.(floatingComposerDraftSelector)) {
+    for (const child of element.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) restoreTrackedNode(child);
+    }
+    return;
+  }
   translateComposedElement(element);
   translateCoordinatorWelcome(element);
   translateKnownSlashDescription(element);
@@ -1156,6 +1169,16 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 浮动输入条的占位和计数后缀都有明确的 DOM 上下文，避免翻译草稿或其他同名控件。
+  if (value.trim() === 'Ask anything' && node.parentElement?.matches?.('[data-testid="aux-pane-floating-composer-trigger"] > span.opacity-60')) {
+    return value.replace('Ask anything', '想问什么都可以');
+  }
+  if (/^Comments?$/.test(value.trim()) && node.parentElement?.closest?.('[data-testid="aux-pane-floating-composer-comment-badge"]')) {
+    return value.replace(/Comments?/, '条评论');
+  }
+  if (value.trim() === 'Attached' && node.parentElement?.closest?.('[data-testid="aux-pane-floating-composer-attachment-badge"]')) {
+    return value.replace('Attached', '个附件');
+  }
   // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
   // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
   if (value.trim() === '% left') {

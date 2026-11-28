@@ -1,6 +1,6 @@
 (() => {
   if (typeof window === 'undefined') return;
-  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.35.2-20261126-r4';
+  const fingerprint = window.__antigravityZhPatchRequestedFingerprint || 'app-2.36.0-20261128-r1';
   if (window.__antigravityZhPatchInstalled === true && window.__observedDocument === document && window.__antigravityZhPatchFingerprint === fingerprint) return;
   const updating = window.__antigravityZhPatchInstalled === true && window.__observedDocument === document;
   if (typeof window.__antigravityZhPatchCleanup === 'function') window.__antigravityZhPatchCleanup();
@@ -1404,6 +1404,7 @@
     ["Custom path for the browser user profile directory. Leave empty for default (~/.gemini/antigravity-browser-profile).", "浏览器用户资料目录的自定义路径。留空则使用默认路径（~/.gemini/antigravity-browser-profile）。"],
     ["No models are available for your current project or account. Please check your project settings and IAM permissions.", "当前项目或账户没有可用的模型。请检查您的项目设置和 IAM 权限。"],
     ["This page is taking longer than expected to load, or it may be blocking embedded views (via X-Frame-Options or CSP).", "此页面加载时间超出预期，或者它通过 X-Frame-Options 或 CSP 阻止了嵌入式视图。"],
+    ["Your organization has run out of Antigravity funds. Prompt generation is paused until your administrator adds funds.", "你的组织已用完 Antigravity 资金。在管理员充值前，将暂停生成回复。"],
     ["You currently don't have any MCP Servers installed. Add an MCP server above or add a custom one via the MCP Config.", "您当前还没有安装任何 MCP 服务器。请在上方添加 MCP 服务器，或通过 MCP 配置文件添加自定义服务器。"],
     ["An agent is using the built-in browser. Clearing its data signs the agent out of sites and may interrupt its task.", "智能体正在使用内置浏览器。清除数据会退出智能体的站点登录状态，并可能中断当前任务。"],
     ["Connect to your managed Looker MCP server to explore data, run saved Looks, build dashboards, and validate LookML.", "连接到托管的 Looker MCP 服务器，以探索数据、运行已保存的 Look、构建仪表盘并验证 LookML。"],
@@ -2001,6 +2002,7 @@
     ["Manage project folders and settings.", "管理项目文件夹和设置。"],
     ["Manage your model quota and credits.", "管理您的模型额度与积分。"],
     ["No customizations match your search.", "没有与搜索条件匹配的自定义项。"],
+    ["Organization prepaid wallet is empty", "组织预付余额已耗尽"],
     ["Scan the code to open this device in", "扫描二维码以在远程控制中打开此设备"],
     ["The Hub sent an unexpected response.", "Hub 返回了意外响应。"],
     ["There are no customizations enabled.", "没有启用任何自定义项。"],
@@ -2470,6 +2472,7 @@
     ["Show or Hide Extensions", "显示或隐藏扩展"],
     ["Side Question Selection", "侧边提问选择"],
     ["Standalone Conversation", "独立对话"],
+    ["Subagent needs approval", "子智能体需要批准"],
     ["Switch to This Computer", "切换到此电脑"],
     ["This page isn’t working", "此页面无法正常运行"],
     ["Toggle Project Selector", "切换项目选择器"],
@@ -2838,6 +2841,7 @@
     ["Configured servers", "已配置的服务器"],
     ["Conversation Steps", "对话步骤"],
     ["Conversation Width", "对话宽度"],
+    ["Conversation input", "对话输入框"],
     ["Conversation turns", "对话轮次"],
     ["Copy Image Address", "复制图片地址"],
     ["Copy email address", "复制电子邮件地址"],
@@ -3088,6 +3092,7 @@
     ["Project Settings", "项目设置"],
     ["Provide Feedback", "提供反馈"],
     ["Purchase Credits", "购买积分"],
+    ["Question waiting", "等待回答问题"],
     ["Remove from list", "从列表中移除"],
     ["Replace With New", "替换为新对话"],
     ["Reset Onboarding", "重置入门设置"],
@@ -3323,6 +3328,7 @@
     ["Tool arguments", "工具参数"],
     ["Trajectory ID:", "执行轨迹 ID："],
     ["Typeahead menu", "自动补全菜单"],
+    ["Unread message", "未读消息"],
     ["Unstage change", "取消暂存更改"],
     ["View Changelog", "查看更新日志"],
     ["Workspace Name", "工作区名称"],
@@ -3727,6 +3733,7 @@
     ["Artifacts", "产物列表"],
     ["Ask first", "先询问"],
     ["Automatic", "自动"],
+    ["Canceling", "正在取消"],
     ["Changelog", "更新日志"],
     ["Close Tab", "关闭标签页"],
     ["Completed", "已完成"],
@@ -4362,6 +4369,7 @@ const dynamicPatterns = [
   // 动态用量与数量词
   [/(\d+(?:\.\d+)?)% of the customization budget is available\./g, '自定义预算还剩 $1%。'],
   [/(\d+)\s*agents running/g, '$1 个智能体正在运行'],
+  [/^(\d+) tasks? running$/, '$1 个任务正在运行'],
   [/See all \((\d+)\)/g, '查看全部 ($1)'],
   [/^Send all \((\d+)\)$/g, '全部发送 ($1)'],
   [/Modified in (\d+)\s*(?:projects?|项目)/gi, '已在 $1 个项目中自定义'],
@@ -4615,6 +4623,7 @@ function translate(value) {
 // 仅用于应用生成的 aria-label 模板。名称、路径、URL 和账号均原样保留，
 // 并在命中后立即返回，避免通用短语或数量规则再次改写变量。
 const dynamicAriaLabels = [
+  [/^([\s\S]+) — restore split view$/, (_m, status) => `恢复分屏视图：${translate(status)}`, '恢复分屏视图：'],
   [/^Playback speed (\d+(?:\.\d+)?)x$/, (_m, n) => `播放速度：${n}x`, '播放速度：'],
   [/^Zoom (\d+(?:\.\d+)?)%, reset to fit$/, (_m, n) => `缩放：${n}%，重置为适应窗口`, '缩放：'],
   [/^Open ([\s\S]+) skill$/, (_m, name) => `打开技能：${name}`, '打开技能：'],
@@ -4759,6 +4768,9 @@ function isProtectedMentionLabel(element) {
     !label.closest?.('[data-testid="menu-category-row"]');
 }
 
+// 折叠输入条使用同一个 span 显示占位文案或未发送草稿，用透明度 class 区分两者。
+const floatingComposerDraftSelector = '[data-testid="aux-pane-floating-composer-trigger"] > span.opacity-90';
+
 function shouldSkipSubtree(node) {
   const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
   if (!element) return false;
@@ -4790,6 +4802,7 @@ function shouldSkipSubtree(node) {
 
   // 跳过输入框与文本域的正文/子节点，但允许元素自身属性（placeholder、aria-label）翻译
   if (node.nodeType === Node.TEXT_NODE) {
+    if (element.closest(floatingComposerDraftSelector)) return true;
     if (element.closest('[contenteditable]:not([contenteditable="false"]), input, textarea')) {
       return true;
     }
@@ -5245,6 +5258,13 @@ function translateKnownSlashDescription(element) {
 function translateElement(element) {
   if (shouldSkip(element)) return;
   if (!isInAntigravityContainer(element)) return;
+  // 若应用复用占位节点来展示草稿，先撤销仍留在节点上的占位译文。
+  if (element.matches?.(floatingComposerDraftSelector)) {
+    for (const child of element.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) restoreTrackedNode(child);
+    }
+    return;
+  }
   translateComposedElement(element);
   translateCoordinatorWelcome(element);
   translateKnownSlashDescription(element);
@@ -5264,6 +5284,16 @@ function translateTextValue(node) {
   const value = node.nodeValue || '';
   const tracked = originals.texts.get(node);
   if (tracked && tracked.zh === value) return value;
+  // 浮动输入条的占位和计数后缀都有明确的 DOM 上下文，避免翻译草稿或其他同名控件。
+  if (value.trim() === 'Ask anything' && node.parentElement?.matches?.('[data-testid="aux-pane-floating-composer-trigger"] > span.opacity-60')) {
+    return value.replace('Ask anything', '想问什么都可以');
+  }
+  if (/^Comments?$/.test(value.trim()) && node.parentElement?.closest?.('[data-testid="aux-pane-floating-composer-comment-badge"]')) {
+    return value.replace(/Comments?/, '条评论');
+  }
+  if (value.trim() === 'Attached' && node.parentElement?.closest?.('[data-testid="aux-pane-floating-composer-attachment-badge"]')) {
+    return value.replace('Attached', '个附件');
+  }
   // 额度条里的百分比被应用拆成两个文本节点（如 "75" 与 "% left"），
   // 单节点规则永远匹配不到整串；此时改写数字节点并清空后缀节点，得到「剩余 75%」。
   if (value.trim() === '% left') {
